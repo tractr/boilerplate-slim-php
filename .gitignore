@@ -1,0 +1,7 @@
+vendor
+
+# Generated files. Remove these lines after generation
+# app/routes/**
+app/cmd/setup/indexes.json
+app/models.json
+app/MODELS.md

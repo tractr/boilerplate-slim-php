@@ -1,0 +1,15 @@
+#   Prevent the visualisation of the arborescence, it doesn't have nothing with "index.php" mask.
+Options -Indexes
+
+#   Enable rewrite engine rules.
+RewriteEngine on
+
+#
+#   Set URL rewriting rules. Here, we are using white list.
+#
+
+#   All URL how doesn't match with these mask are rewroten.
+RewriteCond $1 !^(index\.php|assets/|robots\.txt)
+
+#   All URL are redirected to index.php.
+RewriteRule ^(.*)$ index.php/$1 [L]

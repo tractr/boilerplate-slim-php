@@ -1,0 +1,75 @@
+{
+  "version": "1",
+  "validatorPath": "hapify/validator.js",
+  "name": "Slim-php",
+  "description": "Slim Boilerplates",
+  "project": "5dd3fe30fe3c9d0010340483",
+  "defaultFields": [
+    {
+      "name": "id",
+      "type": "string",
+      "subtype": null,
+      "reference": null,
+      "primary": true,
+      "unique": false,
+      "label": false,
+      "nullable": false,
+      "multiple": false,
+      "embedded": false,
+      "searchable": false,
+      "sortable": false,
+      "hidden": false,
+      "internal": true,
+      "restricted": false,
+      "ownership": false
+    },
+    {
+      "name": "created at",
+      "type": "datetime",
+      "subtype": null,
+      "reference": null,
+      "primary": false,
+      "unique": false,
+      "label": false,
+      "nullable": false,
+      "multiple": false,
+      "embedded": false,
+      "searchable": false,
+      "sortable": true,
+      "hidden": false,
+      "internal": true,
+      "restricted": false,
+      "ownership": false
+    },
+    {
+      "name": "updated at",
+      "type": "datetime",
+      "subtype": null,
+      "reference": null,
+      "primary": false,
+      "unique": false,
+      "label": false,
+      "nullable": false,
+      "multiple": false,
+      "embedded": false,
+      "searchable": false,
+      "sortable": true,
+      "hidden": false,
+      "internal": true,
+      "restricted": false,
+      "ownership": false
+    }
+  ],
+  "templates": [
+    {
+      "path": "cmd/setup/indexes.json",
+      "engine": "js",
+      "input": "all"
+    },
+    {
+      "path": "models.json",
+      "engine": "js",
+      "input": "all"
+    }
+  ]
+}
