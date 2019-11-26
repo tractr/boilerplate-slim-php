@@ -1,0 +1,124 @@
+<?php 
+
+/**
+ * Create <<M a-a>>.
+ * Returns the created <<M a-a>>.
+ *
+ * Form validation used here is vlucas/valitron library, for more information, you can read documentation here https://github.com/vlucas/valitron
+ */
+
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Valitron\Validator as Validator;
+
+$app->post('/<<M a-a>>', function (Request $request, Response $response, array $args) {
+
+    $data = $request->getParsedBody();
+
+    //Form validation
+    $validator = new Validator($data);
+    <<@ F /rs/in f>>
+    $validator->rule('required', '<<f a_a>>'<<? f nu>>, true <<?>>);
+    <<@>>
+    <<@ F /rs/in f>>
+    $validator-><<=validator(f)>>;
+    <<@>>
+    
+    
+
+    if ($validator->validate()) {
+
+        try {
+            <<@ F tSp/in p>>
+ 
+                // Hash <<p a>>
+                if ($data['<<p a_a>>'] != '') {
+                    $data['<<p a_a>>'] = md5($data['<<p a_a>>']);
+                }
+            <<@>>
+            
+            $_data = App\\Models\\<<M AA>>::create(array(
+            <<@ F /rs/in f>>
+                '<<f a_a>>' => $data['<<f a_a>>'],
+            <<@>>
+            <<? F in/pr>>
+                // Init internal fields
+                <<@ F in/pr f>>
+                '<<f a_a>>' => <<=defaultValue(f)>>,
+                <<@>>
+            <<?>>
+            ));
+
+            $payload = json_encode($_data);
+            $response->getBody()->write($payload);
+
+            return $response
+                        ->withHeader('Content-Type', 'application/json')
+                        ->withStatus(201);
+
+        } catch (\Exception $e) {
+            if ($e->getCode() == 23000) {
+                // Deal with duplicate key error
+                return $response->withStatus(409);
+            }
+        }
+
+        
+    }
+
+    // Bad payload request
+    return $response->withStatus(400);
+});
+
+<<< 
+function defaultValue(f) {
+    let v = "null";
+    
+    if (f.ownership) {
+        v = f.multiple ? "array(1)" : "1";//Todo : return user logged id
+    }
+    else if (f.multiple) v = "array()";
+    else if (f.type === "boolean") v = "false";
+    else if (f.type === "string") {
+        if (f.names.snake === 'role') v = "'user'";
+        else v = "''";
+    }
+    else if (f.type === "number") v = "0";
+    else if (f.type === "datetime") v = "date('Y-m-d H:i:s')";
+    else if (f.type === "object") v = "array()";
+
+    return v;
+}
+function validator(f) {
+    let out = "";
+    
+    
+    
+    if (f.type === "boolean") out += "rule('boolean', '" + f.name + ")";
+    else if (f.type === "string") {
+        // out +=  "string()";
+        if (f.subtype === "email") out += "rule('email', '" + f.name + "')";
+        else if (f.subtype === "password") out += "rule('lengthMin', array('" + f.name + "', 6))";
+        //out +=  ".trim()";
+    }
+    else if (f.type === "number" || f.type === "datetime") {
+        out +=  "number()";
+        if (f.subtype === "latitude") out += "rules(array('min' => array('"+ f.name +"', -90), 'max' => array('"+ f.name +"', 90)))";
+        else if (f.subtype === "longitude") out += "rules(array('min' => array('"+ f.name +"', -180), 'max' => array('"+ f.name +"', 180)))";
+    }
+    else if (f.type === "entity") out +=  "rule('lengthMax', array('" + f.name + "', 24))";
+    else if (f.type === "object") out +=  "";
+    else out +=  "any()";
+    
+    // /* Multiple and nullable */
+    // if (f.multiple) {
+    //     out = `Joi.array().items(${out})`;
+        
+    //     out += f.nullable ? ";\n$validator->rule('min', " + f.name + ", 0);" : ";\n$validator->rules(array('min' => array('"+ f.name +"', -90), 'required' => array('"+ f.name +"'));";
+    // } else {
+    //     out += f.nullable ? ";\n$validator->rule('email', " + f.name + ", true);" : ";\n$validator->rule('required', '" + f.name + "');";
+    // }
+    
+    return out;
+}
+>>>

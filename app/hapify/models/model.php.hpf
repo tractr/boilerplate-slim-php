@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-class Service extends BaseModel{
+class <<M AA>> extends BaseModel{
 
 	/**
      * The table associated with the model.
      *
      * @var string
      */
-   	protected $table = 'service';
+   	protected $table = '<<M a-a>>';
 
    	/**
      * The attributes that are mass assignable.
@@ -23,7 +23,11 @@ class Service extends BaseModel{
      *
      * @var array
      */
-    protected $hidden = array('created_at', 'updated_at');
+    protected $hidden = array(
+        <<@ F hd+in f>>
+        '<<f a_a>>',
+        <<@>>
+    );
 
     /**
      * Get search cursor
@@ -44,5 +48,18 @@ class Service extends BaseModel{
 
         return $query;
     }
+
+    <<@ F tE/hd f>>
+    /**
+     * Return entity list from relationship
+     * @return array
+     */
+    public function <<f a_a>>()
+    {
+        return $this->hasMany('App\\<<f AA>>');
+    }
+    <<@>>
+
+    
 
 }

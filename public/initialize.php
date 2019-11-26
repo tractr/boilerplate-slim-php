@@ -103,7 +103,7 @@ foreach ($routes as $route) {
  * It charge all routes files
  */
 
-$routes = glob('../app/model/*');
+$routes = glob('../app/models/*');
 
 foreach ($routes as $route) {
     

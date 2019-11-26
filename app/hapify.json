@@ -70,6 +70,41 @@
       "path": "models.json",
       "engine": "js",
       "input": "all"
+    },
+    {
+      "path": "models/{kebab}.php",
+      "engine": "hpf",
+      "input": "one"
+    },
+    {
+      "path": "routes/{kebab}/create.php",
+      "engine": "hpf",
+      "input": "one"
+    },
+    {
+      "path": "routes/{kebab}/delete.php",
+      "engine": "hpf",
+      "input": "one"
+    },
+    {
+      "path": "routes/{kebab}/read.php",
+      "engine": "hpf",
+      "input": "one"
+    },
+    {
+      "path": "routes/{kebab}/search.php",
+      "engine": "hpf",
+      "input": "one"
+    },
+    {
+      "path": "routes/{kebab}/count.php",
+      "engine": "hpf",
+      "input": "one"
+    },
+    {
+      "path": "routes/{kebab}/update.php",
+      "engine": "hpf",
+      "input": "one"
     }
   ]
 }
