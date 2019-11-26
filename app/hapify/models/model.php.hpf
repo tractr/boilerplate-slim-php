@@ -45,17 +45,17 @@ class <<M AA>> extends BaseModel{
         <<@ F se f>>
         <<?4 f tS*lb>>
         if (isset($filter['<<f a_a>>'])) {
-            $query->where('<<f a_a>>', 'LIKE', "%{$filter['<<f a_a>>']}%");
+            $query->orWhere('<<f a_a>>', 'LIKE', "%{$filter['<<f a_a>>']}%");
         }
         <<?>>
         
         <<?4 f tN+tD>>
         if (isset($filter['<<f a_a>>']) && strstr($filter['<<f a_a>>'], '_min')) {
-            $query->where('<<f a_a>>', '>', $filter['<<f a_a>>']);
+            $query->orWhere('<<f a_a>>', '>', $filter['<<f a_a>>']);
         }
         
         if (isset($filter['<<f a_a>>']) && strstr($filter['<<f a_a>>'], '_max')) {
-            $query->where('<<f a_a>>', '<', $filter['<<f a_a>>']);
+            $query->orWhere('<<f a_a>>', '<', $filter['<<f a_a>>']);
         }
         <<?>>
         <<@>>
