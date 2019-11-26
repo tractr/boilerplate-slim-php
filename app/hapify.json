@@ -77,6 +77,11 @@
       "input": "one"
     },
     {
+      "path": "routes/{kebab}/count.php",
+      "engine": "hpf",
+      "input": "one"
+    },
+    {
       "path": "routes/{kebab}/create.php",
       "engine": "hpf",
       "input": "one"
@@ -93,11 +98,6 @@
     },
     {
       "path": "routes/{kebab}/search.php",
-      "engine": "hpf",
-      "input": "one"
-    },
-    {
-      "path": "routes/{kebab}/count.php",
       "engine": "hpf",
       "input": "one"
     },
