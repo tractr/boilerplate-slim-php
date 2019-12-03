@@ -1,25 +1,23 @@
-<?php 
-
+<?php
+ 
 /**
  * Read <<M AA>>.
  */
-
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-
+ 
+use Psr\\Http\\Message\\ResponseInterface as Response;
+use Psr\\Http\\Message\\ServerRequestInterface as Request;
+ 
 $app->get('/<<M a-a>>/{id}', function (Request $request, Response $response, array $args) {
-
+ 
     $data = App\\Models\\<<M AA>>::find($args['id']);
-
+ 
     if ($data == null) {
     	// Entity was not found
     	return $response->withStatus(404);
     }
-    
-    
-
+ 
     $payload = json_encode($data);
-    
+ 
     //populate relationship
     $payload = json_decode($payload, true);
     <<@ F tE/hd f>>

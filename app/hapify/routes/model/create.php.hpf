@@ -1,31 +1,29 @@
 <?php 
-
+ 
 /**
  * Create <<M a-a>>.
  * Returns the created <<M a-a>>.
  *
  * Form validation used here is vlucas/valitron library, for more information, you can read documentation here https://github.com/vlucas/valitron
  */
-
+ 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Valitron\Validator as Validator;
-
+ 
 $app->post('/<<M a-a>>', function (Request $request, Response $response, array $args) {
-
+ 
     $data = $request->getParsedBody();
-
+ 
     //Form validation
     $validator = new Validator($data);
     <<@ F /rs/in f>>
     $validator->rule('required', '<<f a_a>>'<<? f nu>>, true <<?>>);
     <<@>>
     <<@ F /rs/in f>>
-    $validator-><<=validator(f)>>;
+    <<=validator(f)>>
     <<@>>
-    
-    
-
+ 
     if ($validator->validate()) {
 
         try {
@@ -36,7 +34,7 @@ $app->post('/<<M a-a>>', function (Request $request, Response $response, array $
                     $data['<<p a_a>>'] = md5($data['<<p a_a>>']);
                 }
             <<@>>
-            
+    
             $_data = App\\Models\\<<M AA>>::create(array(
             <<@ F /rs/in f>>
                 '<<f a_a>>' => $data['<<f a_a>>'],
@@ -48,10 +46,10 @@ $app->post('/<<M a-a>>', function (Request $request, Response $response, array $
                 <<@>>
             <<?>>
             ));
-
+ 
             $payload = json_encode($_data);
             $response->getBody()->write($payload);
-
+ 
             return $response
                         ->withHeader('Content-Type', 'application/json')
                         ->withStatus(201);
@@ -63,9 +61,8 @@ $app->post('/<<M a-a>>', function (Request $request, Response $response, array $
             }
         }
 
-        
     }
-
+ 
     // Bad payload request
     return $response->withStatus(400);
 });
@@ -90,25 +87,19 @@ function defaultValue(f) {
     return v;
 }
 function validator(f) {
-    let out = "";
     
-    
-    
-    if (f.type === "boolean") out += "rule('boolean', '" + f.name + ")";
+    if (f.type === "boolean") return "$validator->rule('boolean', '" + f.name + ");";
     else if (f.type === "string") {
-        // out +=  "string()";
-        if (f.subtype === "email") out += "rule('email', '" + f.name + "')";
-        else if (f.subtype === "password") out += "rule('lengthMin', array('" + f.name + "', 6))";
-        //out +=  ".trim()";
+        if (f.subtype === "email") return "$validator->rule('email', '" + f.name + "');";
+        else if (f.subtype === "password") return "$validator->rule('lengthMin', array('" + f.name + "', 6));";
     }
     else if (f.type === "number" || f.type === "datetime") {
-        out +=  "number()";
-        if (f.subtype === "latitude") out += "rules(array('min' => array('"+ f.name +"', -90), 'max' => array('"+ f.name +"', 90)))";
-        else if (f.subtype === "longitude") out += "rules(array('min' => array('"+ f.name +"', -180), 'max' => array('"+ f.name +"', 180)))";
+        if (f.subtype === "latitude") return "$validator->rules(array('min' => array('"+ f.name +"', -90), 'max' => array('"+ f.name +"', 90)));";
+        else if (f.subtype === "longitude") return "$validator->rules(array('min' => array('"+ f.name +"', -180), 'max' => array('"+ f.name +"', 180)));";
     }
-    else if (f.type === "entity") out +=  "rule('lengthMax', array('" + f.name + "', 24))";
-    else if (f.type === "object") out +=  "";
-    else out +=  "any()";
+    else if (f.type === "entity") return "$validator->rule('lengthMax', array('" + f.name + "', 24));";
+    
+    return `/* No rule for property ${f.name} */`;
     
     // /* Multiple and nullable */
     // if (f.multiple) {
@@ -118,7 +109,5 @@ function validator(f) {
     // } else {
     //     out += f.nullable ? ";\n$validator->rule('email', " + f.name + ", true);" : ";\n$validator->rule('required', '" + f.name + "');";
     // }
-    
-    return out;
 }
 >>>
