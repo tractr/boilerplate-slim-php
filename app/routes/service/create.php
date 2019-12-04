@@ -17,12 +17,8 @@ $app->post('/service', function (Request $request, Response $response, array $ar
 
     //Form validation
     $validator = new Validator($data);
-    $validator->rules(array(
-        'required' => array(
-            array('name'),
-            array('description', true),//allow null
-        )
-    ));
+    $validator->rule('required', array('email', 'password'));
+    $validator->rule('email', 'email');
 
     if ($validator->validate()) {
 

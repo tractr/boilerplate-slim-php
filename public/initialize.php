@@ -14,11 +14,12 @@ require __DIR__ . '/../vendor/autoload.php';
  */
 require __DIR__ . '/../app/config/config.php';
 require __DIR__ . '/../app/config/database.php';
-
+require __DIR__ . '/../app/config/session.php';
 
 use DI\Container;
 use Slim\Factory\AppFactory;
 use App\WidgetController;
+use Psr\Http\Message\ServerRequestInterface;
 
 use Illuminate\Database\Capsule\Manager as Capsule;
 
@@ -40,8 +41,16 @@ $container = new Container();
  */
 AppFactory::setContainer($container);
 $app = AppFactory::create();
-// $app->addRoutingMiddleware();
+// Add Routing Middleware
+$app->addRoutingMiddleware();
 
+/**
+ * Init plugins
+ */
+require __DIR__ . '/../app/plugins/session.php';
+
+//Authentication middleware
+$app->add($auth_middleware);
 
 /**
  * --------------------------
@@ -121,3 +130,32 @@ foreach ($routes as $route) {
         require_once($route);
     }
 }
+
+/**
+ * --------------------------
+ * ERROR MIDDLEWARE
+ * --------------------------
+ * Function handling error
+ */
+$error_middleware_handler = function (ServerRequestInterface $request, Throwable $exception, bool $displayErrorDetails, bool $logErrors, bool $logErrorDetails) use ($app) {
+    //Authentication error
+    if ($exception instanceof AuthException) {
+
+        $response = $app->getResponseFactory()->createResponse($exception->getCode());
+        $response->getBody()->write($exception->getMessage());
+
+        return $response;
+    }
+
+    $payload = ['error' => $exception->getMessage()];
+
+    //Exception dev
+    $response = $app->getResponseFactory()->createResponse();
+    $response->getBody()->write(
+        json_encode($payload, JSON_UNESCAPED_UNICODE)
+    );
+
+    return $response;
+};
+$error_middleware = $app->addErrorMiddleware(true, true, true);
+$error_middleware->setDefaultErrorHandler($error_middleware_handler);
