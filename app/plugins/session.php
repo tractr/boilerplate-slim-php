@@ -6,14 +6,28 @@ use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Slim\Psr7\Response;
 use Valitron\Validator as Validator;
 
-$get_cookie_value = function ()
+/**
+ * --------------------------
+ * GET COOKIE VALUE
+ * --------------------------
+ * get current cookie value usign cookie configuration index name
+ */
+
+function get_cookie_value ()
 {
 	global $config;
 
 	return isset($_COOKIE[$config['cookie']['name']]) ? $_COOKIE[$config['cookie']['name']] : null;
-};
+}
 
-$create_session = function ($user)
+/**
+ * --------------------------
+ * CREATE SESSION
+ * --------------------------
+ * create new session and cache it
+ */
+
+function create_session ($user)
 {
 	global $config;
 	//write session inside file
@@ -56,12 +70,18 @@ $create_session = function ($user)
 	}
 
 	return $data;
-};
+}
 
-$get_current_session = function ()
+/**
+ * --------------------------
+ * GET CURRENT SESSION
+ * --------------------------
+ * fetch current session cache
+ */
+
+function get_current_session ()
 {
-	global $get_cookie_value;
-	$cookie_value = $get_cookie_value();
+	$cookie_value = get_cookie_value();
 
 	$folder_path = dirname(__DIR__) . '/cache';
 	$file_path = $folder_path . '/' . $cookie_value . '.json';
@@ -74,13 +94,19 @@ $get_current_session = function ()
 		file_get_contents($file_path),
 		true
 	);
-};
+}
 
-$delete_current_session = function ()
+/**
+ * --------------------------
+ * DELETE CURRENT SESSION
+ * --------------------------
+ * delete current session
+ */
+
+function delete_current_session ()
 {
 	global $config;
-	global $get_cookie_value;
-	$cookie_value = $get_cookie_value();
+	$cookie_value = get_cookie_value();
 
 	$folder_path = dirname(__DIR__) . '/cache';
 	$file_path = $folder_path . '/' . $cookie_value . '.json';
@@ -96,35 +122,56 @@ $delete_current_session = function ()
 	);
 
 	return true;
-};
+}
 
-$check_auth = function ()
+/**
+ * --------------------------
+ * CHECK AUTHENTICATION
+ * --------------------------
+ * check if current session is authenticated
+ */
+
+function check_auth()
 {
-	global $get_current_session;
-
-	$session_data = $get_current_session();
+	$session_data = get_current_session();
     if ($session_data == null) {
     	// user doesn't have current session
     	throw new AuthException();
     }
 
     return true;
-};
+}
 
 /**
- * Create service.
- * Returns the created service.
- *
+ * --------------------------
+ * REQUEST FROM ADMIN
+ * --------------------------
+ * function that check if request if from admin
  */
+
+function request_from_admin ($request)
+{
+    $routes = $request->getAttribute('route');
+    
+    return preg_match('#^\/admin#', $routes->getPattern());
+}
+
+/**
+ * --------------------------
+ * CREATE SESSION
+ * --------------------------
+ * Authenticate user and return current session
+ */
+
 $app->post('/password/login', function (Request $request, Response $response, array $args) {
 
 	global $capsule;
-	global $create_session;
     $data = $request->getParsedBody();
 
     //Form validation
     $validator = new Validator($data);
-    $validator->rule('required', array('email','password'));
+    $validator->rule('required', 'email');
+    $validator->rule('required', 'password');
     $validator->rule('email', 'email');
 
     if ($validator->validate()) {
@@ -140,7 +187,7 @@ $app->post('/password/login', function (Request $request, Response $response, ar
 		//On vérifie la cohérence du mot de passe
 		if ($user->password === $password) {
 			//Enregistrement du cookie
-			$session_data = $create_session($user);
+			$session_data = create_session($user);
 
 			$response->getBody()->write(json_encode($session_data));
 			return $response
@@ -153,13 +200,16 @@ $app->post('/password/login', function (Request $request, Response $response, ar
     return $response->withStatus(401);
 });
 
+/**
+ * --------------------------
+ * GET SESSION
+ * --------------------------
+ * get user current session
+ */
 
 $app->get('/session', function (Request $request, Response $response, array $args) {
 
-    global $get_current_session;
-    global $config;
-
-    $session_data = $get_current_session();
+    $session_data = get_current_session();
 
     if ($session_data == null) {
     	// user doesn't have current session
@@ -174,12 +224,16 @@ $app->get('/session', function (Request $request, Response $response, array $arg
               ->withStatus(201);
 });
 
+/**
+ * --------------------------
+ * DELETE SESSION
+ * --------------------------
+ * delete user current session
+ */
+
 $app->delete('/session', function (Request $request, Response $response, array $args) {
 
-    global $delete_current_session;
-    global $config;
-
-    $result = $delete_current_session();
+    $result = delete_current_session();
 
     if (!$result) {
     	// user doesn't have current session

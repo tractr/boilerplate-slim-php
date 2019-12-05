@@ -1,6 +1,6 @@
 <?php 
 namespace App\Models;
-class User extends BaseModel{
+class user extends BaseModel{
 	/**
      * The table associated with the model.
      *
@@ -12,7 +12,16 @@ class User extends BaseModel{
      *
      * @var array
      */
-   	// protected $fillable = array('id', 'name', 'description', 'created_at', 'updated_at');
+   	protected $fillable = array(
+        '_id',
+        'created_at',
+        'name',
+        'email',
+        'password',
+        'role',
+        'banned',
+        'last_connected_at',
+   	);
    	/**
      * The attributes that should be hidden for arrays.
      *
@@ -23,6 +32,7 @@ class User extends BaseModel{
         'created_at',
         'password',
         'last_connected_at',
+        'updated_at',
     );
     /**
      * Get search cursor
@@ -30,16 +40,18 @@ class User extends BaseModel{
      * @param  array $filter column to search
      * @return \Illuminate\Database\Query\Builder         cursor of the query
      */
-    public static function get_cursor($query, $filter, $credentials = null, $from_admin = false){
+    public static function get_cursor($filter, $credentials = null, $from_admin = false){
 
         unset($filter['_page']);
         unset($filter['_limit']);
         unset($filter['_order']);
         unset($filter['_sort']);
 
+        $query = new user();
+
         // Use LIKE for name
         if (isset($filter['name'])) {
-            $query->orWhere('name', 'LIKE', "%{$filter['name']}%");
+            $query = $query->orWhere('name', 'LIKE', "%{$filter['name']}%");
         }
         return $query;
     }

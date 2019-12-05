@@ -10,10 +10,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 $app->get('/<<M a-a>>/{id}', function (Request $request, Response $response, array $args) {
 
     <<? Ar !gs>>
-    global $check_auth;
-
     //Authentication
-    $check_auth();
+    check_auth();
     <<?>>
  
     $data = App\Models\<<M AA>>::find($args['id']);
@@ -28,7 +26,7 @@ $app->get('/<<M a-a>>/{id}', function (Request $request, Response $response, arr
     //populate relationship
     $payload = json_decode($payload, true);
     <<@ F tE/hd f>>
-    $payload['<<f a_a>>'] = $data-><<f a_a>>();
+    $payload['<<f a_a>>'] = $data->_<<f a_a>>;
     <<@>>
     $payload = json_encode($payload);
  

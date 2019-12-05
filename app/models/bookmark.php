@@ -1,6 +1,6 @@
 <?php 
 namespace App\Models;
-class Bookmark extends BaseModel{
+class bookmark extends BaseModel{
 	/**
      * The table associated with the model.
      *
@@ -12,7 +12,12 @@ class Bookmark extends BaseModel{
      *
      * @var array
      */
-   	// protected $fillable = array('id', 'name', 'description', 'created_at', 'updated_at');
+   	protected $fillable = array(
+        '_id',
+        'created_at',
+        'owner',
+        'place',
+   	);
    	/**
      * The attributes that should be hidden for arrays.
      *
@@ -22,6 +27,7 @@ class Bookmark extends BaseModel{
         '_id',
         'created_at',
         'owner',
+        'updated_at',
     );
     /**
      * Get search cursor
@@ -29,24 +35,26 @@ class Bookmark extends BaseModel{
      * @param  array $filter column to search
      * @return \Illuminate\Database\Query\Builder         cursor of the query
      */
-    public static function get_cursor($query, $filter, $credentials = null, $from_admin = false){
+    public static function get_cursor($filter, $credentials = null, $from_admin = false){
 
         unset($filter['_page']);
         unset($filter['_limit']);
         unset($filter['_order']);
         unset($filter['_sort']);
 
+        $query = new bookmark();
+
         // Convert MongoId for owner
         if (isset($filter['owner'])) {
-            $query->owner()->where('owner', $filter['owner']);
+            $query = $query->owner->where('owner', $filter['owner']);
         }
         else if (!$from_admin && $credentials != null) {
-            $query->where('owner', '=', $credentials['ID']);
+            $query = $query->where('owner', '=', $credentials['ID']);
         }
 
         // Convert MongoId for place
         if (isset($filter['place'])) {
-            $query->place()->where('place', $filter['place']);
+            $query = $query->place->where('place', $filter['place']);
         }
         return $query;
     }
@@ -54,17 +62,17 @@ class Bookmark extends BaseModel{
      * Return entity list from relationship
      * @return array
      */
-    public function owner()
+    public function _owner()
     {
-        return $this->hasOne('App\Model\Owner');
+        return $this->hasOne('App\Models\user', '_id', 'owner');
     }
     /**
      * Return entity list from relationship
      * @return array
      */
-    public function place()
+    public function _place()
     {
-        return $this->hasOne('App\Model\Place');
+        return $this->hasOne('App\Models\place', '_id', 'place');
     }
 
 }

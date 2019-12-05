@@ -2,21 +2,25 @@
 
 namespace App\Models;
 
-class <<M AA>> extends BaseModel{
+class <<M aA>> extends BaseModel{
 
 	/**
      * The table associated with the model.
      *
      * @var string
      */
-   	protected $table = '<<M a-a>>';
+   	protected $table = '<<M a_a>>';
 
    	/**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-   	// protected $fillable = array('id', 'name', 'description', 'created_at', 'updated_at');
+   	protected $fillable = array(
+<<@ F  f>>
+        '<<f a_a>>',
+<<@>>
+   	);
 
    	/**
      * The attributes that should be hidden for arrays.
@@ -27,6 +31,7 @@ class <<M AA>> extends BaseModel{
         <<@ F hd+in f>>
         '<<f a_a>>',
         <<@>>
+        'updated_at',
     );
 
     /**
@@ -35,38 +40,40 @@ class <<M AA>> extends BaseModel{
      * @param  array $filter column to search
      * @return \Illuminate\Database\Query\Builder         cursor of the query
      */
-    public static function get_cursor($query, $filter, $credentials = null, $from_admin = false){
+    public static function get_cursor($filter, $credentials = null, $from_admin = false){
         
         unset($filter['_page']);
         unset($filter['_limit']);
         unset($filter['_order']);
         unset($filter['_sort']);
+        
+        $query = new <<M aA>>();
 
     <<@ F se f>>
 
         <<? f tN+tD>>
         // Set min for <<f a>> if defined
-        if (isset($filter['<<f a_a>>']) && strstr($filter['<<f a_a>>'], '_min')) {
-            $query->orWhere('<<f a_a>>', '>', $filter['<<f a_a>>']);
+        if (isset($filter['<<f a_a>>_min'])) {
+            $query = $query->orWhere('<<f a_a>>', '>', $filter['<<f a_a>>_min']);
         }
         // Set max for <<f a>> if defined
-        if (isset($filter['<<f a_a>>']) && strstr($filter['<<f a_a>>'], '_max')) {
-            $query->orWhere('<<f a_a>>', '<', $filter['<<f a_a>>']);
+        if (isset($filter['<<f a_a>>_max'])) {
+            $query = $query->orWhere('<<f a_a>>', '<', $filter['<<f a_a>>_max']);
         }
         <<?? f tE>>
      
-        // Convert MongoId for <<f a>>
+        // Convert id for <<f a>>
         if (isset($filter['<<f a_a>>'])) {
             <<? f ml>>
-            $query-><<f a_a>>()->where('<<f a_a>>', $filter['<<f a_a>>']);
+            $query = $query-><<f a_a>>->where('<<f a_a>>', $filter['<<f a_a>>']);
             <<??>>
-            $query-><<f a_a>>()->where('<<f a_a>>', $filter['<<f a_a>>']);
+            $query = $query-><<f a_a>>->where('<<f a_a>>', $filter['<<f a_a>>']);
             <<?>>
         }
             <<? As ow>>
                 <<? f os>>
         else if (!$from_admin && $credentials != null) {
-            $query->where('<<f a_a>>', '=', $credentials['ID']);
+            $query = $query->where('<<f a_a>>', '=', $credentials['ID']);
         }
                 <<?>>
             <<?>>
@@ -74,7 +81,7 @@ class <<M AA>> extends BaseModel{
      
         // Use LIKE for <<f a>>
         if (isset($filter['<<f a_a>>'])) {
-            $query->orWhere('<<f a_a>>', 'LIKE', "%{$filter['<<f a_a>>']}%");
+            $query = $query->orWhere('<<f a_a>>', 'LIKE', "%{$filter['<<f a_a>>']}%");
         }
         <<?>>
 
@@ -87,16 +94,13 @@ class <<M AA>> extends BaseModel{
      * Return entity list from relationship
      * @return array
      */
-    public function <<f a_a>>()
+    public function _<<f a_a>>()
     {
         <<? f ml>>
-        return $this->hasMany('App\Model\<<f R>>');
+        return $this->belongsToMany('App\Models\<<f.m aA>>', '<<M a_a>>_<<f.m a_a>>', '<<f.m a_a>>_id', '<<M a_a>>_id');
         <<??>>
-        return $this->hasOne('App\Model\<<f R>>');
+        return $this->hasOne('App\Models\<<f.m aA>>', '_id', '<<f aA>>');
         <<?>>
     }
     <<@>>
-
-    
-
 }

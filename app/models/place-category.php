@@ -1,18 +1,23 @@
 <?php 
 namespace App\Models;
-class PlaceCategory extends BaseModel{
+class placeCategory extends BaseModel{
 	/**
      * The table associated with the model.
      *
      * @var string
      */
-   	protected $table = 'place-category';
+   	protected $table = 'place_category';
    	/**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-   	// protected $fillable = array('id', 'name', 'description', 'created_at', 'updated_at');
+   	protected $fillable = array(
+        '_id',
+        'created_at',
+        'name',
+        'description',
+   	);
    	/**
      * The attributes that should be hidden for arrays.
      *
@@ -21,6 +26,7 @@ class PlaceCategory extends BaseModel{
     protected $hidden = array(
         '_id',
         'created_at',
+        'updated_at',
     );
     /**
      * Get search cursor
@@ -28,16 +34,18 @@ class PlaceCategory extends BaseModel{
      * @param  array $filter column to search
      * @return \Illuminate\Database\Query\Builder         cursor of the query
      */
-    public static function get_cursor($query, $filter, $credentials = null, $from_admin = false){
+    public static function get_cursor($filter, $credentials = null, $from_admin = false){
 
         unset($filter['_page']);
         unset($filter['_limit']);
         unset($filter['_order']);
         unset($filter['_sort']);
 
+        $query = new placeCategory();
+
         // Use LIKE for name
         if (isset($filter['name'])) {
-            $query->orWhere('name', 'LIKE', "%{$filter['name']}%");
+            $query = $query->orWhere('name', 'LIKE', "%{$filter['name']}%");
         }
         return $query;
     }

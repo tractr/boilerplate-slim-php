@@ -16,14 +16,19 @@ require __DIR__ . '/../app/config/config.php';
 require __DIR__ . '/../app/config/database.php';
 require __DIR__ . '/../app/config/session.php';
 
+/**
+ * Init library
+ */
+require __DIR__ . '/../app/library/RequestBodyMiddleWare.php';
+
+
 use DI\Container;
 use Slim\Factory\AppFactory;
-use App\WidgetController;
 use Psr\Http\Message\ServerRequestInterface;
-
 use Illuminate\Database\Capsule\Manager as Capsule;
 
-
+//Exception dev
+// $_COOKIE['sid-api'] = '5de90884c8483';
 
 /**
  * --------------------------
@@ -88,7 +93,6 @@ $capsule->addConnection($config['db']);
 $capsule->bootEloquent();
 $capsule->setAsGlobal();
 
-
 /**
  * --------------------------
  * ROUTES
@@ -114,7 +118,6 @@ foreach ($routes as $route) {
     	require_once($route);
     }
 }
-
 
 /**
  * --------------------------
@@ -148,38 +151,31 @@ foreach ($routes as $route) {
  * --------------------------
  * Function handling error
  */
-// $error_middleware_handler = function (ServerRequestInterface $request, Throwable $exception, bool $displayErrorDetails, bool $logErrors, bool $logErrorDetails) use ($app) {
-//     //Authentication error
-//     if ($exception instanceof AuthException) {
 
-//         $response = $app->getResponseFactory()->createResponse($exception->getCode());
-//         $response->getBody()->write($exception->getMessage());
+$error_middleware_handler = function (ServerRequestInterface $request, Throwable $exception, bool $displayErrorDetails, bool $logErrors, bool $logErrorDetails) use ($app) {
+    //Authentication error
+    if ($exception instanceof AuthException) {
 
-//         return $response;
-//     }
+        $response = $app->getResponseFactory()->createResponse($exception->getCode());
+        $response->getBody()->write($exception->getMessage());
 
-//     $payload = ['error' => $exception->getMessage()];
+        return $response;
+    }
 
-//     //Exception dev
-//     $response = $app->getResponseFactory()->createResponse();
-//     $response->getBody()->write(
-//         json_encode($payload, JSON_UNESCAPED_UNICODE)
-//     );
+    $response = $app->getResponseFactory()->createResponse(500);
+    $response->getBody()->write('An internal error occurred.');
 
-//     return $response;
-// };
-// $error_middleware = $app->addErrorMiddleware(true, true, true);
-// $error_middleware->setDefaultErrorHandler($error_middleware_handler);
+    return $response;
+};
+$error_middleware = $app->addErrorMiddleware(true, true, true);
+$error_middleware->setDefaultErrorHandler($error_middleware_handler);
+
 
 /**
  * --------------------------
- * REQUEST FROM ADMIN
+ * REQUEST BODY MIDDLEWARE
  * --------------------------
- * function that check if request if from admin
+ * Object used to parse body encoding
  */
-$request_from_admin = function ($request)
-{
-    $routes = $request->getAttribute('route');
-    
-    return preg_match('#^\/admin#', $routes->getPattern());
-};
+
+$app->add(new RequestBodyMiddleWare());

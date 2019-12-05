@@ -14,8 +14,10 @@ $app->post('/service', function (Request $request, Response $response, array $ar
 
     $data = $request->getParsedBody();
     global $check_auth;
+    global $get_current_session;
     //Authentication
     $check_auth();
+    $credential = $get_current_session();
 
     //Form validation
     $validator = new Validator($data);

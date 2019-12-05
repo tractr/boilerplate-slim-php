@@ -33,3 +33,5 @@ $config['cookie']['expire'] = 365 * 24 * 3600;
  * Time before cookie expire. In this case, it will take one year from now
  */
 $config['cookie']['path'] = '/';
+
+//Todo : complete all session params

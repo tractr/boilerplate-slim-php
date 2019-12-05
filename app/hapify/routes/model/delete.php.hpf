@@ -10,10 +10,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 $app->delete('/<<M a-a>>/{id}', function (Request $request, Response $response, array $args) {
 
 	<<? Ad !gs>>
-    global $check_auth;
-
     //Authentication
-    $check_auth();
+    check_auth();
     <<?>>
  
     $data = App\Models\<<M AA>>::find($args['id']);

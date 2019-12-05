@@ -13,10 +13,8 @@ use Valitron\Validator as Validator;
 $app->patch('/<<M a-a>>/{id}', function (Request $request, Response $response, array $args) {
 
     <<? Au !gs>>
-    global $check_auth;
-
     //Authentication
-    $check_auth();
+    check_auth();
     <<?>>
  
     $data = App\Models\<<M AA>>::find($args['id']);
@@ -53,7 +51,9 @@ $app->patch('/<<M a-a>>/{id}', function (Request $request, Response $response, a
             $data->save();
  
             return $response->withStatus(204);
+            
         } catch (\Exception $e) {
+            
             if ($e->getCode() == 23000) {
                 // Deal with duplicate key error
                 return $response->withStatus(409);
@@ -65,26 +65,20 @@ $app->patch('/<<M a-a>>/{id}', function (Request $request, Response $response, a
 });
 
 <<< 
-function validator(f, prefix, suffix) {
-    let out = "";
+function validator(f) {
     
-    
-    
-    if (f.type === "boolean") out += "rule('boolean', '" + f.name + ")";
+    if (f.type === "boolean") return "$validator->rule('boolean', '" + f.name + ");";
     else if (f.type === "string") {
-        // out +=  "string()";
-        if (f.subtype === "email") out += "rule('email', '" + f.name + "')";
-        else if (f.subtype === "password") out += "rule('lengthMin', array('" + f.name + "', 6))";
-        //out +=  ".trim()";
+        if (f.subtype === "email") return "$validator->rule('email', '" + f.name + "');";
+        else if (f.subtype === "password") return "$validator->rule('lengthMin', '" + f.name + "', 6);";
     }
     else if (f.type === "number" || f.type === "datetime") {
-        out +=  "number()";
-        if (f.subtype === "latitude") out += "rules(array('min' => array('"+ f.name +"', -90), 'max' => array('"+ f.name +"', 90)))";
-        else if (f.subtype === "longitude") out += "rules(array('min' => array('"+ f.name +"', -180), 'max' => array('"+ f.name +"', 180)))";
+        if (f.subtype === "latitude") return "$validator->rules(array('min' => array('"+ f.name +"', -90), 'max' => array('"+ f.name +"', 90)));";
+        else if (f.subtype === "longitude") return "$validator->rules(array('min' => array('"+ f.name +"', -180), 'max' => array('"+ f.name +"', 180)));";
     }
-    else if (f.type === "entity") out +=  "rule('lengthMax', array('" + f.name + "', 24))";
-    else if (f.type === "object") out +=  "";
-    else out +=  "";
+    else if (f.type === "entity") return "$validator->rule('lengthMax', '" + f.name + "', 24);";
+    
+    return `/* No rule for property ${f.name} */`;
     
     // /* Multiple and nullable */
     // if (f.multiple) {
@@ -94,9 +88,5 @@ function validator(f, prefix, suffix) {
     // } else {
     //     out += f.nullable ? ";\n$validator->rule('email', " + f.name + ", true);" : ";\n$validator->rule('required', '" + f.name + "');";
     // }
-    
-    if (out == "") return "";
-    
-    return prefix + out + suffix;
 }
 >>>

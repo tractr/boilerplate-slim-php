@@ -1,6 +1,6 @@
 <?php 
 namespace App\Models;
-class Place extends BaseModel{
+class place extends BaseModel{
 	/**
      * The table associated with the model.
      *
@@ -12,7 +12,21 @@ class Place extends BaseModel{
      *
      * @var array
      */
-   	// protected $fillable = array('id', 'name', 'description', 'created_at', 'updated_at');
+   	protected $fillable = array(
+        '_id',
+        'created_at',
+        'name',
+        'description',
+        'category',
+        'address',
+        'latitude',
+        'longitude',
+        'phone',
+        'website_url',
+        'services',
+        'owner',
+        'disabled',
+   	);
    	/**
      * The attributes that should be hidden for arrays.
      *
@@ -24,6 +38,7 @@ class Place extends BaseModel{
         'latitude',
         'longitude',
         'owner',
+        'updated_at',
     );
     /**
      * Get search cursor
@@ -31,47 +46,49 @@ class Place extends BaseModel{
      * @param  array $filter column to search
      * @return \Illuminate\Database\Query\Builder         cursor of the query
      */
-    public static function get_cursor($query, $filter, $credentials = null, $from_admin = false){
+    public static function get_cursor($filter, $credentials = null, $from_admin = false){
 
         unset($filter['_page']);
         unset($filter['_limit']);
         unset($filter['_order']);
         unset($filter['_sort']);
 
+        $query = new place();
+
         // Use LIKE for name
         if (isset($filter['name'])) {
-            $query->orWhere('name', 'LIKE', "%{$filter['name']}%");
+            $query = $query->orWhere('name', 'LIKE', "%{$filter['name']}%");
         }
 
         // Convert MongoId for category
         if (isset($filter['category'])) {
-            $query->category()->where('category', $filter['category']);
+            $query = $query->category->where('category', $filter['category']);
         }
         // Set min for latitude if defined
         if (isset($filter['latitude']) && strstr($filter['latitude'], '_min')) {
-            $query->orWhere('latitude', '>', $filter['latitude']);
+            $query = $query->orWhere('latitude', '>', $filter['latitude']);
         }
         // Set max for latitude if defined
         if (isset($filter['latitude']) && strstr($filter['latitude'], '_max')) {
-            $query->orWhere('latitude', '<', $filter['latitude']);
+            $query = $query->orWhere('latitude', '<', $filter['latitude']);
         }
         // Set min for longitude if defined
         if (isset($filter['longitude']) && strstr($filter['longitude'], '_min')) {
-            $query->orWhere('longitude', '>', $filter['longitude']);
+            $query = $query->orWhere('longitude', '>', $filter['longitude']);
         }
         // Set max for longitude if defined
         if (isset($filter['longitude']) && strstr($filter['longitude'], '_max')) {
-            $query->orWhere('longitude', '<', $filter['longitude']);
+            $query = $query->orWhere('longitude', '<', $filter['longitude']);
         }
 
         // Convert MongoId for services
         if (isset($filter['services'])) {
-            $query->services()->where('services', $filter['services']);
+            $query = $query->services->where('services', $filter['services']);
         }
 
         // Convert MongoId for owner
         if (isset($filter['owner'])) {
-            $query->owner()->where('owner', $filter['owner']);
+            $query = $query->owner->where('owner', $filter['owner']);
         }
         return $query;
     }
@@ -79,25 +96,25 @@ class Place extends BaseModel{
      * Return entity list from relationship
      * @return array
      */
-    public function category()
+    public function _category()
     {
-        return $this->hasOne('App\Model\Category');
+        return $this->hasOne('App\Models\placeCategory', '_id', 'category');
     }
     /**
      * Return entity list from relationship
      * @return array
      */
-    public function services()
+    public function _services()
     {
-        return $this->hasMany('App\Model\Services');
+        return $this->belongsToMany('App\Models\service', 'place_service', 'service_id', 'place_id');
     }
     /**
      * Return entity list from relationship
      * @return array
      */
-    public function owner()
+    public function _owner()
     {
-        return $this->hasOne('App\Model\Owner');
+        return $this->hasOne('App\Models\user', '_id', 'owner');
     }
 
 }
