@@ -11,7 +11,7 @@ class BaseModel extends Model{
      *
      * @var string
      */
-    protected $primaryKey = 'id';
+    protected $primaryKey = '_id';
 
     /**
      * Indicates if the IDs are auto-incrementing.

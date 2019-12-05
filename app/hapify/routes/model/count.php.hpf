@@ -8,6 +8,14 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
  
 $app->get('/<<M a-a>>/count', function (Request $request, Response $response, array $args) {
+
+    global $request_from_admin;
+    <<? An !gs>>
+    global $check_auth;
+
+    //Authentication
+    $check_auth();
+    <<?>>
  
     $_get = $request->getQueryParams();
  
@@ -15,12 +23,14 @@ $app->get('/<<M a-a>>/count', function (Request $request, Response $response, ar
     $validator->rule('required', '_page', true);
     $validator->rule('required', '_limit', true);
  
-    $validator->rule(array(
-        'min' => array('_page', 1)
-    ));
-    $validator->rule(array(
-        'min' => array('_limit', 1),
-        'max' => array('_limit', 100)
+    $validator->rules(array(
+        'min' => array(
+            array('_limit', 1), 
+            array('_page', 1)
+        ),
+        'max' => array(
+            array('_limit', 100)
+        ) 
     ));
  
     // forbiden keys
@@ -30,8 +40,8 @@ $app->get('/<<M a-a>>/count', function (Request $request, Response $response, ar
     
     if ($validator->validate()) {
  
-        $model = new App\\Models\\<<M AA>>();
-        $query = App\\Models\\<<M AA>>::get_cursor($model, $_get);
+        $model = new App\Models\<<M AA>>();
+        $query = App\Models\<<M AA>>::get_cursor($model, $_get, $this->get('credential'), $request_from_admin($request));
  
         $total = $query->count();
     

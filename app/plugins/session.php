@@ -71,7 +71,8 @@ $get_current_session = function ()
 	}
 
 	return json_decode(
-		file_get_contents($file_path)
+		file_get_contents($file_path),
+		true
 	);
 };
 
@@ -97,19 +98,17 @@ $delete_current_session = function ()
 	return true;
 };
 
-$auth_middleware = function (Request $request, RequestHandler $handler)
+$check_auth = function ()
 {
 	global $get_current_session;
-	$response = $handler->handle($request);
 
-	//check if user is autheticated
 	$session_data = $get_current_session();
     if ($session_data == null) {
     	// user doesn't have current session
     	throw new AuthException();
     }
-	
-	return $response;
+
+    return true;
 };
 
 /**

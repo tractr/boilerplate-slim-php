@@ -10,22 +10,28 @@
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Valitron\Validator as Validator;
-
 $app->post('/service', function (Request $request, Response $response, array $args) {
 
     $data = $request->getParsedBody();
+    global $check_auth;
+    //Authentication
+    $check_auth();
 
     //Form validation
     $validator = new Validator($data);
-    $validator->rule('required', array('email', 'password'));
-    $validator->rule('email', 'email');
+    $validator->rule('required', 'name');
+    $validator->rule('required', 'description', true );
+    /* No rule for property name */
+    /* No rule for property description */
 
     if ($validator->validate()) {
-
         try {
+
             $_data = App\Models\Service::create(array(
                 'name' => $data['name'],
                 'description' => $data['description'],
+                // Init internal fields
+                'created_at' => date('Y-m-d H:i:s'),
             ));
 
             $payload = json_encode($_data);
@@ -34,15 +40,12 @@ $app->post('/service', function (Request $request, Response $response, array $ar
             return $response
                         ->withHeader('Content-Type', 'application/json')
                         ->withStatus(201);
-
         } catch (\Exception $e) {
             if ($e->getCode() == 23000) {
                 // Deal with duplicate key error
                 return $response->withStatus(409);
             }
         }
-
-        
     }
 
     // Bad payload request

@@ -16,7 +16,7 @@ class <<M AA>> extends BaseModel{
      *
      * @var array
      */
-   	protected $fillable = array('id', 'name', 'description', 'created_at', 'updated_at');
+   	// protected $fillable = array('id', 'name', 'description', 'created_at', 'updated_at');
 
    	/**
      * The attributes that should be hidden for arrays.
@@ -35,32 +35,50 @@ class <<M AA>> extends BaseModel{
      * @param  array $filter column to search
      * @return \Illuminate\Database\Query\Builder         cursor of the query
      */
-    public static function get_cursor($query, $filter){
+    public static function get_cursor($query, $filter, $credentials = null, $from_admin = false){
         
         unset($filter['_page']);
         unset($filter['_limit']);
         unset($filter['_order']);
         unset($filter['_sort']);
 
-        <<@ F se f>>
-        <<?4 f tS*lb>>
+    <<@ F se f>>
+
+        <<? f tN+tD>>
+        // Set min for <<f a>> if defined
+        if (isset($filter['<<f a_a>>']) && strstr($filter['<<f a_a>>'], '_min')) {
+            $query->orWhere('<<f a_a>>', '>', $filter['<<f a_a>>']);
+        }
+        // Set max for <<f a>> if defined
+        if (isset($filter['<<f a_a>>']) && strstr($filter['<<f a_a>>'], '_max')) {
+            $query->orWhere('<<f a_a>>', '<', $filter['<<f a_a>>']);
+        }
+        <<?? f tE>>
+     
+        // Convert MongoId for <<f a>>
+        if (isset($filter['<<f a_a>>'])) {
+            <<? f ml>>
+            $query-><<f a_a>>()->where('<<f a_a>>', $filter['<<f a_a>>']);
+            <<??>>
+            $query-><<f a_a>>()->where('<<f a_a>>', $filter['<<f a_a>>']);
+            <<?>>
+        }
+            <<? As ow>>
+                <<? f os>>
+        else if (!$from_admin && $credentials != null) {
+            $query->where('<<f a_a>>', '=', $credentials['ID']);
+        }
+                <<?>>
+            <<?>>
+        <<?? f tS*lb>>
+     
+        // Use LIKE for <<f a>>
         if (isset($filter['<<f a_a>>'])) {
             $query->orWhere('<<f a_a>>', 'LIKE', "%{$filter['<<f a_a>>']}%");
         }
         <<?>>
-        
-        <<?4 f tN+tD>>
-        if (isset($filter['<<f a_a>>']) && strstr($filter['<<f a_a>>'], '_min')) {
-            $query->orWhere('<<f a_a>>', '>', $filter['<<f a_a>>']);
-        }
-        
-        if (isset($filter['<<f a_a>>']) && strstr($filter['<<f a_a>>'], '_max')) {
-            $query->orWhere('<<f a_a>>', '<', $filter['<<f a_a>>']);
-        }
-        <<?>>
-        <<@>>
-        
 
+    <<@>>
         return $query;
     }
 
@@ -71,7 +89,11 @@ class <<M AA>> extends BaseModel{
      */
     public function <<f a_a>>()
     {
-        return $this->hasMany('App\\<<f AA>>');
+        <<? f ml>>
+        return $this->hasMany('App\Model\<<f R>>');
+        <<??>>
+        return $this->hasOne('App\Model\<<f R>>');
+        <<?>>
     }
     <<@>>
 

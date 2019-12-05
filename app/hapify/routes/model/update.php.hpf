@@ -11,8 +11,15 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Valitron\Validator as Validator;
  
 $app->patch('/<<M a-a>>/{id}', function (Request $request, Response $response, array $args) {
+
+    <<? Au !gs>>
+    global $check_auth;
+
+    //Authentication
+    $check_auth();
+    <<?>>
  
-    $data = App\\Models\\<<M AA>>::find($args['id']);
+    $data = App\Models\<<M AA>>::find($args['id']);
  
     if ($data == null) {
     	// Entity was not found

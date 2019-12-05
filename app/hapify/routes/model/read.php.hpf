@@ -4,12 +4,19 @@
  * Read <<M AA>>.
  */
  
-use Psr\\Http\\Message\\ResponseInterface as Response;
-use Psr\\Http\\Message\\ServerRequestInterface as Request;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
  
 $app->get('/<<M a-a>>/{id}', function (Request $request, Response $response, array $args) {
+
+    <<? Ar !gs>>
+    global $check_auth;
+
+    //Authentication
+    $check_auth();
+    <<?>>
  
-    $data = App\\Models\\<<M AA>>::find($args['id']);
+    $data = App\Models\<<M AA>>::find($args['id']);
  
     if ($data == null) {
     	// Entity was not found

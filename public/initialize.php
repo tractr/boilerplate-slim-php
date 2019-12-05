@@ -49,8 +49,18 @@ $app->addRoutingMiddleware();
  */
 require __DIR__ . '/../app/plugins/session.php';
 
-//Authentication middleware
-$app->add($auth_middleware);
+/**
+ * --------------------------
+ * CREDENTIAL
+ * --------------------------
+ * Get current session from session file
+ */
+
+$container->set('credential', function () {
+    global $get_current_session;
+
+    return $get_current_session();
+});
 
 /**
  * --------------------------
@@ -58,6 +68,7 @@ $app->add($auth_middleware);
  * --------------------------
  * Logging framework for PHP applications.
  */
+
 $container->set('logger', function () {
     $logger = new \Monolog\Logger('my_logger');
     $file_handler = new \Monolog\Handler\StreamHandler('../logs/app.log');
@@ -137,25 +148,38 @@ foreach ($routes as $route) {
  * --------------------------
  * Function handling error
  */
-$error_middleware_handler = function (ServerRequestInterface $request, Throwable $exception, bool $displayErrorDetails, bool $logErrors, bool $logErrorDetails) use ($app) {
-    //Authentication error
-    if ($exception instanceof AuthException) {
+// $error_middleware_handler = function (ServerRequestInterface $request, Throwable $exception, bool $displayErrorDetails, bool $logErrors, bool $logErrorDetails) use ($app) {
+//     //Authentication error
+//     if ($exception instanceof AuthException) {
 
-        $response = $app->getResponseFactory()->createResponse($exception->getCode());
-        $response->getBody()->write($exception->getMessage());
+//         $response = $app->getResponseFactory()->createResponse($exception->getCode());
+//         $response->getBody()->write($exception->getMessage());
 
-        return $response;
-    }
+//         return $response;
+//     }
 
-    $payload = ['error' => $exception->getMessage()];
+//     $payload = ['error' => $exception->getMessage()];
 
-    //Exception dev
-    $response = $app->getResponseFactory()->createResponse();
-    $response->getBody()->write(
-        json_encode($payload, JSON_UNESCAPED_UNICODE)
-    );
+//     //Exception dev
+//     $response = $app->getResponseFactory()->createResponse();
+//     $response->getBody()->write(
+//         json_encode($payload, JSON_UNESCAPED_UNICODE)
+//     );
 
-    return $response;
+//     return $response;
+// };
+// $error_middleware = $app->addErrorMiddleware(true, true, true);
+// $error_middleware->setDefaultErrorHandler($error_middleware_handler);
+
+/**
+ * --------------------------
+ * REQUEST FROM ADMIN
+ * --------------------------
+ * function that check if request if from admin
+ */
+$request_from_admin = function ($request)
+{
+    $routes = $request->getAttribute('route');
+    
+    return preg_match('#^\/admin#', $routes->getPattern());
 };
-$error_middleware = $app->addErrorMiddleware(true, true, true);
-$error_middleware->setDefaultErrorHandler($error_middleware_handler);

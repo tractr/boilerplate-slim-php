@@ -10,10 +10,16 @@
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Valitron\Validator as Validator;
- 
+
 $app->post('/<<M a-a>>', function (Request $request, Response $response, array $args) {
  
     $data = $request->getParsedBody();
+    <<? Ac !gs>>
+    global $check_auth;
+
+    //Authentication
+    $check_auth();
+    <<?>>
  
     //Form validation
     $validator = new Validator($data);
@@ -35,7 +41,7 @@ $app->post('/<<M a-a>>', function (Request $request, Response $response, array $
                 }
             <<@>>
     
-            $_data = App\\Models\\<<M AA>>::create(array(
+            $_data = App\Models\<<M AA>>::create(array(
             <<@ F /rs/in f>>
                 '<<f a_a>>' => $data['<<f a_a>>'],
             <<@>>
