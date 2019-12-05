@@ -32,9 +32,10 @@ function create_session ($user)
 	global $config;
 	//write session inside file
 
-
 	//set cookie with uniq_id
 	$uniq_id = uniqid();
+
+	//folder and file path
 	$folder_path = dirname(__DIR__) . '/cache';
 	$file_path = $folder_path . '/' . $uniq_id . '.json';
 
@@ -60,7 +61,11 @@ function create_session ($user)
 			$config['cookie']['name'], 
 			$uniq_id, 
 			time() + $config['cookie']['expire'], 
-			$config['cookie']['path']
+			$config['cookie']['path'],
+			$config['cookie']['domain'],
+			$config['cookie']['secure'],
+			$config['cookie']['httponly'],
+			$config['cookie']['options']
 		);
 
 		flock($file, LOCK_EX);
