@@ -11,7 +11,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Valitron\Validator as Validator;
  
-$app->post('/<<M a-a>>', function (Request $request, Response $response, array $args) {
+$_func = function (Request $request, Response $response, array $args) {
  
     <<? Ac !gs>>
     //Authentication
@@ -70,7 +70,14 @@ $app->post('/<<M a-a>>', function (Request $request, Response $response, array $
  
     // Bad payload request
     return $response->withStatus(400);
-});
+};
+ 
+//Define admin route callback
+$app->post('/admin/<<M a_a>>', $_func);
+<<? Ad [ow>>
+//Define route callback
+$app->post('/<<M a_a>>', $_func);
+<<?>>
 
 <<< 
 function defaultValue(f) {

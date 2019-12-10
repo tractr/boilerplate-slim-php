@@ -6,8 +6,8 @@
  
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
- 
-$app->get('/<<M a-a>>/{id}', function (Request $request, Response $response, array $args) {
+
+$_func = function (Request $request, Response $response, array $args) {
 
     <<? Ar !gs>>
     //Authentication
@@ -17,8 +17,8 @@ $app->get('/<<M a-a>>/{id}', function (Request $request, Response $response, arr
     $data = App\Models\<<M AA>>::find($args['id']);
  
     if ($data == null) {
-    	// Entity was not found
-    	return $response->withStatus(404);
+        // Entity was not found
+        return $response->withStatus(404);
     }
  
     $payload = json_encode($data);
@@ -34,4 +34,11 @@ $app->get('/<<M a-a>>/{id}', function (Request $request, Response $response, arr
     return $response
               ->withHeader('Content-Type', 'application/json')
               ->withStatus(201);
-});
+};
+ 
+//Define admin route callback
+$app->get('/admin/<<M a_a>>/{id}', $_func);
+<<? Ad [ow>>
+//Define route callback
+$app->get('/<<M a_a>>/{id}', $_func);
+<<?>>

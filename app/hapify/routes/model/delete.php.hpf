@@ -7,21 +7,36 @@
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-$app->delete('/<<M a-a>>/{id}', function (Request $request, Response $response, array $args) {
+$_func = function (Request $request, Response $response, array $args) {
 
-	<<? Ad !gs>>
+    <<? Ad !gs>>
     //Authentication
     check_auth();
+    $credential = get_current_session();
     <<?>>
  
     $data = App\Models\<<M AA>>::find($args['id']);
  
     if ($data == null) {
-    	// Entity was not found
-    	return $response->withStatus(404);
+        // Entity was not found
+        return $response->withStatus(404);
     }
- 
+<<? Ad ow>>
+
+    if (<<@1 F os o>>$data-><<o a_a>> != $credential['ID']<<@>>) {
+        //Enity not deletable
+        return $response->withStatus(403);
+    }  
+<<?>>
+  
     $data->delete();
  
     return $response->withStatus(204);
-});
+};
+ 
+//Define admin route callback
+$app->delete('/admin/<<M a_a>>/{id}', $_func);
+<<? Ad [ow>>
+//Define route callback
+$app->delete('/<<M a_a>>/{id}', $_func);
+<<?>>

@@ -28,7 +28,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
 //Exception dev
-// $_COOKIE['sid-api'] = '5de90884c8483';
+$_COOKIE['sid-api'] = '5de90884c8483';
 
 /**
  * --------------------------
@@ -158,6 +158,13 @@ $error_middleware_handler = function (ServerRequestInterface $request, Throwable
 
         $response = $app->getResponseFactory()->createResponse($exception->getCode());
         $response->getBody()->write($exception->getMessage());
+
+        return $response;
+    }
+
+    if ($exception->getCode() == 404) {
+        $response = $app->getResponseFactory()->createResponse(404);
+        $response->getBody()->write('The request was not found on this server.');
 
         return $response;
     }

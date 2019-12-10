@@ -10,7 +10,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Valitron\Validator as Validator;
  
-$app->patch('/<<M a-a>>/{id}', function (Request $request, Response $response, array $args) {
+$_func = function (Request $request, Response $response, array $args) {
 
     <<? Au !gs>>
     //Authentication
@@ -20,8 +20,8 @@ $app->patch('/<<M a-a>>/{id}', function (Request $request, Response $response, a
     $data = App\Models\<<M AA>>::find($args['id']);
  
     if ($data == null) {
-    	// Entity was not found
-    	return $response->withStatus(404);
+        // Entity was not found
+        return $response->withStatus(404);
     }
  
     $_data = $request->getParsedBody();
@@ -62,7 +62,14 @@ $app->patch('/<<M a-a>>/{id}', function (Request $request, Response $response, a
     }
     // Bad payload request
     return $response->withStatus(400);
-});
+};
+ 
+//Define admin route callback
+$app->patch('/admin/<<M a_a>>', $_func);
+<<? Ad [ow>>
+//Define route callback
+$app->patch('/<<M a_a>>', $_func);
+<<?>>
 
 <<< 
 function validator(f) {
