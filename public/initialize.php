@@ -27,8 +27,6 @@ use Slim\Factory\AppFactory;
 use Psr\Http\Message\ServerRequestInterface;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
-//Exception dev
-$_COOKIE['sid-api'] = '5de90884c8483';
 
 /**
  * --------------------------
