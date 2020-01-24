@@ -4,7 +4,8 @@
  * Create <<M a-a>>.
  * Returns the created <<M a-a>>.
  *
- * Form validation used here is vlucas/valitron library, for more information, you can read documentation here https://github.com/vlucas/valitron
+ * Form validation used here is vlucas/valitron library.
+ * For more information, you can read documentation here https://github.com/vlucas/valitron
  */
  
 use Psr\Http\Message\ResponseInterface as Response;
@@ -13,43 +14,43 @@ use Valitron\Validator as Validator;
  
 $_func = function (Request $request, Response $response, array $args) {
  
-    <<? Ac !gs>>
+<<? Ac !gs>>
     //Authentication
     check_auth();
     $credential = get_current_session();
-    <<?>>
+<<?>>
     
     $data = $request->getParsedBody();
  
     //Form validation
     $validator = new Validator($data);
-    <<@ F /rs/in f>>
+<<@ F /rs/in f>>
     $validator->rule('required', '<<f a_a>>'<<? f nu>>, true <<?>>);
-    <<@>>
-    <<@ F /rs/in f>>
+<<@>>
+<<@ F /rs/in f>>
     <<=validator(f)>>
-    <<@>>
+<<@>>
  
     if ($validator->validate()) {
         
         try {
-            <<@ F tSp/in p>>
+<<@ F tSp/in p>>
                 // Hash <<p a>>
                 if ($data['<<p a_a>>'] != '') {
                     $data['<<p a_a>>'] = md5($data['<<p a_a>>']);
                 }
-            <<@>>
+<<@>>
     
             $_data = App\Models\<<M AA>>::create(array(
-            <<@ F /rs/in f>>
+<<@ F /rs/in f>>
                 '<<f a_a>>' => $data['<<f a_a>>'],
-            <<@>>
-            <<? F in/pr>>
+<<@>>
+<<? F in/pr>>
                 // Init internal fields
-                <<@ F in/pr f>>
+    <<@ F in/pr f>>
                 '<<f a_a>>' => <<=defaultValue(f)>>,
-                <<@>>
-            <<?>>
+    <<@>>
+<<?>>
             ));
  
             $payload = json_encode($_data);

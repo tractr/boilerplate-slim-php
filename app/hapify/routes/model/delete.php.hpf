@@ -9,11 +9,11 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 $_func = function (Request $request, Response $response, array $args) {
 
-    <<? Ad !gs>>
+<<? Ad !gs>>
     //Authentication
     check_auth();
     $credential = get_current_session();
-    <<?>>
+<<?>>
  
     $data = App\Models\<<M AA>>::find($args['id']);
  

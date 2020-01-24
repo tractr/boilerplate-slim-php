@@ -12,10 +12,10 @@ use Valitron\Validator as Validator;
  
 $_func = function (Request $request, Response $response, array $args) {
 
-    <<? Au !gs>>
+<<? Au !gs>>
     //Authentication
     check_auth();
-    <<?>>
+<<?>>
  
     $data = App\Models\<<M AA>>::find($args['id']);
  
@@ -27,33 +27,33 @@ $_func = function (Request $request, Response $response, array $args) {
     $_data = $request->getParsedBody();
     //Form validation
     $validator = new Validator($_data);
-    <<@ F /rs/in f>>
+<<@ F /rs/in f>>
     $validator->rule('required', '<<f a_a>>'<<? f nu>>, true <<?>>);
-    <<@>>
-    <<@ F /tS/rs/in f>>
+<<@>>
+<<@ F /tS/rs/in f>>
     <<=validator(f, '$validator->', ';')>>
-    <<@>>
+<<@>>
  
     if ($validator->validate()) {
  
         try {
-            <<@ F tSp/in p>>
+<<@ F tSp/in p>>
             // Hash <<p a>>
             if ($_data['<<p a_a>>'] != '') {
                 $_data['<<p a_a>>'] = md5($_data['<<p a_a>>']);
             }
-            <<@>>
+<<@>>
 
-            <<@ F /rs/in f>>
+<<@ F /rs/in f>>
             $data-><<f a_a>> = $_data['<<f a_a>>'];
-            <<@>>
-            
+<<@>>
+    
             $data->save();
  
             return $response->withStatus(204);
-            
+    
         } catch (\Exception $e) {
-            
+    
             if ($e->getCode() == 23000) {
                 // Deal with duplicate key error
                 return $response->withStatus(409);

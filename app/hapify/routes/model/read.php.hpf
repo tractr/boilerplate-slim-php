@@ -9,10 +9,10 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 $_func = function (Request $request, Response $response, array $args) {
 
-    <<? Ar !gs>>
+<<? Ar !gs>>
     //Authentication
     check_auth();
-    <<?>>
+<<?>>
  
     $data = App\Models\<<M AA>>::find($args['id']);
  
@@ -25,9 +25,9 @@ $_func = function (Request $request, Response $response, array $args) {
  
     //populate relationship
     $payload = json_decode($payload, true);
-    <<@ F tE/hd f>>
+<<@ F tE/hd f>>
     $payload['<<f a_a>>'] = $data->_<<f a_a>>;
-    <<@>>
+<<@>>
     $payload = json_encode($payload);
  
     $response->getBody()->write($payload);

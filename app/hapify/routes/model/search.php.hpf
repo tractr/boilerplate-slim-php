@@ -10,10 +10,10 @@ use Valitron\Validator as Validator;
 
 $_func = function (Request $request, Response $response, array $args) {
  
-    <<? An !gs>>
+<<? An !gs>>
     //Authentication
     check_auth();
-    <<?>>
+<<?>>
  
     $_get = $request->getQueryParams();
  
@@ -33,9 +33,9 @@ $_func = function (Request $request, Response $response, array $args) {
     ));
  
     // forbiden keys
-    <<@ F /se/os f>>
+<<@ F /se/os f>>
     unset($_get['<<f a_a>>']);
-    <<@>>
+<<@>>
  
     if ($validator->validate()) {
  
@@ -74,9 +74,9 @@ $_func = function (Request $request, Response $response, array $args) {
             $adr = json_encode($data);
             $adr = json_decode($adr, true);
             //populate relationship
-            <<@ F tE+os/hd f>>
+<<@ F tE+os/hd f>>
             $adr['<<f a_a>>'] = $data->_<<f a_a>>;
-            <<@>>
+<<@>>
  
             array_push($result, $adr);
         }

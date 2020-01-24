@@ -10,19 +10,19 @@ use Valitron\Validator as Validator;
  
 $_func = function (Request $request, Response $response, array $args) {
  
-    <<? An !gs>>
+<<? An !gs>>
     //Authentication
     check_auth();
-    <<?>>
+<<?>>
  
     $_get = $request->getQueryParams();
  
     $validator = new Validator($_get);
  
     // forbiden keys
-    <<@ F /se f>>
+<<@ F /se f>>
     unset($_get['<<f a_a>>']);
-    <<@>>
+<<@>>
     
     if ($validator->validate()) {
  
