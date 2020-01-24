@@ -1,4 +1,6 @@
 vendor
+app/cache/*
+!app/cache/.gitkeep
 
 # Generated files. Remove these lines after generation
 app/routes/**
