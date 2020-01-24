@@ -2,7 +2,7 @@
  
 namespace App\Models;
  
-class <<M aA>> extends BaseModel{
+class <<M aA>> extends BaseModel {
  
 	/**
      * The table associated with the model.
@@ -17,7 +17,7 @@ class <<M aA>> extends BaseModel{
      * @var array
      */
    	protected $fillable = array(
-<<@ F f>>
+<<@ F /in f>>
         '<<f a_a>>',
 <<@>>
    	);
