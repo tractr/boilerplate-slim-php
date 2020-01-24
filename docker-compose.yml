@@ -1,0 +1,60 @@
+version: "3"
+
+volumes:
+  mongodb-data:
+    driver: local
+  redis-data:
+    driver: local
+
+services:
+
+  #--------------------------------------------------
+  # Php API
+  api:
+    image: nginx:1.17.8
+    ports:
+      - "3000:80"
+    volumes:
+      - ./:/app
+      - ./docker/nginx/app.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+
+  php:
+    image: php:7.4-fpm
+#    build: ./docker/php
+    working_dir: /app
+    volumes:
+      - ./:/app
+      - ./docker/php/www.conf:/usr/local/etc/php-fpm.d/www.conf
+#    depends_on:
+#      - redis
+#      - mongodb
+
+  #--------------------------------------------------
+  # Installer
+  composer:
+    image: composer:1.9.1
+    working_dir: /app
+    volumes:
+      - ./:/app
+    command: composer install
+
+  #--------------------------------------------------
+  # Cache
+  redis:
+    image: redis:4.0
+    command: --appendonly yes
+    ports:
+      - "6379"
+    volumes:
+      - redis-data:/data
+
+  #--------------------------------------------------
+  # Database
+  mongodb:
+    image: mongo:3.6
+    ports:
+      - "27017"
+    volumes:
+      - mongodb-data:/data/db
