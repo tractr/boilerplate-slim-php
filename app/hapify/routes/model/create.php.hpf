@@ -101,7 +101,7 @@ function defaultValue(f) {
 }
 function validator(f) {
     
-    if (f.type === "boolean") return "$validator->rule('boolean', '" + f.name + ");";
+    if (f.type === "boolean") return "$validator->rule('boolean', '" + f.name + "');";
     else if (f.type === "string") {
         if (f.subtype === "email") return "$validator->rule('email', '" + f.name + "');";
         else if (f.subtype === "password") return "$validator->rule('lengthMin', '" + f.name + "', 6);";
