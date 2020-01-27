@@ -4,6 +4,8 @@ app/cache/*
 
 # Generated files. Remove these lines after generation
 app/routes/**
+app/models/*
+!app/models/BaseModel.php
 app/cmd/setup/indexes.json
 app/models.json
 app/MODELS.md
