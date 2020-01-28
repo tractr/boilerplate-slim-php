@@ -1,5 +1,10 @@
 FROM php:7.4-fpm
 
-RUN apt-get update && \
-    apt-get install -y libmcrypt-dev mysql-client --no-install-recommends && \
-    docker-php-ext-install mcrypt pdo_mysql
+RUN apt-get update
+RUN apt-get install -y libmcrypt-dev mariadb-client --no-install-recommends
+RUN docker-php-ext-install mysqli pdo pdo_mysql
+
+RUN apt-get clean -y && \
+    apt-get autoclean -y && \
+    apt-get autoremove -y
+

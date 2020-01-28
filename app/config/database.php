@@ -18,10 +18,10 @@
  */
 
 $config['db']['driver']   = 'mysql';
-$config['db']['host']   = 'localhost';
-$config['db']['database']   = 'hapify';
-$config['db']['username']   = 'root';
-$config['db']['password']   = '';
+$config['db']['host']   = 'mysql';
+$config['db']['database']   = 'api';
+$config['db']['username']   = 'api_user';
+$config['db']['password']   = 'api_pass';
 $config['db']['charset']   = 'utf8';
 $config['db']['collation']   = 'utf8_unicode_ci';
 $config['db']['prefix']   = '';

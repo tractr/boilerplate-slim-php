@@ -1,7 +1,7 @@
 version: "3"
 
 volumes:
-  mongodb-data:
+  mysql-data:
     driver: local
   redis-data:
     driver: local
@@ -21,15 +21,15 @@ services:
       - php
 
   php:
-    image: php:7.4-fpm
-#    build: ./docker/php
+    image: hpf/php
+    build: ./docker/php
     working_dir: /app
     volumes:
       - ./:/app
       - ./docker/php/www.conf:/usr/local/etc/php-fpm.d/www.conf
-#    depends_on:
-#      - redis
-#      - mongodb
+    depends_on:
+      - redis
+      - mysql
 
   #--------------------------------------------------
   # Installer
@@ -52,9 +52,14 @@ services:
 
   #--------------------------------------------------
   # Database
-  mongodb:
-    image: mongo:3.6
+  mysql:
+    image: mariadb:10.4.11
     ports:
-      - "27017"
+      - "3306"
+    environment:
+      MYSQL_DATABASE: api
+      MYSQL_USER: api_user
+      MYSQL_PASSWORD: api_pass
+      MYSQL_ROOT_PASSWORD: api_root
     volumes:
-      - mongodb-data:/data/db
+      - mysql-data:/var/lib/mysql
