@@ -168,7 +168,12 @@ $error_middleware_handler = function (ServerRequestInterface $request, Throwable
     }
 
     $response = $app->getResponseFactory()->createResponse(500);
-    $response->getBody()->write('An internal error occurred.');
+    $response->getBody()->write("An internal error occurred");
+
+    if ($displayErrorDetails) {
+        $errorTrace = "\n{$exception->getMessage()}\n{$exception->getTraceAsString()}";
+        $response->getBody()->write("<pre>{$errorTrace}</pre>");
+    }
 
     return $response;
 };
