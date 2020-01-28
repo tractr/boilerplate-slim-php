@@ -63,3 +63,16 @@ services:
       MYSQL_ROOT_PASSWORD: api_root
     volumes:
       - mysql-data:/var/lib/mysql
+
+  #--------------------------------------------------
+  # Development
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8000:80"
+    environment:
+      PMA_USER: api_user
+      PMA_PASSWORD: api_pass
+      MYSQL_ROOT_PASSWORD: api_root
+    links:
+      - mysql:db

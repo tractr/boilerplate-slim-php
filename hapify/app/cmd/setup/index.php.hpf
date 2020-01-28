@@ -1,0 +1,82 @@
+<?php
+ 
+require_once __DIR__ . '/../../../public/initialize.php';
+require_once __DIR__ . '/../inc/helper.php';
+ 
+use \Illuminate\Database\Schema\Blueprint;
+ 
+/** @var \Illuminate\Database\Schema\Builder $schema */
+$schema = $capsule::schema();
+$schemaManager = $schema->getConnection()->getDoctrineSchemaManager();
+ 
+// ==================================
+// Create tables & columns
+// ==================================
+<<@ M m>>
+ 
+// Create table for model <<m a>>
+if (!$schema->hasTable('<<m a_a>>')) {
+    $schema->create('<<m a_a>>', function (Blueprint $table) {
+        $table->increments('<<m.f.pr a_a>>');
+    <<@ m.f.l /pr f>>
+        $table-><<= getColumnMethod(f)>>('<<f a_a>>'<<? f tE>>, false, true<<?>>)<<? f nu>>->nullable()<<?>>;
+    <<@>>
+    
+        Helpers::output('', 'Did create table <<m a>>');
+    });
+}
+<<@>>
+
+// ==================================
+// Create indexes
+// ==================================
+<<@ M m>>
+ 
+// Create indexes for model <<m a>>
+$schema->table('<<m a_a>>', function (Blueprint $table) {
+    global $schemaManager;
+    $tableDetails = $schemaManager->listTableDetails($table->getTable());
+
+    <<@ m.f.l (se+so+un+tE)/pr f>>
+ 
+    if (!$tableDetails->hasIndex('<<m a_a>>_<<f a_a>>')) {
+
+        <<? f (se+so+un)/tE>>
+        <<# Searchable, sortable and/or unique>>
+        $table-><<? f un>>unique<<??>>index<<?>>('<<f a_a>>', '<<m a_a>>_<<f a_a>>');
+        <<?? f tE>>
+        $table->foreign('<<f a_a>>', '<<m a_a>>_<<f a_a>>')->references('<<f.m.f.pr a_a>>')->on('<<f.m a_a>>');
+        <<?>>
+
+        Helpers::output('', 'Did create index <<m a_a>>_<<f a_a>>');
+    }
+    <<@>>
+
+});
+<<@>>
+
+<<< 
+function getColumnMethod(f) {
+    if (f.type === 'boolean') {
+        return 'boolean';
+    } else if (f.type === 'number') {
+        return f.subtype === null || f.subtype === 'integer' ? 'integer' : 'float';
+    } else if (f.type === 'string') {
+        if (f.subtype === 'text') return 'text';
+        else if (f.subtype === 'rich') return 'longText';
+        return 'string';
+    } else if (f.type === 'datetime') {
+        if (f.subtype === 'date') return 'date';
+        else if (f.subtype === 'time') return 'time';
+        return 'datetime';
+    } else if (f.type === 'object') {
+        return 'json';
+    } else if (f.type === 'file') {
+        return 'string';
+    } else if (f.type === 'entity') {
+        return 'integer'
+    } else {
+        return 'string';
+    }
+}
+>>>

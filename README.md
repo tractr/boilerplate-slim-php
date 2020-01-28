@@ -33,7 +33,7 @@ docker-compose run --rm composer
 ```
 
 ```bash
-docker-compose run --rm api npm run cmd setup
+docker-compose run --rm php php app/cmd/setup
 ```
 
 ```bash

@@ -6,6 +6,6 @@ app/cache/*
 app/routes/**
 app/models/*
 !app/models/BaseModel.php
-app/cmd/setup/indexes.json
+app/cmd/setup/index.php
 app/models.json
 app/MODELS.md

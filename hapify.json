@@ -44,8 +44,8 @@
   ],
   "templates": [
     {
-      "path": "app/cmd/setup/indexes.json",
-      "engine": "js",
+      "path": "app/cmd/setup/index.php",
+      "engine": "hpf",
       "input": "all"
     },
     {
