@@ -26,7 +26,7 @@ $_func = function (Request $request, Response $response, array $args) {
     
     if ($validator->validate()) {
  
-        $query = App\Models\<<M aA>>::get_cursor($_get, $this->get('credential'), request_from_admin($request));
+        $query = App\Models\<<M AA>>::get_cursor($_get, get_current_session(), request_from_admin($request));
  
         $total = $query->count();
         $data = array(
