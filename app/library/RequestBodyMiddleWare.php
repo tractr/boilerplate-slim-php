@@ -48,7 +48,7 @@ class RequestBodyMiddleWare implements MiddlewareInterface
             if (empty($block))
               continue;
 
-            // you'll have to var_dump $block to understand this and maybe replace \n or \r with a visibile char
+            // you'll have to var_dump $block to understand this and maybe replace \n or \r with a visible char
 
             // parse uploaded files
             if (strpos($block, 'application/octet-stream') !== FALSE)
