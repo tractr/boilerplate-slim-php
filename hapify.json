@@ -44,47 +44,47 @@
   ],
   "templates": [
     {
-      "path": "cmd/setup/indexes.json",
+      "path": "app/cmd/setup/indexes.json",
       "engine": "js",
       "input": "all"
     },
     {
-      "path": "models.json",
+      "path": "app/models.json",
       "engine": "js",
       "input": "all"
     },
     {
-      "path": "models/{pascal}.php",
+      "path": "app/models/{pascal}.php",
       "engine": "hpf",
       "input": "one"
     },
     {
-      "path": "routes/{kebab}/count.php",
+      "path": "app/routes/{kebab}/count.php",
       "engine": "hpf",
       "input": "one"
     },
     {
-      "path": "routes/{kebab}/create.php",
+      "path": "app/routes/{kebab}/create.php",
       "engine": "hpf",
       "input": "one"
     },
     {
-      "path": "routes/{kebab}/delete.php",
+      "path": "app/routes/{kebab}/delete.php",
       "engine": "hpf",
       "input": "one"
     },
     {
-      "path": "routes/{kebab}/read.php",
+      "path": "app/routes/{kebab}/read.php",
       "engine": "hpf",
       "input": "one"
     },
     {
-      "path": "routes/{kebab}/search.php",
+      "path": "app/routes/{kebab}/search.php",
       "engine": "hpf",
       "input": "one"
     },
     {
-      "path": "routes/{kebab}/update.php",
+      "path": "app/routes/{kebab}/update.php",
       "engine": "hpf",
       "input": "one"
     }
