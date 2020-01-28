@@ -3,7 +3,8 @@
 /**
  * Update <<M AA>>.
  *
- * Form validation used here is vlucas/valitron library, for more information, you can read documentation here https://github.com/vlucas/valitron
+ * Form validation used here is vlucas/valitron library.
+ * For more information, you can read documentation here https://github.com/vlucas/valitron
  */
  
 use Psr\Http\Message\ResponseInterface as Response;
@@ -66,7 +67,7 @@ $_func = function (Request $request, Response $response, array $args) {
  
 //Define admin route callback
 $app->patch('/admin/<<M a_a>>', $_func);
-<<? Ad [ow>>
+<<? Au [ow>>
 //Define route callback
 $app->patch('/<<M a_a>>', $_func);
 <<?>>

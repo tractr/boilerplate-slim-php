@@ -38,7 +38,7 @@ $_func = function (Request $request, Response $response, array $args) {
  
 //Define admin route callback
 $app->get('/admin/<<M a_a>>/{id}', $_func);
-<<? Ad [ow>>
+<<? Ar [ow>>
 //Define route callback
 $app->get('/<<M a_a>>/{id}', $_func);
 <<?>>

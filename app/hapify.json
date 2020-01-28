@@ -54,7 +54,7 @@
       "input": "all"
     },
     {
-      "path": "models/{kebab}.php",
+      "path": "models/{pascal}.php",
       "engine": "hpf",
       "input": "one"
     },

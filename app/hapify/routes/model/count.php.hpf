@@ -19,7 +19,7 @@ $_func = function (Request $request, Response $response, array $args) {
  
     $validator = new Validator($_get);
  
-    // forbiden keys
+    // forbidden keys
 <<@ F /se f>>
     unset($_get['<<f a_a>>']);
 <<@>>
@@ -47,7 +47,7 @@ $_func = function (Request $request, Response $response, array $args) {
  
 //Define admin route callback
 $app->get('/admin/<<M a_a>>/count', $_func);
-<<? Ad [ow>>
+<<? An [ow>>
 //Define route callback
 $app->get('/<<M a_a>>/count', $_func);
 <<?>>

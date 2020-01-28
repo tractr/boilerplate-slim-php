@@ -75,7 +75,7 @@ $_func = function (Request $request, Response $response, array $args) {
  
 //Define admin route callback
 $app->post('/admin/<<M a_a>>', $_func);
-<<? Ad [ow>>
+<<? Ac [ow>>
 //Define route callback
 $app->post('/<<M a_a>>', $_func);
 <<?>>
