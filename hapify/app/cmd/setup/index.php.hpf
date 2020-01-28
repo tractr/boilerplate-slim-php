@@ -17,7 +17,7 @@ $schemaManager = $schema->getConnection()->getDoctrineSchemaManager();
 // Create table for model <<m a>>
 if (!$schema->hasTable('<<m a_a>>')) {
     $schema->create('<<m a_a>>', function (Blueprint $table) {
-        $table->increments('<<m.f.pr a_a>>');
+        $table->increments('<<m.f.pr R>>');
     <<@ m.f.l /pr f>>
         $table-><<= getColumnMethod(f)>>('<<f a_a>>'<<? f tE>>, false, true<<?>>)<<? f nu>>->nullable()<<?>>;
     <<@>>
@@ -45,7 +45,7 @@ $schema->table('<<m a_a>>', function (Blueprint $table) {
         <<# Searchable, sortable and/or unique>>
         $table-><<? f un>>unique<<??>>index<<?>>('<<f a_a>>', '<<m a_a>>_<<f a_a>>');
         <<?? f tE>>
-        $table->foreign('<<f a_a>>', '<<m a_a>>_<<f a_a>>')->references('<<f.m.f.pr a_a>>')->on('<<f.m a_a>>');
+        $table->foreign('<<f a_a>>', '<<m a_a>>_<<f a_a>>')->references('<<f.m.f.pr R>>')->on('<<f.m a_a>>');
         <<?>>
 
         Helpers::output('', 'Did create index <<m a_a>>_<<f a_a>>');
