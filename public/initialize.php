@@ -23,8 +23,10 @@ use Slim\Factory\AppFactory;
 use Psr\Http\Message\ServerRequestInterface;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use App\Library\RequestBodyMiddleWare;
+use App\Library\CORSMiddleWare;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Server\RequestHandlerInterface as Handler;
 
 /**
  * --------------------------
@@ -58,9 +60,7 @@ require __DIR__ . '/../app/plugins/session.php';
  */
 
 $container->set('credential', function () {
-    global $get_current_session;
-
-    return $get_current_session();
+    return get_current_session();
 });
 
 /**
@@ -128,8 +128,10 @@ $app->options('/{routes:.+}', function (Request $request, Response $response, $a
         ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
         ->withHeader('Access-Control-Allow-Origin', $request->getHeader('Origin'))
         ->withHeader('Access-Control-Expose-Headers', 'WWW-Authenticate,Server-Authorization')
-        ->withHeader('Access-Control-Max-Age', '86400');
+        ->withHeader('Access-Control-Max-Age', '86400')
+        ->withStatus(204);
 });
+$app->add(new CORSMiddleWare());
 
 /**
  * --------------------------
@@ -165,31 +167,41 @@ foreach ($routes as $route) {
  */
 
 $error_middleware_handler = function (ServerRequestInterface $request, Throwable $exception, bool $displayErrorDetails, bool $logErrors, bool $logErrorDetails) use ($app) {
-    //Authentication error
-    if ($exception instanceof AuthException) {
 
-        $response = $app->getResponseFactory()->createResponse($exception->getCode());
-        $response->getBody()->write($exception->getMessage());
+    $response = $app->getResponseFactory()->createResponse()
+        ->withHeader('Access-Control-Allow-Credentials', 'true')
+        ->withHeader('Access-Control-Allow-Origin', $request->getHeader('Origin'))
+        ->withHeader('Access-Control-Expose-Headers', 'WWW-Authenticate,Server-Authorization');;
 
-        return $response;
+    // API Error
+    if ($exception instanceof \App\Library\HttpException) {
+
+        $response->getBody()->write(json_encode(array(
+            'statusCode' => $exception->getCode(),
+            'error' => $exception->getStatusText(),
+            'message' => $exception->getMessage()
+        )));
+
+        return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus($exception->getCode());
     }
 
-    $code = $exception->getCode();
-    if ($code >= 400 && $code < 500) {
-        $response = $app->getResponseFactory()->createResponse($code);
-        return $response;
-    }
-
-    $response = $app->getResponseFactory()->createResponse($code);
-    $text = $code >= 500 ? "An internal error occurred" : "An unknown error occurred";
-    $response->getBody()->write($text);
-
+    // Other errors
+    $payload = array(
+        'statusCode' => $exception->getCode(),
+        'error' => \App\Library\HttpException::getStatusTextForCode($exception->getCode()),
+        'message' => $exception->getMessage()
+    );
     if ($displayErrorDetails) {
-        $errorTrace = "\n{$exception->getMessage()}\n{$exception->getTraceAsString()}";
-        $response->getBody()->write("<pre>{$errorTrace}</pre>");
+        $payload['details'] = $exception->getTraceAsString();
     }
 
-    return $response;
+    $response->getBody()->write(json_encode($payload));
+
+    return $response
+        ->withHeader('Content-Type', 'application/json')
+        ->withStatus($exception->getCode());
 };
 $error_middleware = $app->addErrorMiddleware(true, true, true);
 $error_middleware->setDefaultErrorHandler($error_middleware_handler);

@@ -6,6 +6,7 @@
         "illuminate/database": "~5.1",
         "monolog/monolog": "^2.0",
         "php-di/slim-bridge": "^3.0",
-        "doctrine/dbal": "^2.10"
+        "doctrine/dbal": "^2.10",
+        "ext-json": "*"
     }
 }

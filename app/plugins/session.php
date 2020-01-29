@@ -1,8 +1,6 @@
-<?php 
-require 'AuthException.php';
+<?php
 
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Slim\Psr7\Response;
 use Valitron\Validator as Validator;
 
@@ -141,7 +139,7 @@ function check_auth()
 	$session_data = get_current_session();
     if ($session_data == null) {
     	// user doesn't have current session
-    	throw new AuthException();
+        throw new \App\Library\HttpException(401, 'You must authenticate to access this resource.');
     }
 
     return true;
@@ -184,7 +182,7 @@ $app->post('/password/login', function (Request $request, Response $response, ar
     	$user = $capsule::table('user')->where('email', $data['email'])->first();
 
     	if ($user == null) {
-    		return $response->withStatus(404);
+            throw new \App\Library\HttpException(401, 'User not found or wrong password');
     	}
 
     	$password = md5($data['password']);
@@ -198,11 +196,13 @@ $app->post('/password/login', function (Request $request, Response $response, ar
 			return $response
 					->withHeader('Content-Type', 'application/json')
                     ->withStatus(201);
-		}
+		} else {
+            throw new \App\Library\HttpException(401, 'User not found or wrong password');
+        }
     }
 
     // Bad payload request
-    return $response->withStatus(401);
+    throw \App\Library\HttpException::badRequest($validator);
 });
 
 /**
@@ -218,7 +218,7 @@ $app->get('/session', function (Request $request, Response $response, array $arg
 
     if ($session_data == null) {
     	// user doesn't have current session
-    	return $response->withStatus(401);
+        throw new \App\Library\HttpException(401, 'Not logged in');
     }
 
     $payload = json_encode($session_data);
@@ -242,7 +242,7 @@ $app->delete('/session', function (Request $request, Response $response, array $
 
     if (!$result) {
     	// user doesn't have current session
-    	return $response->withStatus(401);
+        throw new \App\Library\HttpException(401, 'Not logged in');
     }
 
     return $response
