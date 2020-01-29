@@ -23,7 +23,7 @@ $_func = function (Request $request, Response $response, array $args) {
     }
 <<? Ad ow>>
 
-    if (<<@1 F os o>>$data-><<o a_a>> != $credential['ID']<<@>>) {
+    if (<<@1 F os o>>$data-><<o a_a>> != $credential['_id']<<@>>) {
         //Enity not deletable
         return $response->withStatus(403);
     }  

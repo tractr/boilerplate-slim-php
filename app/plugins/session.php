@@ -40,7 +40,7 @@ function create_session ($user)
 	$file_path = $folder_path . '/' . $uniq_id . '.json';
 
 	$data = array(
-		'ID' => $user->_id,
+		'_id' => $user->_id,
 		'name' => $user->name,
 		'email' => $user->email,
 		'role' => $user->role

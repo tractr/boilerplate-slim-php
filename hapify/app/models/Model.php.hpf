@@ -72,7 +72,7 @@ class <<M AA>> extends BaseModel {
         <<? As ow>>
             <<? f os>>
         else if (!$from_admin && $credentials != null) {
-            $query = $query->where('<<f a_a>>', '=', $credentials['ID']);
+            $query = $query->where('<<f a_a>>', '=', $credentials['_id']);
         }
             <<?>>
         <<?>>

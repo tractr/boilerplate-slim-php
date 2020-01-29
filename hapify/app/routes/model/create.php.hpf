@@ -85,7 +85,7 @@ function defaultValue(f) {
     let v = "null";
     
     if (f.ownership) {
-        v = f.multiple ? "array(1)" : "$credential['ID']";
+        v = f.multiple ? "array(1)" : "$credential['_id']";
     }
     else if (f.multiple) v = "array()";
     else if (f.type === "boolean") v = "false";
