@@ -193,9 +193,7 @@ $app->post('/password/login', function (Request $request, Response $response, ar
 			$session_data = create_session($user);
 
 			$response->getBody()->write(json_encode($session_data));
-			return $response
-					->withHeader('Content-Type', 'application/json')
-                    ->withStatus(201);
+			return $response->withStatus(201);
 		} else {
             throw new \App\Library\HttpException(401, 'User not found or wrong password');
         }
@@ -224,9 +222,7 @@ $app->get('/session', function (Request $request, Response $response, array $arg
     $payload = json_encode($session_data);
 
     $response->getBody()->write($payload);
-    return $response
-              ->withHeader('Content-Type', 'application/json')
-              ->withStatus(201);
+    return $response->withStatus(201);
 });
 
 /**

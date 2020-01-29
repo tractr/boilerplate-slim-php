@@ -24,9 +24,9 @@ use Psr\Http\Message\ServerRequestInterface;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use App\Library\RequestBodyMiddleWare;
 use App\Library\CORSMiddleWare;
+use App\Library\JSONResponseMiddleWare;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Server\RequestHandlerInterface as Handler;
 
 /**
  * --------------------------
@@ -126,7 +126,7 @@ $app->options('/{routes:.+}', function (Request $request, Response $response, $a
         ->withHeader('Access-Control-Allow-Credentials', 'true')
         ->withHeader('Access-Control-Allow-Headers', 'Accept,Authorization,Content-Type,If-None-Match')
         ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
-        ->withHeader('Access-Control-Allow-Origin', $request->getHeader('Origin'))
+        ->withHeader('Access-Control-Allow-Origin', $request->getHeaderLine('Origin'))
         ->withHeader('Access-Control-Expose-Headers', 'WWW-Authenticate,Server-Authorization')
         ->withHeader('Access-Control-Max-Age', '86400')
         ->withStatus(204);
@@ -170,8 +170,10 @@ $error_middleware_handler = function (ServerRequestInterface $request, Throwable
 
     $response = $app->getResponseFactory()->createResponse()
         ->withHeader('Access-Control-Allow-Credentials', 'true')
-        ->withHeader('Access-Control-Allow-Origin', $request->getHeader('Origin'))
-        ->withHeader('Access-Control-Expose-Headers', 'WWW-Authenticate,Server-Authorization');;
+        ->withHeader('Access-Control-Allow-Origin', $request->getHeaderLine('Origin'))
+        ->withHeader('Access-Control-Expose-Headers', 'WWW-Authenticate,Server-Authorization')
+        ->withHeader('Content-Type', 'application/json')
+        ->withStatus($exception->getCode());
 
     // API Error
     if ($exception instanceof \App\Library\HttpException) {
@@ -182,26 +184,23 @@ $error_middleware_handler = function (ServerRequestInterface $request, Throwable
             'message' => $exception->getMessage()
         )));
 
-        return $response
-            ->withHeader('Content-Type', 'application/json')
-            ->withStatus($exception->getCode());
     }
-
     // Other errors
-    $payload = array(
-        'statusCode' => $exception->getCode(),
-        'error' => \App\Library\HttpException::getStatusTextForCode($exception->getCode()),
-        'message' => $exception->getMessage()
-    );
-    if ($displayErrorDetails) {
-        $payload['details'] = $exception->getTraceAsString();
+    else {
+
+        $payload = array(
+            'statusCode' => $exception->getCode(),
+            'error' => \App\Library\HttpException::getStatusTextForCode($exception->getCode()),
+            'message' => $exception->getMessage()
+        );
+        if ($displayErrorDetails) {
+            $payload['details'] = $exception->getTraceAsString();
+        }
+
+        $response->getBody()->write(json_encode($payload));
     }
 
-    $response->getBody()->write(json_encode($payload));
-
-    return $response
-        ->withHeader('Content-Type', 'application/json')
-        ->withStatus($exception->getCode());
+    return $response;
 };
 $error_middleware = $app->addErrorMiddleware(true, true, true);
 $error_middleware->setDefaultErrorHandler($error_middleware_handler);
@@ -215,3 +214,11 @@ $error_middleware->setDefaultErrorHandler($error_middleware_handler);
  */
 
 $app->add(new RequestBodyMiddleWare());
+
+/**
+ * --------------------------
+ * JSON RESPONSE MIDDLEWARE
+ * --------------------------
+ * Add "Content-Type: application/json" on responses
+ */
+$app->add(new JSONResponseMiddleWare());

@@ -92,9 +92,7 @@ $_func = function (Request $request, Response $response, array $args) {
         $payload = json_encode($data);
  
         $response->getBody()->write($payload);
-        return $response
-                  ->withHeader('Content-Type', 'application/json')
-                  ->withStatus(200);
+        return $response->withStatus(200);
     }
  
     // string wrong formed
