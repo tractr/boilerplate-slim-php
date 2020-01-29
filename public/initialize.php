@@ -156,15 +156,15 @@ $error_middleware_handler = function (ServerRequestInterface $request, Throwable
         return $response;
     }
 
-    if ($exception->getCode() == 404) {
-        $response = $app->getResponseFactory()->createResponse(404);
-        $response->getBody()->write('The request was not found on this server.');
-
+    $code = $exception->getCode();
+    if ($code >= 400 && $code < 500) {
+        $response = $app->getResponseFactory()->createResponse($code);
         return $response;
     }
 
-    $response = $app->getResponseFactory()->createResponse(500);
-    $response->getBody()->write("An internal error occurred");
+    $response = $app->getResponseFactory()->createResponse($code);
+    $text = $code >= 500 ? "An internal error occurred" : "An unknown error occurred";
+    $response->getBody()->write($text);
 
     if ($displayErrorDetails) {
         $errorTrace = "\n{$exception->getMessage()}\n{$exception->getTraceAsString()}";
