@@ -62,8 +62,7 @@ function create_session ($user)
 			$config['cookie']['path'],
 			$config['cookie']['domain'],
 			$config['cookie']['secure'],
-			$config['cookie']['httponly'],
-			$config['cookie']['options']
+			$config['cookie']['httponly']
 		);
 
 		flock($file, LOCK_EX);

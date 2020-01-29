@@ -122,14 +122,7 @@ foreach ($routes as $route) {
  * It enables lazy CORS.
  */
 $app->options('/{routes:.+}', function (Request $request, Response $response, $args) {
-    return $response
-        ->withHeader('Access-Control-Allow-Credentials', 'true')
-        ->withHeader('Access-Control-Allow-Headers', 'Accept,Authorization,Content-Type,If-None-Match')
-        ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
-        ->withHeader('Access-Control-Allow-Origin', $request->getHeaderLine('Origin'))
-        ->withHeader('Access-Control-Expose-Headers', 'WWW-Authenticate,Server-Authorization')
-        ->withHeader('Access-Control-Max-Age', '86400')
-        ->withStatus(204);
+    return $response->withStatus(204);
 });
 $app->add(new CORSMiddleWare());
 
