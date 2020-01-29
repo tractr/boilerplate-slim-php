@@ -23,6 +23,8 @@ use Slim\Factory\AppFactory;
 use Psr\Http\Message\ServerRequestInterface;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use App\Library\RequestBodyMiddleWare;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
 /**
  * --------------------------
@@ -112,6 +114,22 @@ foreach ($routes as $route) {
     	require_once($route);
     }
 }
+
+/**
+ * --------------------------
+ * CORS
+ * --------------------------
+ * It enables lazy CORS.
+ */
+$app->options('/{routes:.+}', function (Request $request, Response $response, $args) {
+    return $response
+        ->withHeader('Access-Control-Allow-Credentials', 'true')
+        ->withHeader('Access-Control-Allow-Headers', 'Accept,Authorization,Content-Type,If-None-Match')
+        ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
+        ->withHeader('Access-Control-Allow-Origin', $request->getHeader('Origin'))
+        ->withHeader('Access-Control-Expose-Headers', 'WWW-Authenticate,Server-Authorization')
+        ->withHeader('Access-Control-Max-Age', '86400');
+});
 
 /**
  * --------------------------
