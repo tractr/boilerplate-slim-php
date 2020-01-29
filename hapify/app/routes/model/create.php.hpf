@@ -16,8 +16,7 @@ $_func = function (Request $request, Response $response, array $args) {
  
 <<? Ac !gs>>
     //Authentication
-    check_auth();
-    $credential = get_current_session();
+    check_auth($this);
 <<?>>
     
     $data = $request->getParsedBody();
@@ -83,7 +82,7 @@ function defaultValue(f) {
     let v = "null";
     
     if (f.ownership) {
-        v = f.multiple ? "array(1)" : "$credential['_id']";
+        v = f.multiple ? "array(1)" : "$this->get('credential')['_id']";
     }
     else if (f.multiple) v = "array()";
     else if (f.type === "boolean") v = "false";

@@ -2,6 +2,7 @@
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Psr7\Response;
+use DI\Container;
 use Valitron\Validator as Validator;
 
 /**
@@ -131,11 +132,16 @@ function delete_current_session ()
  * CHECK AUTHENTICATION
  * --------------------------
  * check if current session is authenticated
+ * @param Container $container
+ * @return bool
+ * @throws \App\Library\HttpException
+ * @throws \DI\DependencyException
+ * @throws \DI\NotFoundException
  */
 
-function check_auth()
+function check_auth(Container $container)
 {
-	$session_data = get_current_session();
+	$session_data = $container->get('credential');
     if ($session_data == null) {
     	// user doesn't have current session
         throw new \App\Library\HttpException(401, 'You must authenticate to access this resource.');
@@ -211,7 +217,7 @@ $app->post('/password/login', function (Request $request, Response $response, ar
 
 $app->get('/session', function (Request $request, Response $response, array $args) {
 
-    $session_data = get_current_session();
+    $session_data = $this->get('credential');
 
     if ($session_data == null) {
     	// user doesn't have current session
@@ -221,7 +227,7 @@ $app->get('/session', function (Request $request, Response $response, array $arg
     $payload = json_encode($session_data);
 
     $response->getBody()->write($payload);
-    return $response->withStatus(201);
+    return $response->withStatus(200);
 });
 
 /**
@@ -240,6 +246,5 @@ $app->delete('/session', function (Request $request, Response $response, array $
         throw new \App\Library\HttpException(401, 'Not logged in');
     }
 
-    return $response
-              ->withStatus(204);
+    return $response->withStatus(204);
 });

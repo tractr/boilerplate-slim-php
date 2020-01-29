@@ -11,8 +11,7 @@ $_func = function (Request $request, Response $response, array $args) {
 
 <<? Ad !gs>>
     //Authentication
-    check_auth();
-    $credential = get_current_session();
+    check_auth($this);
 <<?>>
  
     $data = App\Models\<<M AA>>::find($args['id']);
@@ -23,7 +22,7 @@ $_func = function (Request $request, Response $response, array $args) {
     }
 <<? Ad ow>>
 
-    if (<<@1 F os o>>$data-><<o a_a>> != $credential['_id']<<@>>) {
+    if (<<@1 F os o>>$data-><<o a_a>> != $this->get('credential')['_id']<<@>>) {
         //Enity not deletable
         return $response->withStatus(403);
     }  

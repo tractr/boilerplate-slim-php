@@ -11,7 +11,7 @@ $_func = function (Request $request, Response $response, array $args) {
 
 <<? Ar !gs>>
     //Authentication
-    check_auth();
+    check_auth($this);
 <<?>>
  
     $data = App\Models\<<M AA>>::find($args['id']);

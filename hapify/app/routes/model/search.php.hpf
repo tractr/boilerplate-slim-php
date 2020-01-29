@@ -12,7 +12,7 @@ $_func = function (Request $request, Response $response, array $args) {
  
 <<? As !gs>>
     //Authentication
-    check_auth();
+    check_auth($this);
 <<?>>
  
     $_get = $request->getQueryParams();
@@ -57,9 +57,8 @@ $_func = function (Request $request, Response $response, array $args) {
             // string wrong formed
             return $response->withStatus(400);
         }
- 
-        $model = new App\Models\<<M AA>>();
-        $query = App\Models\<<M AA>>::get_cursor($model, $_get, get_current_session(), request_from_admin($request));
+        
+        $query = App\Models\<<M AA>>::get_cursor($_get, $this->get('credential'), request_from_admin($request));
         $total = $query->count();
         $data_list = $query->orderBy($sort, $order)
                        ->skip($skip)
