@@ -185,7 +185,7 @@ $app->post('/password/login', function (Request $request, Response $response, ar
             throw new \App\Library\HttpException(401, 'User not found or wrong password');
     	}
 
-    	$password = md5($data['password']);
+    	$password = App\Library\Encryption::hash($data['password']);
 
 		//On vérifie la cohérence du mot de passe
 		if ($user->password === $password) {

@@ -41,7 +41,7 @@ $_func = function (Request $request, Response $response, array $args) {
 <<@ F tSp/in p>>
             // Hash <<p a>>
             if ($_data['<<p a_a>>'] != '') {
-                $_data['<<p a_a>>'] = md5($_data['<<p a_a>>']);
+                $_data['<<p a_a>>'] = App\Library\Encryption::hash($_data['<<p a_a>>']);
             }
 <<@>>
 
