@@ -133,18 +133,24 @@ function delete_current_session ()
  * --------------------------
  * check if current session is authenticated
  * @param Container $container
+ * @param Request $request
  * @return bool
  * @throws \App\Library\HttpException
  * @throws \DI\DependencyException
  * @throws \DI\NotFoundException
  */
 
-function check_auth(Container $container)
+function check_auth(Container $container, Request $request)
 {
 	$session_data = $container->get('credential');
     if ($session_data == null) {
     	// user doesn't have current session
         throw new \App\Library\HttpException(401, 'You must authenticate to access this resource.');
+    }
+
+    if (request_from_admin($request) && $session_data['role'] !== 'admin') {
+        // user doesn't have current session
+        throw new \App\Library\HttpException(403, 'You are not allowed to access this resource.');
     }
 
     return true;
@@ -155,9 +161,11 @@ function check_auth(Container $container)
  * REQUEST FROM ADMIN
  * --------------------------
  * function that check if request if from admin
+ * @param Request $request
+ * @return false|int
  */
 
-function request_from_admin ($request)
+function request_from_admin (Request $request)
 {
     $routes = $request->getAttribute('route');
     
