@@ -37,7 +37,7 @@ docker-compose run --rm php php app/cmd/setup/index.php
 ```
 
 ```bash
-docker-compose run --rm api npm run cmd insert-admin
+docker-compose run --rm php php app/cmd/insert-admin/index.php
 ```
 
 Or run all in one command:
@@ -66,7 +66,16 @@ To insert randomized data into the database, run this command
 docker-compose run --rm api npm run cmd populate
 ```
 
-#### 3.4 Updates
+
+#### 3.4 Explore data
+
+You can run PhpMyAdmin to browse database. Start the service by running the command bellow and go to `http://localhost:8000`
+
+```bash
+docker-compose up phpmyadmin
+```
+
+#### 3.5 Updates
 
 If you need to update you data models and re-generate code (using [Hapify](https://www.hapify.io/), you should:
 

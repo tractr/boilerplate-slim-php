@@ -7,7 +7,9 @@
  * Init config
  */
 
-require __DIR__ . '/../vendor/autoload.php';
+$loader = require __DIR__ . '/../vendor/autoload.php';
+$loader->addPsr4('App\\Models\\', __DIR__ . '/../app/models');
+$loader->addPsr4('App\\Library\\', __DIR__ . '/../app/library');
 
 /**
  * Init configuration
@@ -16,17 +18,11 @@ require __DIR__ . '/../app/config/config.php';
 require __DIR__ . '/../app/config/database.php';
 require __DIR__ . '/../app/config/session.php';
 
-/**
- * Init library
- */
-require __DIR__ . '/../app/library/RequestBodyMiddleWare.php';
-
-
 use DI\Container;
 use Slim\Factory\AppFactory;
 use Psr\Http\Message\ServerRequestInterface;
 use Illuminate\Database\Capsule\Manager as Capsule;
-
+use App\Library\RequestBodyMiddleWare;
 
 /**
  * --------------------------

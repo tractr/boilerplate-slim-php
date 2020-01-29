@@ -4,14 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class BaseModel extends Model{
+class BaseModel extends Model {
 
     /**
      * The primary key associated with the table.
      *
      * @var string
      */
-    protected $primaryKey = '_id';
+    protected $primaryKey = 'id';
 
     /**
      * Indicates if the IDs are auto-incrementing.
