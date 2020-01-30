@@ -41,8 +41,8 @@ $_func = function (Request $request, Response $response, array $args) {
  
     if ($validator->validate()) {
  
-        $page = $_get['_page'] != null ? $_get['_page'] : 0;
-        $limit = $_get['_limit'] != null ? $_get['_limit'] : 10;
+        $page = intval($_get['_page']);
+        $limit = intval($_get['_limit']);
         $order = 'desc';
         $sort =  'created_at';
         $skip = $page * $limit;
@@ -101,8 +101,8 @@ $_func = function (Request $request, Response $response, array $args) {
 };
  
 //Define admin route callback
-$app->get('/admin/<<M a_a>>', $_func);
+$app->get('/admin/<<M a-a>>', $_func);
 <<? As [ow>>
 //Define route callback
-$app->get('/<<M a_a>>', $_func);
+$app->get('/<<M a-a>>', $_func);
 <<?>>

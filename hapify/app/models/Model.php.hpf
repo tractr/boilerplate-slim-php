@@ -77,7 +77,7 @@ class <<M AA>> extends BaseModel {
      * Get search cursor
      * @param  array $filter
      * @param  Request $request
-     * @return <<M AA>>
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     public static function getCursor($filter, Request $request) {
     
@@ -86,27 +86,17 @@ class <<M AA>> extends BaseModel {
         unset($filter['_order']);
         unset($filter['_sort']);
     
-        $query = new <<M AA>>();
+        $query = <<M AA>>::query();
 
 <<@ F se f>>
- 
-    <<? f tN+tD>>
-        // Set min for <<f a>> if defined
-        if (isset($filter['<<f a_a>>_min'])) {
-            $query = $query->orWhere('<<f a_a>>', '>', $filter['<<f a_a>>_min']);
-        }
-        // Set max for <<f a>> if defined
-        if (isset($filter['<<f a_a>>_max'])) {
-            $query = $query->orWhere('<<f a_a>>', '<', $filter['<<f a_a>>_max']);
-        }
-    <<?? f tE>>
-
-        // Convert id for <<f a>>
+    
+    <<? f tE>>
+        // Filter by related <<f a_a>>
         if (isset($filter['<<f a_a>>'])) {
         <<? f ml>>
-            $query = $query-><<f a_a>>->where('<<f a_a>>', $filter['<<f a_a>>']);
+            $query = $query->whereIn('<<f a_a>>', $filter['<<f a_a>>']);
         <<??>>
-            $query = $query-><<f a_a>>->where('<<f a_a>>', $filter['<<f a_a>>']);
+            $query = $query->where('<<f a_a>>', $filter['<<f a_a>>']);
         <<?>>
         }
         <<? As ow>>
@@ -116,11 +106,42 @@ class <<M AA>> extends BaseModel {
         }
             <<?>>
         <<?>>
-    <<?? f tS*lb>>
 
-        // Use LIKE for <<f a>>
+    <<??>>
+        // Filter <<f a>>
         if (isset($filter['<<f a_a>>'])) {
-            $query = $query->orWhere('<<f a_a>>', 'LIKE', "%{$filter['<<f a_a>>']}%");
+        <<? f tS*lb>>
+            $query = $query->where('<<f a_a>>', 'LIKE', "%{$filter['<<f a_a>>']}%");
+        <<?? f tB>>
+            $query = $query->where('<<f a_a>>', static::toBoolean($filter['<<f a_a>>']));
+        <<?? f tD>>
+            $query = $query->where('<<f a_a>>', static::toDate($filter['<<f a_a>>']));
+        <<??>>
+            $query = $query->where('<<f a_a>>', $filter['<<f a_a>>']);
+        <<?>>
+        }
+
+    <<?>>
+
+    <<? f tN>>
+        // Set min for <<f a>> if defined
+        if (isset($filter['<<f a_a>>__min'])) {
+            $query = $query->where('<<f a_a>>', '>=', $filter['<<f a_a>>__min']);
+        }
+        // Set max for <<f a>> if defined
+        if (isset($filter['<<f a_a>>__max'])) {
+            $query = $query->where('<<f a_a>>', '<=', $filter['<<f a_a>>__max']);
+        }
+    <<?>>
+
+    <<? f tD>>
+        // Set min for <<f a>> if defined
+        if (isset($filter['<<f a_a>>__min'])) {
+            $query = $query->where('<<f a_a>>', '>=', static::toDate($filter['<<f a_a>>__min']));
+        }
+        // Set max for <<f a>> if defined
+        if (isset($filter['<<f a_a>>__max'])) {
+            $query = $query->where('<<f a_a>>', '<=', static::toDate($filter['<<f a_a>>__max']));
         }
     <<?>>
 

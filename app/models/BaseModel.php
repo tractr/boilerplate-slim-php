@@ -64,4 +64,25 @@ class BaseModel extends Model {
         return is_integer($this->attributes[$attribute]) ? boolval($this->attributes[$attribute]) : NULL;
     }
 
+    /**
+     * @param mixed $value
+     * @return boolean
+     */
+    public static function toBoolean($value)
+    {
+        return $value === 'false' ? false : boolval($value);
+    }
+
+    /**
+     * @param integer $value
+     * @return string
+     */
+    public static function toDate($value)
+    {
+        $n = new static();
+        return date($n->dateFormat, intval($value) / 1000);
+    }
+
+
+
 }

@@ -36,8 +36,8 @@ $_func = function (Request $request, Response $response, array $args) {
 };
  
 //Define admin route callback
-$app->delete('/admin/<<M a_a>>/{id}', $_func);
+$app->delete('/admin/<<M a-a>>/{id}', $_func);
 <<? Ad [ow>>
 //Define route callback
-$app->delete('/<<M a_a>>/{id}', $_func);
+$app->delete('/<<M a-a>>/{id}', $_func);
 <<?>>

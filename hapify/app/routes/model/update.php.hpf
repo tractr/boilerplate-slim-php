@@ -69,10 +69,10 @@ $_func = function (Request $request, Response $response, array $args) {
 };
  
 //Define admin route callback
-$app->patch('/admin/<<M a_a>>/{id}', $_func);
+$app->patch('/admin/<<M a-a>>/{id}', $_func);
 <<? Au [ow>>
 //Define route callback
-$app->patch('/<<M a_a>>/{id}', $_func);
+$app->patch('/<<M a-a>>/{id}', $_func);
 <<?>>
 <<< 
 function validator(f) {
@@ -82,11 +82,16 @@ function validator(f) {
         if (f.subtype === "email") return "->rule('email', '" + f.name + "')";
         else if (f.subtype === "password") return "->rule('lengthMin', '" + f.name + "', 6)";
     }
-    else if (f.type === "number" || f.type === "datetime") {
-        if (f.subtype === "latitude") return "->rules(array('min' => array('"+ f.name +"', -90), 'max' => array('"+ f.name +"', 90)))";
-        else if (f.subtype === "longitude") return "->rules(array('min' => array('"+ f.name +"', -180), 'max' => array('"+ f.name +"', 180)))";
+    else if (f.type === "number") {
+        $return = "->rule('numeric', '" + f.name + "')";
+        if (f.subtype === "latitude") $return += "->rules(array('min' => array('"+ f.name +"', -90), 'max' => array('"+ f.name +"', 90)))";
+        else if (f.subtype === "longitude") $return += "->rules(array('min' => array('"+ f.name +"', -180), 'max' => array('"+ f.name +"', 180)))";
+        return $return;
     }
-    else if (f.type === "entity") return "->rule('lengthMax', '" + f.name + "', 24)";
+    else if (f.type === "datetime") {
+        return "->rule('integer', '" + f.name + "')";
+    }
+    else if (f.type === "entity") return "->rule('integer', '" + f.name + "')";
     
     return '';
 }

@@ -180,7 +180,7 @@ $error_middleware_handler = function (ServerRequestInterface $request, Throwable
                 'error' => HttpException::getStatusTextForCode(404),
                 'message' => 'Route not found'
             )));
-            $response = $response->withStatus($exception->getCode());
+            $response = $response->withStatus(404);
         }
         else {
             $response->getBody()->write(json_encode(array(
@@ -195,7 +195,7 @@ $error_middleware_handler = function (ServerRequestInterface $request, Throwable
     else {
 
         $payload = array(
-            'statusCode' => $exception->getCode(),
+            'statusCode' => 500,
             'error' => HttpException::getStatusTextForCode(500),
             'message' => $exception->getMessage()
         );
