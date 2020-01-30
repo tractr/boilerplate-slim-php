@@ -53,7 +53,7 @@ $app = AppFactory::create();
  */
 
 $container->set('logger', function () {
-    $logger = new \Monolog\Logger('my_logger');
+    $logger = new \Monolog\Logger('appLogger');
     $file_handler = new \Monolog\Handler\StreamHandler('../logs/app.log');
     $logger->pushHandler($file_handler);
     return $logger;

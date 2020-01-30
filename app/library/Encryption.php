@@ -13,7 +13,8 @@ class Encryption
      * @return string
      */
     public static function hash($password) {
-        return md5($password);
+        global $config;
+        return md5($config['encryptionSalt'].$password);
     }
 
     /**
@@ -24,6 +25,6 @@ class Encryption
      * @return bool
      */
     public static function test($password, $encrypted) {
-        return md5($password) === $encrypted;
+        return static::hash($password) === $encrypted;
     }
 }

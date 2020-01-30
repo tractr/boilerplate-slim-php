@@ -1,5 +1,6 @@
 <?php
 
+use App\Library\Encryption;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Slim\Psr7\Response;
@@ -198,10 +199,8 @@ $app->post('/password/login', function (Request $request, Response $response, ar
             throw new HttpException(401, 'User not found or wrong password');
     	}
 
-    	$password = App\Library\Encryption::hash($data['password']);
-
 		//On vérifie la cohérence du mot de passe
-		if ($user->password === $password) {
+		if (App\Library\Encryption::test($data['password'], $user->password)) {
 			//Enregistrement du cookie
 			$session_data = create_session($user);
 

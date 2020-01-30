@@ -46,14 +46,14 @@ Or run all in one command:
 docker-compose run --rm api bash -c "npm install && npm run cmd setup && npm run cmd insert-admin"
 ```
 
-The login and password of the admin user is defined in file `cmd/insert-admin/admin.js` (`admin@example.com` / `admin`).
+The login and password of the admin user is defined in file `app/cmd/insert-admin/admin.php` (`admin@example.com` / `admin`).
 
 #### 3.2 Start server
 
 To start the API, run this command
 
 ```bash
-docker-compose up api
+docker-compose up api php
 ```
 
 Now the API is available on `http://localhost:3000`.
