@@ -34,6 +34,18 @@ class <<M AA>> extends BaseModel {
         '<<f a_a>>',
 <<@>>
     );
+<<@ F tSp/in f>>
+ 
+    /**
+     * Set the field <<f a>>.
+     *
+     * @param  string  $value
+     */
+    public function set<<f AA>>Attribute($value)
+    {
+        $this->attributes['<<f a_a>>'] = \App\Library\Encryption::hash($value);
+    }
+<<@>>
 
 <<@ F tD f>>
  

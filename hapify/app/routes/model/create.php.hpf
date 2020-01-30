@@ -40,16 +40,10 @@ $_func = function (Request $request, Response $response, array $args) {
 <<?>>
  
     if ($validator->validate()) {
-        
-        try {
-<<@ F tSp/in p>>
-            // Hash <<p a>>
-            if ($data['<<p a_a>>'] != '') {
-                $data['<<p a_a>>'] = App\Library\Encryption::hash($data['<<p a_a>>']);
-            }
-<<@>>
     
-            $_data = App\Models\<<M AA>>::create(array(
+        try {
+    
+            $model = App\Models\<<M AA>>::create(array(
 <<@ F /rs/in f>>
                 '<<f a_a>>' => $data['<<f a_a>>'],
 <<@>>
@@ -67,7 +61,7 @@ $_func = function (Request $request, Response $response, array $args) {
 <<?>>
             ));
  
-            $payload = json_encode($_data);
+            $payload = json_encode($model);
             $response->getBody()->write($payload);
  
             return $response->withStatus(201);
@@ -75,7 +69,7 @@ $_func = function (Request $request, Response $response, array $args) {
         } catch (\Exception $e) {
             if ($e->getCode() == 23000) {
                 // Deal with duplicate key error
-                throw new HttpException(409, 'This value is already used');
+                throw new HttpException(409, $e->getMessage());
             }
             throw HttpException::internal($e);
         }

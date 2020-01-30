@@ -2,9 +2,6 @@
 
 /**
  * Update <<M AA>>.
- *
- * Form validation used here is vlucas/valitron library.
- * For more information, you can read documentation here https://github.com/vlucas/valitron
  */
  
 use Psr\Http\Message\ResponseInterface as Response;
@@ -20,17 +17,17 @@ $_func = function (Request $request, Response $response, array $args) {
     check_auth($request);
 <<?>>
  
-    $data = App\Models\<<M AA>>::find($args['id']);
+    $model = App\Models\<<M AA>>::find($args['id']);
  
-    if ($data == null) {
+    if ($model == null) {
         // Entity was not found
         throw new HttpException(404, '<<M A>> not found');
     }
  
-    $_data = $request->getParsedBody();
+    $data = $request->getParsedBody();
     
     //Form validation
-    $validator = new Validator($_data);
+    $validator = new Validator($data);
 <<@ F /rs/in f>>
     $validator->rule('optional', '<<f a_a>>'<<? f nu>>, true <<?>>)<<=validator(f)>>;
 <<@>>
@@ -42,34 +39,19 @@ $_func = function (Request $request, Response $response, array $args) {
     <<@ F rs/in f>>
         $validator->rule('optional', '<<f a_a>>'<<? f nu>>, true <<?>>)<<=validator(f)>>;
     <<@>>
+    } else {
+    <<@ F rs/in f>>
+        unset($data['<<f a_a>>']);
+    <<@>>
     }
 <<?>>
  
     if ($validator->validate()) {
  
         try {
-<<@ F tSp/in p>>
-            // Hash <<p a>>
-            if ($_data['<<p a_a>>'] != '') {
-                $_data['<<p a_a>>'] = App\Library\Encryption::hash($_data['<<p a_a>>']);
-            }
-<<@>>
-
-<<@ F /rs/in f>>
-            $data-><<f a_a>> = $_data['<<f a_a>>'];
-<<@>>
-
-<<? F rs/in>>
  
-            // For admins only
-            if ($request->getAttribute('fromAdmin')) {
-    <<@ F rs/in f>>
-                $data-><<f a_a>> = $_data['<<f a_a>>'];
-    <<@>>
-            }
-<<?>>
-    
-            $data->save();
+            $model->fill($data);
+            $model->save();
  
             return $response->withStatus(204);
     
@@ -77,7 +59,7 @@ $_func = function (Request $request, Response $response, array $args) {
     
             if ($e->getCode() == 23000) {
                 // Deal with duplicate key error
-                throw new HttpException(409, 'This value is already used');
+                throw new HttpException(409, $e->getMessage());
             }
             throw HttpException::internal($e);
         }
@@ -87,10 +69,10 @@ $_func = function (Request $request, Response $response, array $args) {
 };
  
 //Define admin route callback
-$app->patch('/admin/<<M a_a>>', $_func);
+$app->patch('/admin/<<M a_a>>/{id}', $_func);
 <<? Au [ow>>
 //Define route callback
-$app->patch('/<<M a_a>>', $_func);
+$app->patch('/<<M a_a>>/{id}', $_func);
 <<?>>
 <<< 
 function validator(f) {
