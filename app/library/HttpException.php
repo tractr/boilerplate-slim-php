@@ -120,5 +120,14 @@ class HttpException extends \Exception
         return new static(400, $message);
     }
 
-
+    /**
+     * Create an internal error from an Exception
+     *
+     * @param \Exception $exception
+     * @return HttpException
+     */
+    public static function internal(\Exception $exception)
+    {
+        return new static(500, $exception->getMessage());
+    }
 }

@@ -28,10 +28,36 @@ class <<M AA>> extends BaseModel {
      * @var array
      */
     protected $hidden = array(
-<<@ F hd+in f>>
+<<@ F hd f>>
         '<<f a_a>>',
 <<@>>
     );
+
+<<@ F tD f>>
+ 
+    /**
+     * Get the field <<f a>>.
+     *
+     * @return integer
+     */
+    public function get<<f AA>>Attribute()
+    {
+        return $this->dateToTimestamp('<<f a_a>>');
+    }
+<<@>>
+
+<<@ F tB f>>
+ 
+    /**
+     * Get the field <<f a>>.
+     *
+     * @return integer
+     */
+    public function get<<f AA>>Attribute()
+    {
+        return $this->intToBoolean('<<f a_a>>');
+    }
+<<@>>
  
     /**
      * Get search cursor

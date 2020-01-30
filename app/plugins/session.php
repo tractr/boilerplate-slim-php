@@ -4,6 +4,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Psr7\Response;
 use DI\Container;
 use Valitron\Validator as Validator;
+use App\Library\HttpException;
 
 /**
  * --------------------------
@@ -135,7 +136,7 @@ function delete_current_session ()
  * @param Container $container
  * @param Request $request
  * @return bool
- * @throws \App\Library\HttpException
+ * @throws HttpException
  * @throws \DI\DependencyException
  * @throws \DI\NotFoundException
  */
@@ -145,12 +146,12 @@ function check_auth(Container $container, Request $request)
 	$session_data = $container->get('credential');
     if ($session_data == null) {
     	// user doesn't have current session
-        throw new \App\Library\HttpException(401, 'You must authenticate to access this resource.');
+        throw new HttpException(401, 'You must authenticate to access this resource');
     }
 
     if (request_from_admin($request) && $session_data['role'] !== 'admin') {
         // user doesn't have current session
-        throw new \App\Library\HttpException(403, 'You are not allowed to access this resource.');
+        throw new HttpException(403, 'You are not allowed to access this resource');
     }
 
     return true;
@@ -195,7 +196,7 @@ $app->post('/password/login', function (Request $request, Response $response, ar
     	$user = $capsule::table('user')->where('email', $data['email'])->first();
 
     	if ($user == null) {
-            throw new \App\Library\HttpException(401, 'User not found or wrong password');
+            throw new HttpException(401, 'User not found or wrong password');
     	}
 
     	$password = App\Library\Encryption::hash($data['password']);
@@ -208,12 +209,12 @@ $app->post('/password/login', function (Request $request, Response $response, ar
 			$response->getBody()->write(json_encode($session_data));
 			return $response->withStatus(201);
 		} else {
-            throw new \App\Library\HttpException(401, 'User not found or wrong password');
+            throw new HttpException(401, 'User not found or wrong password');
         }
     }
 
     // Bad payload request
-    throw \App\Library\HttpException::badRequest($validator);
+    throw HttpException::badRequest($validator);
 });
 
 /**
@@ -229,7 +230,7 @@ $app->get('/session', function (Request $request, Response $response, array $arg
 
     if ($session_data == null) {
     	// user doesn't have current session
-        throw new \App\Library\HttpException(401, 'Not logged in');
+        throw new HttpException(401, 'Not logged in');
     }
 
     $payload = json_encode($session_data);
@@ -251,7 +252,7 @@ $app->delete('/session', function (Request $request, Response $response, array $
 
     if (!$result) {
     	// user doesn't have current session
-        throw new \App\Library\HttpException(401, 'Not logged in');
+        throw new HttpException(401, 'Not logged in');
     }
 
     return $response->withStatus(204);

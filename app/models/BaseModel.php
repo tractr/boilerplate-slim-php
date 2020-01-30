@@ -44,4 +44,24 @@ class BaseModel extends Model {
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
+    /**
+     * @param $attribute string
+     * @return int|null
+     */
+    protected function dateToTimestamp($attribute)
+    {
+        return $this->attributes[$attribute] ?
+            \DateTime::createFromFormat($this->dateFormat, $this->attributes[$attribute])->getTimestamp() * 1000 :
+            NULL;
+    }
+
+    /**
+     * @param $attribute string
+     * @return boolean|null
+     */
+    protected function intToBoolean($attribute)
+    {
+        return is_integer($this->attributes[$attribute]) ? boolval($this->attributes[$attribute]) : NULL;
+    }
+
 }
