@@ -1,9 +1,9 @@
 <?php 
 
 /**
- * --------------------------
+ * ---------------------------
  * INITIALIZE SLIM APPLICATION
- * --------------------------
+ * ---------------------------
  * Init config
  */
 
@@ -44,24 +44,6 @@ $container = new Container();
  */
 AppFactory::setContainer($container);
 $app = AppFactory::create();
-// Add Routing Middleware
-$app->addRoutingMiddleware();
-
-/**
- * Init plugins
- */
-require __DIR__ . '/../app/plugins/session.php';
-
-/**
- * --------------------------
- * CREDENTIAL
- * --------------------------
- * Get current session from session file
- */
-
-$container->set('credential', function () {
-    return get_current_session();
-});
 
 /**
  * --------------------------
@@ -99,44 +81,7 @@ $capsule->setAsGlobal();
 $routes = glob('../app/routes/*');
 
 foreach ($routes as $route) {
-    
-    if (is_dir($route)) {
 
-    	$sub_routes = glob($route . '/*');
-
-    	foreach ($sub_routes as $sub_route) {
-    		if (!is_dir($sub_route)) {
-    			require_once($sub_route);
-    		}
-    	}
-    }
-    else{
-    	require_once($route);
-    }
-}
-
-/**
- * --------------------------
- * CORS
- * --------------------------
- * It enables lazy CORS.
- */
-$app->options('/{routes:.+}', function (Request $request, Response $response, $args) {
-    return $response->withStatus(204);
-});
-$app->add(new CORSMiddleWare());
-
-/**
- * --------------------------
- * MODEL
- * --------------------------
- * It charge all routes files
- */
-
-$routes = glob('../app/models/*');
-
-foreach ($routes as $route) {
-    
     if (is_dir($route)) {
 
         $sub_routes = glob($route . '/*');
@@ -154,50 +99,10 @@ foreach ($routes as $route) {
 
 /**
  * --------------------------
- * ERROR MIDDLEWARE
+ * SESSION PLUGIN
  * --------------------------
- * Function handling error
  */
-
-$error_middleware_handler = function (ServerRequestInterface $request, Throwable $exception, bool $displayErrorDetails, bool $logErrors, bool $logErrorDetails) use ($app) {
-
-    $response = $app->getResponseFactory()->createResponse()
-        ->withHeader('Access-Control-Allow-Credentials', 'true')
-        ->withHeader('Access-Control-Allow-Origin', $request->getHeaderLine('Origin'))
-        ->withHeader('Access-Control-Expose-Headers', 'WWW-Authenticate,Server-Authorization')
-        ->withHeader('Content-Type', 'application/json')
-        ->withStatus($exception->getCode());
-
-    // API Error
-    if ($exception instanceof \App\Library\HttpException) {
-
-        $response->getBody()->write(json_encode(array(
-            'statusCode' => $exception->getCode(),
-            'error' => $exception->getStatusText(),
-            'message' => $exception->getMessage()
-        )));
-
-    }
-    // Other errors
-    else {
-
-        $payload = array(
-            'statusCode' => $exception->getCode(),
-            'error' => \App\Library\HttpException::getStatusTextForCode($exception->getCode()),
-            'message' => $exception->getMessage()
-        );
-        if ($displayErrorDetails) {
-            $payload['details'] = $exception->getTraceAsString();
-        }
-
-        $response->getBody()->write(json_encode($payload));
-    }
-
-    return $response;
-};
-$error_middleware = $app->addErrorMiddleware(true, true, true);
-$error_middleware->setDefaultErrorHandler($error_middleware_handler);
-
+require __DIR__ . '/../app/plugins/session.php';
 
 /**
  * --------------------------
@@ -205,8 +110,18 @@ $error_middleware->setDefaultErrorHandler($error_middleware_handler);
  * --------------------------
  * Object used to parse body encoding
  */
-
 $app->add(new RequestBodyMiddleWare());
+
+/**
+ * --------------------------
+ * CORS MIDDLEWARE
+ * --------------------------
+ * It enables lazy CORS.
+ */
+$app->options('/{routes:.+}', function (Request $request, Response $response, $args) {
+    return $response->withStatus(204);
+});
+$app->add(new CORSMiddleWare());
 
 /**
  * --------------------------
@@ -215,3 +130,69 @@ $app->add(new RequestBodyMiddleWare());
  * Add "Content-Type: application/json" on responses
  */
 $app->add(new JSONResponseMiddleWare());
+
+/**
+ * --------------------------
+ * ROUTING MIDDLEWARE
+ * --------------------------
+ */
+$app->addRoutingMiddleware();
+
+/**
+ * --------------------------
+ * ERROR MIDDLEWARE
+ * --------------------------
+ * Function handling error
+ */
+$error_middleware_handler = function (ServerRequestInterface $request, Throwable $exception, bool $displayErrorDetails, bool $logErrors, bool $logErrorDetails) use ($app) {
+
+    $response = $app->getResponseFactory()->createResponse()
+        ->withHeader('Access-Control-Allow-Credentials', 'true')
+        ->withHeader('Access-Control-Allow-Origin', $request->getHeaderLine('Origin'))
+        ->withHeader('Access-Control-Expose-Headers', 'WWW-Authenticate,Server-Authorization')
+        ->withHeader('Content-Type', 'application/json');
+
+    // App Error
+    if ($exception instanceof \App\Library\HttpException) {
+
+        $response->getBody()->write(json_encode(array(
+            'statusCode' => $exception->getCode(),
+            'error' => $exception->getStatusText(),
+            'message' => $exception->getMessage()
+        )));
+        $response = $response->withStatus($exception->getCode());
+    }
+    // Slim Error
+    elseif ($exception instanceof \Slim\Exception\HttpException) {
+
+        $response->getBody()->write(json_encode(array(
+            'statusCode' => $exception->getCode(),
+            'error' => \App\Library\HttpException::getStatusTextForCode($exception->getCode()),
+            'message' => $exception->getMessage()
+        )));
+        $code = $exception->getCode();
+        if (!\App\Library\HttpException::isStatusCodeValid($code)) {
+            $code = 500;
+        }
+        $response = $response->withStatus($code);
+    }
+    // Other errors
+    else {
+
+        $payload = array(
+            'statusCode' => $exception->getCode(),
+            'error' => \App\Library\HttpException::getStatusTextForCode(500),
+            'message' => $exception->getMessage()
+        );
+        if ($displayErrorDetails) {
+            $payload['details'] = $exception->getTraceAsString();
+        }
+
+        $response->getBody()->write(json_encode($payload));
+        $response = $response->withStatus(500);
+    }
+
+    return $response;
+};
+$error_middleware = $app->addErrorMiddleware(true, true, true);
+$error_middleware->setDefaultErrorHandler($error_middleware_handler);

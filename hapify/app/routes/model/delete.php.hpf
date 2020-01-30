@@ -11,8 +11,9 @@ use App\Library\HttpException;
 $_func = function (Request $request, Response $response, array $args) {
 
 <<? Ad !gs>>
+ 
     //Authentication
-    check_auth($this, $request);
+    check_auth($request);
 <<?>>
  
     $data = App\Models\<<M AA>>::find($args['id']);
@@ -23,7 +24,7 @@ $_func = function (Request $request, Response $response, array $args) {
     }
 <<? Ad ow>>
 
-    if (<<@1 F os o>>$data-><<o a_a>> != $this->get('credential')['_id']<<@>>) {
+    if (<<@1 F os o>>$data-><<o a_a>> != $request->getAttribute('userId')<<@>>) {
         //Enity not deletable
         throw new HttpException(403, '<<M A>> not deletable');
     }  

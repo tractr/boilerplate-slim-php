@@ -2,6 +2,8 @@
  
 namespace App\Models;
  
+use Psr\Http\Message\ServerRequestInterface as Request;
+ 
 class <<M AA>> extends BaseModel {
  
 	/**
@@ -61,11 +63,11 @@ class <<M AA>> extends BaseModel {
  
     /**
      * Get search cursor
-     * @param  \Illuminate\Database\Query\Builder $query  query_buider of service model
-     * @param  array $filter column to search
-     * @return \Illuminate\Database\Query\Builder         cursor of the query
+     * @param  array $filter
+     * @param  Request $request
+     * @return <<M AA>>
      */
-    public static function get_cursor($filter, $credentials = null, $from_admin = false){
+    public static function getCursor($filter, Request $request) {
     
         unset($filter['_page']);
         unset($filter['_limit']);
@@ -97,8 +99,8 @@ class <<M AA>> extends BaseModel {
         }
         <<? As ow>>
             <<? f os>>
-        else if (!$from_admin && $credentials != null) {
-            $query = $query->where('<<f a_a>>', '=', $credentials['_id']);
+        else if (!$request->getAttribute('fromAdmin') && $request->getAttribute('userId') !== null) {
+            $query = $query->where('<<f a_a>>', '=', $request->getAttribute('userId'));
         }
             <<?>>
         <<?>>

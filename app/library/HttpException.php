@@ -104,6 +104,17 @@ class HttpException extends \Exception
     }
 
     /**
+     * Denotes if the status exists.
+     *
+     * @param $code integer
+     * @return boolean
+     */
+    public static function isStatusCodeValid($code)
+    {
+        return isset(static::$status[$code]);
+    }
+
+    /**
      * Create a bad request error from a validator
      *
      * @param Validator $validator
@@ -116,7 +127,7 @@ class HttpException extends \Exception
         foreach ($errors as $key => $list) {
             array_push($fields, join('. ', $list).'.');
         }
-        $message = join('; ', $fields);
+        $message = join(' | ', $fields);
         return new static(400, $message);
     }
 

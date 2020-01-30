@@ -1,8 +1,8 @@
 <?php
 
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Slim\Psr7\Response;
-use DI\Container;
 use Valitron\Validator as Validator;
 use App\Library\HttpException;
 
@@ -13,7 +13,7 @@ use App\Library\HttpException;
  * get current cookie value usign cookie configuration index name
  */
 
-function get_cookie_value ()
+function get_cookie_value()
 {
 	global $config;
 
@@ -27,7 +27,7 @@ function get_cookie_value ()
  * create new session and cache it
  */
 
-function create_session ($user)
+function create_session($user)
 {
 	global $config;
 	//write session inside file
@@ -83,7 +83,7 @@ function create_session ($user)
  * fetch current session cache
  */
 
-function get_current_session ()
+function get_current_session()
 {
 	$cookie_value = get_cookie_value();
 
@@ -107,7 +107,7 @@ function get_current_session ()
  * delete current session
  */
 
-function delete_current_session ()
+function delete_current_session()
 {
 	global $config;
 	$cookie_value = get_cookie_value();
@@ -133,7 +133,6 @@ function delete_current_session ()
  * CHECK AUTHENTICATION
  * --------------------------
  * check if current session is authenticated
- * @param Container $container
  * @param Request $request
  * @return bool
  * @throws HttpException
@@ -141,15 +140,15 @@ function delete_current_session ()
  * @throws \DI\NotFoundException
  */
 
-function check_auth(Container $container, Request $request)
+function check_auth(Request $request)
 {
-	$session_data = $container->get('credential');
+	$session_data = $request->getAttribute('credentials');
     if ($session_data == null) {
     	// user doesn't have current session
         throw new HttpException(401, 'You must authenticate to access this resource');
     }
 
-    if (request_from_admin($request) && $session_data['role'] !== 'admin') {
+    if ($request->getAttribute('fromAdmin') && $session_data['role'] !== 'admin') {
         // user doesn't have current session
         throw new HttpException(403, 'You are not allowed to access this resource');
     }
@@ -163,14 +162,14 @@ function check_auth(Container $container, Request $request)
  * --------------------------
  * function that check if request if from admin
  * @param Request $request
- * @return false|int
+ * @return boolean
  */
 
-function request_from_admin (Request $request)
+function request_from_admin(Request $request)
 {
     $routes = $request->getAttribute('route');
     
-    return preg_match('#^\/admin#', $routes->getPattern());
+    return boolval(preg_match('#^\/admin#', $routes->getPattern()));
 }
 
 /**
@@ -226,14 +225,9 @@ $app->post('/password/login', function (Request $request, Response $response, ar
 
 $app->get('/session', function (Request $request, Response $response, array $args) {
 
-    $session_data = $this->get('credential');
+    check_auth($request);
 
-    if ($session_data == null) {
-    	// user doesn't have current session
-        throw new HttpException(401, 'Not logged in');
-    }
-
-    $payload = json_encode($session_data);
+    $payload = json_encode($request->getAttribute('credentials'));
 
     $response->getBody()->write($payload);
     return $response->withStatus(200);
@@ -248,12 +242,30 @@ $app->get('/session', function (Request $request, Response $response, array $arg
 
 $app->delete('/session', function (Request $request, Response $response, array $args) {
 
-    $result = delete_current_session();
+    check_auth($request);
 
-    if (!$result) {
-    	// user doesn't have current session
-        throw new HttpException(401, 'Not logged in');
-    }
+    delete_current_session();
 
     return $response->withStatus(204);
+});
+
+
+/**
+ * --------------------------
+ * SESSION MIDDLEWARE
+ * --------------------------
+ * Add metadata to current session
+ */
+$app->add(function (Request $request, RequestHandler $handler): \Psr\Http\Message\ResponseInterface {
+
+    // add the session data
+    $sessionData = get_current_session();
+    $request = $request->withAttribute('credentials', $sessionData);
+    // Shortcut to user's id
+    $request = $request->withAttribute('userId', $sessionData !== NULL ? $sessionData['_id'] : NULL);
+
+    // Denotes if the request is from admin
+    $request = $request->withAttribute('fromAdmin', request_from_admin($request));
+
+    return $handler->handle($request);
 });

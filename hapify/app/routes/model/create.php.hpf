@@ -18,10 +18,9 @@ $_func = function (Request $request, Response $response, array $args) {
 <<? Ac !gs>>
  
     //Authentication
-    check_auth($this, $request);
+    check_auth($request);
 <<?>>
     
-    $fromAdmin = request_from_admin($request);
     $data = $request->getParsedBody();
  
     //Form validation
@@ -33,7 +32,7 @@ $_func = function (Request $request, Response $response, array $args) {
 <<? F rs/in>>
  
     // For admins only
-    if ($fromAdmin) {
+    if ($request->getAttribute('fromAdmin')) {
     <<@ F rs/in f>>
         $validator->rule('required', '<<f a_a>>'<<? f nu>>, true <<?>>)<<=validator(f)>>;
     <<@>>
@@ -44,10 +43,10 @@ $_func = function (Request $request, Response $response, array $args) {
         
         try {
 <<@ F tSp/in p>>
-                // Hash <<p a>>
-                if ($data['<<p a_a>>'] != '') {
-                    $data['<<p a_a>>'] = App\Library\Encryption::hash($data['<<p a_a>>']);
-                }
+            // Hash <<p a>>
+            if ($data['<<p a_a>>'] != '') {
+                $data['<<p a_a>>'] = App\Library\Encryption::hash($data['<<p a_a>>']);
+            }
 <<@>>
     
             $_data = App\Models\<<M AA>>::create(array(
@@ -57,7 +56,7 @@ $_func = function (Request $request, Response $response, array $args) {
 <<? F rs/in>>
                 // Init restricted fields
     <<@ F rs/in f>>
-                '<<f a_a>>' => $fromAdmin ? $data['<<f a_a>>'] : <<=defaultValue(f)>>,
+                '<<f a_a>>' => $request->getAttribute('fromAdmin') ? $data['<<f a_a>>'] : <<=defaultValue(f)>>,
     <<@>>
 <<?>>
 <<? F in/pr>>
@@ -99,7 +98,7 @@ function defaultValue(f) {
     let v = "null";
     
     if (f.ownership) {
-        v = f.multiple ? "array(1)" : "$this->get('credential')['_id']";
+        v = f.multiple ? "array(1)" : "$request->getAttribute('userId')";
     }
     else if (f.multiple) v = "array()";
     else if (f.type === "boolean") v = "false";

@@ -11,8 +11,9 @@ use App\Library\HttpException;
 $_func = function (Request $request, Response $response, array $args) {
 
 <<? Ar !gs>>
+ 
     //Authentication
-    check_auth($this, $request);
+    check_auth($request);
 <<?>>
  
     $data = App\Models\<<M AA>>::find($args['id']);
