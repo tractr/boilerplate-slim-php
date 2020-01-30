@@ -20,6 +20,7 @@ require __DIR__ . '/../app/config/session.php';
 
 use DI\Container;
 use Slim\Factory\AppFactory;
+
 use Psr\Http\Message\ServerRequestInterface;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use App\Library\RequestBodyMiddleWare;
@@ -27,6 +28,8 @@ use App\Library\CORSMiddleWare;
 use App\Library\JSONResponseMiddleWare;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use App\Library\HttpException;
+use Slim\Exception\HttpException as SlimHttpException;
 
 /**
  * --------------------------
@@ -153,7 +156,7 @@ $error_middleware_handler = function (ServerRequestInterface $request, Throwable
         ->withHeader('Content-Type', 'application/json');
 
     // App Error
-    if ($exception instanceof \App\Library\HttpException) {
+    if ($exception instanceof HttpException) {
 
         $response->getBody()->write(json_encode(array(
             'statusCode' => $exception->getCode(),
@@ -163,25 +166,37 @@ $error_middleware_handler = function (ServerRequestInterface $request, Throwable
         $response = $response->withStatus($exception->getCode());
     }
     // Slim Error
-    elseif ($exception instanceof \Slim\Exception\HttpException) {
+    elseif ($exception instanceof SlimHttpException) {
 
-        $response->getBody()->write(json_encode(array(
-            'statusCode' => $exception->getCode(),
-            'error' => \App\Library\HttpException::getStatusTextForCode($exception->getCode()),
-            'message' => $exception->getMessage()
-        )));
         $code = $exception->getCode();
-        if (!\App\Library\HttpException::isStatusCodeValid($code)) {
+        if (!HttpException::isStatusCodeValid($code)) {
             $code = 500;
         }
-        $response = $response->withStatus($code);
+        
+        // Avoid OPTIONS to catch all
+        if ($code === 405 && $exception->getMessage() === 'Method not allowed. Must be one of: OPTIONS') {
+            $response->getBody()->write(json_encode(array(
+                'statusCode' => 404,
+                'error' => HttpException::getStatusTextForCode(404),
+                'message' => 'Route not found'
+            )));
+            $response = $response->withStatus($exception->getCode());
+        }
+        else {
+            $response->getBody()->write(json_encode(array(
+                'statusCode' => $code,
+                'error' => HttpException::getStatusTextForCode($code),
+                'message' => $exception->getMessage()
+            )));
+            $response = $response->withStatus($code);
+        }
     }
     // Other errors
     else {
 
         $payload = array(
             'statusCode' => $exception->getCode(),
-            'error' => \App\Library\HttpException::getStatusTextForCode(500),
+            'error' => HttpException::getStatusTextForCode(500),
             'message' => $exception->getMessage()
         );
         if ($displayErrorDetails) {

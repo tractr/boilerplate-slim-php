@@ -1,6 +1,6 @@
 <?php
 
-use App\Library\Encryption;
+use Slim\Routing\RouteContext;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Slim\Psr7\Response;
@@ -168,9 +168,9 @@ function check_auth(Request $request)
 
 function request_from_admin(Request $request)
 {
-    $routes = $request->getAttribute('route');
-    
-    return boolval(preg_match('#^\/admin#', $routes->getPattern()));
+    $routeContext = RouteContext::fromRequest($request);
+
+    return boolval(preg_match('#^\/admin#', $routeContext->getRoute()->getPattern()));
 }
 
 /**
