@@ -39,24 +39,29 @@ $_func = function (Request $request, Response $response, array $args) {
     if ($validator->validate()) {
     
         try {
-    
-            $model = App\Models\<<M AA>>::create(array(
-<<@ F /rs/in f>>
-                '<<f a_a>>' => $data['<<f a_a>>'],
-<<@>>
+
 <<? F rs/in>>
-                // Init restricted fields
+ 
+            // Init restricted fields
+            if(!$request->getAttribute('fromAdmin')) {
     <<@ F rs/in f>>
-                '<<f a_a>>' => $request->getAttribute('fromAdmin') ? $data['<<f a_a>>'] : <<=defaultValue(f)>>,
+                $data['<<f a_a>>'] = <<=defaultValue(f)>>;
     <<@>>
+            }
 <<?>>
+ 
+            $model = new App\Models\Product();
+            $model->fill($data);
+
 <<? F in/pr>>
-                // Init internal fields
+ 
+            // Init internal fields
     <<@ F in/pr f>>
-                '<<f a_a>>' => <<=defaultValue(f)>>,
+            $model->setAttribute('<<f a_a>>', <<=defaultValue(f)>>);
     <<@>>
 <<?>>
-            ));
+ 
+            $model->save();
  
             $payload = json_encode($model);
             $response->getBody()->write($payload);
