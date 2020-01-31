@@ -72,6 +72,29 @@ class <<M AA>> extends BaseModel {
         return $this->intToBoolean('<<f a_a>>');
     }
 <<@>>
+
+<<@ F tO f>>
+ 
+    /**
+     * Get the field <<f a>>.
+     *
+     * @return mixed
+     */
+    public function get<<f AA>>Attribute()
+    {
+        return json_decode($this->attributes['<<f a_a>>']);
+    }
+ 
+    /**
+     * Set the field <<f a>>.
+     *
+     * @param  mixed  $value
+     */
+    public function set<<f AA>>Attribute($value)
+    {
+        $this->attributes['<<f a_a>>'] = json_encode($value);
+    }
+<<@>>
  
     /**
      * Get search cursor
