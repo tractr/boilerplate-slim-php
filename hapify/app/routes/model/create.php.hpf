@@ -50,7 +50,7 @@ $_func = function (Request $request, Response $response, array $args) {
             }
 <<?>>
  
-            $model = new App\Models\Product();
+            $model = new App\Models\<<M AA>>();
             $model->fill($data);
 
 <<? F in/pr>>
