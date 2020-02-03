@@ -17,6 +17,7 @@ $_func = function (Request $request, Response $response, array $args) {
     check_auth($request);
 <<?>>
  
+    /** @var App\Models\<<M AA>> $model */
     $model = App\Models\<<M AA>>::find($args['id']);
  
     if ($model == null) {
@@ -52,6 +53,11 @@ $_func = function (Request $request, Response $response, array $args) {
  
             $model->fill($data);
             $model->save();
+<<@ F tE*ml f>>
+ 
+            $model->_<<f a_a>>()->detach();
+            $model->_<<f a_a>>()->attach($data['<<f a_a>>']);
+<<@>>
  
             return $response->withStatus(204);
     
@@ -91,7 +97,11 @@ function validator(f) {
     else if (f.type === "datetime") {
         return "->rule('integer', '" + f.name + "')";
     }
-    else if (f.type === "entity") return "->rule('integer', '" + f.name + "')";
+    else if (f.type === "entity") {
+        return f.multiple ? 
+            "->rule('array', '" + f.name + "')" :
+            "->rule('integer', '" + f.name + "')";
+    }
     
     return '';
 }

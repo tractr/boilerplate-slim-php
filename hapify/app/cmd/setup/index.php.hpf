@@ -18,13 +18,29 @@ $schemaManager = $schema->getConnection()->getDoctrineSchemaManager();
 if (!$schema->hasTable('<<m a_a>>')) {
     $schema->create('<<m a_a>>', function (Blueprint $table) {
         $table->increments('<<m.f.pr R>>');
-    <<@ m.f.l /pr f>>
+    <<@ m.f /pr/ml f>>
         $table-><<= getColumnMethod(f)>>('<<f a_a>>'<<? f tE>>, false, true<<?>>)<<? f nu>>->nullable()<<?>>;
     <<@>>
     
         Helpers::output('', 'Did create table <<m a>>');
     });
 }
+
+    <<? m.f tE*ml>>
+ 
+// Many-to-many relationships for model <<m a>>
+        <<@ m.f tE*ml f>>
+if (!$schema->hasTable('<<m a_a>>__<<f a_a>>')) {
+    $schema->create('<<m a_a>>__<<f a_a>>', function (Blueprint $table) {
+        $table->increments('<<m.f.pr R>>');
+        $table->integer('<<m a_a>>', false, true);
+        $table->integer('<<f.m a_a>>', false, true);
+    
+        Helpers::output('', 'Did create relationship table <<m a>> to <<f a>>');
+    });
+}
+        <<@>>
+    <<?>>
 <<@>>
 
 // ==================================
@@ -37,7 +53,7 @@ $schema->table('<<m a_a>>', function (Blueprint $table) {
     global $schemaManager;
     $tableDetails = $schemaManager->listTableDetails($table->getTable());
 
-    <<@ m.f.l (se+so+un+tE)/pr f>>
+    <<@ m.f (se+so+un+tE)/ml/pr f>>
  
     if (!$tableDetails->hasIndex('<<m a_a>>_<<f a_a>>')) {
 
@@ -53,6 +69,27 @@ $schema->table('<<m a_a>>', function (Blueprint $table) {
     <<@>>
 
 });
+
+    <<? m.f tE*ml>>
+        <<@ m.f tE*ml f>>
+// Many-to-many relationships for field <<f a>>
+$schema->table('<<m a_a>>__<<f a_a>>', function (Blueprint $table) {
+    global $schemaManager;
+    $tableDetails = $schemaManager->listTableDetails($table->getTable());
+ 
+    if (!$tableDetails->hasIndex('<<m a_a>>')) {
+        $table->foreign('<<m a_a>>', '<<m a_a>>')->references('<<m.f.pr R>>')->on('<<m a_a>>')->onDelete('cascade');
+        Helpers::output('', 'Did create relationship index for <<m a_a>>__<<f a_a>>.<<m a>>');
+    }
+    if (!$tableDetails->hasIndex('<<f.m a_a>>')) {
+        $table->foreign('<<f.m a_a>>', '<<f.m a_a>>')->references('<<f.m.f.pr R>>')->on('<<f.m a_a>>')->onDelete('cascade');
+        Helpers::output('', 'Did create relationship index for <<m a_a>>__<<f a_a>>.<<f.m a>>');
+    }
+ 
+});
+        <<@>>
+    <<?>>
+
 <<@>>
 
 <<< 

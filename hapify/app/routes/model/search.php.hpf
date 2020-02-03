@@ -62,39 +62,35 @@ $_func = function (Request $request, Response $response, array $args) {
  
         $query = App\Models\<<M AA>>::getCursor($_get, $request);
         $total = $query->count();
-        $data_list = $query->orderBy($sort, $order)
+        /** @var App\Models\<<M AA>>[] $models */
+        $models = $query->orderBy($sort, $order)
                        ->skip($skip)
                        ->take($limit)
                        ->get();
  
-
-        // Populate relationships
+        // Push data to payload
         $result = array();
-        foreach($data_list as $data)
+        foreach($models as $model)
         {
-            //clone data into array
-            $clone = json_decode(json_encode($data), true);
+            // Clone data
+            $clone = json_decode(json_encode($model), true);
 <<? F tE*em>>
-            //populate relationship
+            // Populate relationships
     <<@ F tE*em f>>
-            $clone['<<f a_a>>'] = $data->_<<f a_a>>;
+            $clone['<<f a_a>>'] = $model->_<<f a_a>>;
     <<@>>
  
 <<?>>
             array_push($result, $clone);
         }
  
-        $data = array(
+        $response->getBody()->write(json_encode(array(
             'page' => $page ,
             'limit' => $limit,
             'count' => count($result),
             'total' => $total,
             'items' => $result
-        );
- 
-        $payload = json_encode($data);
- 
-        $response->getBody()->write($payload);
+        )));
         return $response->withStatus(200);
     }
  

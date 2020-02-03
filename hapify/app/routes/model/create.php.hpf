@@ -62,9 +62,11 @@ $_func = function (Request $request, Response $response, array $args) {
 <<?>>
  
             $model->save();
+<<@ F tE*ml f>>
+            $model->_<<f a_a>>()->attach($data['<<f a_a>>']);
+<<@>>
  
-            $payload = json_encode($model);
-            $response->getBody()->write($payload);
+            $response->getBody()->write($model->toJSON());
  
             return $response->withStatus(201);
                         
@@ -94,7 +96,7 @@ function defaultValue(f) {
     let v = "null";
     
     if (f.ownership) {
-        v = f.multiple ? "array(1)" : "$request->getAttribute('userId')";
+        v = f.multiple ? "array($request->getAttribute('userId'))" : "$request->getAttribute('userId')";
     }
     else if (f.multiple) v = "array()";
     else if (f.type === "boolean") v = "false";
@@ -124,7 +126,11 @@ function validator(f) {
     else if (f.type === "datetime") {
         return "->rule('integer', '" + f.name + "')";
     }
-    else if (f.type === "entity") return "->rule('integer', '" + f.name + "')";
+    else if (f.type === "entity") {
+        return f.multiple ? 
+            "->rule('array', '" + f.name + "')" :
+            "->rule('integer', '" + f.name + "')";
+    }
     
     return '';
 }

@@ -16,23 +16,23 @@ $_func = function (Request $request, Response $response, array $args) {
     check_auth($request);
 <<?>>
  
-    $data = App\Models\<<M AA>>::find($args['id']);
+    /** @var App\Models\<<M AA>> $model */
+    $model = App\Models\<<M AA>>::find($args['id']);
  
-    if ($data == null) {
+    if ($model == null) {
         // Entity was not found
         throw new HttpException(404, '<<M A>> not found');
     }
  
-    $payload = json_encode($data);
+    // Clone data
+    $payload = json_decode(json_encode($model), true);
  
-    //populate relationship
-    $payload = json_decode($payload, true);
+    // Populate relationship
 <<@ F tE/hd f>>
-    $payload['<<f a_a>>'] = $data->_<<f a_a>>;
+    $payload['<<f a_a>>'] = $model->_<<f a_a>>;
 <<@>>
-    $payload = json_encode($payload);
  
-    $response->getBody()->write($payload);
+    $response->getBody()->write(json_encode($payload));
     return $response->withStatus(201);
 };
  
