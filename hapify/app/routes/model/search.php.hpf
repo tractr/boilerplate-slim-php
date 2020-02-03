@@ -59,7 +59,7 @@ $_func = function (Request $request, Response $response, array $args) {
             // string wrong formed
             throw new HttpException(400, 'Missing sort and/or order parameters');
         }
-        
+ 
         $query = App\Models\<<M AA>>::getCursor($_get, $request);
         $total = $query->count();
         $data_list = $query->orderBy($sort, $order)
@@ -67,19 +67,21 @@ $_func = function (Request $request, Response $response, array $args) {
                        ->take($limit)
                        ->get();
  
-        //populate relation_ship
+
+        // Populate relationships
         $result = array();
         foreach($data_list as $data)
         {
             //clone data into array
-            $adr = json_encode($data);
-            $adr = json_decode($adr, true);
+            $clone = json_decode(json_encode($data), true);
+<<? F tE*em>>
             //populate relationship
-<<@ F tE+os/hd f>>
-            $adr['<<f a_a>>'] = $data-><<f a_a>>;
-<<@>>
+    <<@ F tE*em f>>
+            $clone['<<f a_a>>'] = $data->_<<f a_a>>;
+    <<@>>
  
-            array_push($result, $adr);
+<<?>>
+            array_push($result, $clone);
         }
  
         $data = array(

@@ -174,16 +174,21 @@ class <<M AA>> extends BaseModel {
     }
 
 <<@ F tE/hd f>>
+ 
     /**
      * Return entity list from relationship
-     * @return array
+    <<? f ml>>
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+    <<??>>
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+    <<?>>
      */
     public function _<<f a_a>>()
     {
     <<? f ml>>
-        return $this->belongsToMany('App\Models\<<f.m AA>>', '<<M a_a>>_<<f.m a_a>>', '<<f.m a_a>>_id', '<<M a_a>>_id');
+        return $this->hasMany('App\Models\<<f.m AA>>', '<<f.m.f.pr R>>', '<<f a_a>>');
     <<??>>
-        return $this->hasOne('App\Models\<<f.m AA>>', '_id', '<<f aA>>');
+        return $this->hasOne('App\Models\<<f.m AA>>', '<<f.m.f.pr R>>', '<<f a_a>>');
     <<?>>
     }
 <<@>>
