@@ -13,16 +13,21 @@ $_func = function (Request $request, Response $response, array $args) {
 <<? Ar !gs>>
  
     //Authentication
-    check_auth($request);
+    verify_credentials($request);
 <<?>>
  
     /** @var App\Models\<<M AA>> $model */
     $model = App\Models\<<M AA>>::find($args['id']);
- 
     if ($model == null) {
         // Entity was not found
         throw new HttpException(404, '<<M A>> not found');
     }
+
+<<? Ar ow>>
+ 
+    //Ownership
+    verify_ownership($request, $model-><<@1 F os o>><<o a_a>><<@>>);
+<<?>>
  
     // Clone data
     $payload = json_decode(json_encode($model), true);

@@ -13,24 +13,23 @@ $_func = function (Request $request, Response $response, array $args) {
 <<? Ad !gs>>
  
     //Authentication
-    check_auth($request);
+    verify_credentials($request);
 <<?>>
  
-    $data = App\Models\<<M AA>>::find($args['id']);
- 
-    if ($data == null) {
+    /** @var App\Models\<<M AA>> $model */
+    $model = App\Models\<<M AA>>::find($args['id']);
+    if ($model == null) {
         // Entity was not found
         throw new HttpException(404, '<<M A>> not found');
     }
-<<? Ad ow>>
 
-    if (<<@1 F os o>>$data-><<o a_a>> != $request->getAttribute('userId')<<@>>) {
-        //Enity not deletable
-        throw new HttpException(403, '<<M A>> not deletable');
-    }  
+<<? Ad ow>>
+ 
+    //Ownership
+    verify_ownership($request, $model-><<@1 F os o>><<o a_a>><<@>>);
 <<?>>
   
-    $data->delete();
+    $model->delete();
  
     return $response->withStatus(204);
 };

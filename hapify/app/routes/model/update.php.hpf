@@ -14,16 +14,21 @@ $_func = function (Request $request, Response $response, array $args) {
 <<? Au !gs>>
  
     //Authentication
-    check_auth($request);
+    verify_credentials($request);
 <<?>>
  
     /** @var App\Models\<<M AA>> $model */
     $model = App\Models\<<M AA>>::find($args['id']);
- 
     if ($model == null) {
         // Entity was not found
         throw new HttpException(404, '<<M A>> not found');
     }
+
+<<? Au ow>>
+ 
+    //Ownership
+    verify_ownership($request, $model-><<@1 F os o>><<o a_a>><<@>>);
+<<?>>
  
     $data = $request->getParsedBody();
     

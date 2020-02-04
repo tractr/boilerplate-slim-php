@@ -14,7 +14,7 @@ $_func = function (Request $request, Response $response, array $args) {
 <<? An !gs>>
  
     //Authentication
-    check_auth($request);
+    verify_credentials($request);
 <<?>>
  
     $_get = $request->getQueryParams();

@@ -131,25 +131,52 @@ function delete_current_session()
 
 /**
  * --------------------------
- * CHECK AUTHENTICATION
+ * VERIFY AUTHENTICATION
  * --------------------------
- * check if current session is authenticated
+ * check if current session is authenticated and may have access to admin (if necessary)
  * @param Request $request
  * @return bool
  * @throws HttpException
- * @throws \DI\DependencyException
- * @throws \DI\NotFoundException
  */
 
-function check_auth(Request $request)
+function verify_credentials(Request $request)
 {
-	$session_data = $request->getAttribute('credentials');
+    $session_data = $request->getAttribute('credentials');
     if ($session_data == null) {
-    	// user doesn't have current session
+        // user doesn't have current session
         throw new HttpException(401, 'You must authenticate to access this resource');
     }
 
     if ($request->getAttribute('fromAdmin') && $session_data['role'] !== 'admin') {
+        // user doesn't have current session
+        throw new HttpException(403, 'You are not allowed to access this resource');
+    }
+
+    return true;
+}
+
+/**
+ * --------------------------
+ * VERIFY OWNERSHIP
+ * --------------------------
+ * check if current session is authorized to access this resource
+ * @param Request $request
+ * @param int|int[] $ownerIds
+ * @return bool
+ * @throws HttpException
+ */
+
+function verify_ownership(Request $request, $ownerIds)
+{
+    if (!is_array($ownerIds)) {
+        $ownerIds = [$ownerIds];
+    }
+    $session_data = $request->getAttribute('credentials');
+
+    if (
+        $session_data === null ||
+        ($session_data['role'] !== 'admin' && !in_array($session_data['_id'], $ownerIds))
+    ) {
         // user doesn't have current session
         throw new HttpException(403, 'You are not allowed to access this resource');
     }
@@ -224,7 +251,7 @@ $app->post('/password/login', function (Request $request, Response $response, ar
 
 $app->get('/session', function (Request $request, Response $response, array $args) {
 
-    check_auth($request);
+    verify_credentials($request);
 
     $payload = json_encode($request->getAttribute('credentials'));
 
@@ -241,7 +268,7 @@ $app->get('/session', function (Request $request, Response $response, array $arg
 
 $app->delete('/session', function (Request $request, Response $response, array $args) {
 
-    check_auth($request);
+    verify_credentials($request);
 
     delete_current_session();
 
