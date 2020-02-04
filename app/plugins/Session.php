@@ -4,9 +4,11 @@ namespace App\Plugins;
 
 use App\Library\Encryption;
 use App\Library\HttpException;
+use DI\Container;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
+use Illuminate\Database\Capsule\Manager as Capsule;
 use Slim\App;
 use Slim\Psr7\Response;
 use Slim\Routing\RouteContext;
@@ -15,11 +17,43 @@ use Valitron\Validator as Validator;
 class Session
 {
     /**
-     * Add routes to Slim App
-     * @param App $app
+     * @var array
      */
-    public static function register(App $app)
+    private $config;
+    /**
+     * @var App
+     */
+    private App $app;
+    /**
+     * @var Container
+     */
+    private Container $container;
+    /**
+     * @var Capsule
+     */
+    private Capsule $capsule;
+
+    /**
+     * Session constructor.
+     * @param App $app
+     * @param Capsule $capsule
+     * @param $config
+     */
+    public function __construct(App $app, Capsule $capsule, $config) {
+        $this->config = $config;
+        $this->app = $app;
+        $this->capsule = $capsule;
+        $this->container = $this->app->getContainer();
+    }
+
+    /**
+     * Add routes to Slim App
+     * @return $this
+     */
+    public function register()
     {
+        // Store current this
+        $plugin = $this;
 
         /**
          * --------------------------
@@ -27,9 +61,8 @@ class Session
          * --------------------------
          * Authenticate user and return current session
          */
-        $app->post('/password/login', function (Request $request, Response $response, array $args) {
+        $this->app->post('/password/login', function (Request $request, Response $response, array $args) use ($plugin) {
 
-            global $capsule;
             $data = $request->getParsedBody();
 
             //Form validation
@@ -40,7 +73,7 @@ class Session
 
             if ($validator->validate()) {
 
-                $user = $capsule::table('user')->where('email', $data['email'])->first();
+                $user = $plugin->capsule->table('user')->where('email', $data['email'])->first();
 
                 if ($user == null) {
                     throw new HttpException(401, 'User not found or wrong password');
@@ -49,7 +82,7 @@ class Session
                 //On vérifie la cohérence du mot de passe
                 if (Encryption::test($data['password'], $user->password)) {
                     //Enregistrement du cookie
-                    $session_data = Session::createSession($user);
+                    $session_data = $plugin->createSession($user);
 
                     $response->getBody()->write(json_encode($session_data));
                     return $response->withStatus(201);
@@ -69,9 +102,9 @@ class Session
          * get user current session
          */
 
-        $app->get('/session', function (Request $request, Response $response, array $args) {
+        $this->app->get('/session', function (Request $request, Response $response, array $args) use ($plugin) {
 
-            Session::verifyCredentials($request);
+            $plugin->verifyCredentials($request);
 
             $payload = json_encode($request->getAttribute('credentials'));
 
@@ -86,11 +119,11 @@ class Session
          * delete user current session
          */
 
-        $app->delete('/session', function (Request $request, Response $response, array $args) {
+        $this->app->delete('/session', function (Request $request, Response $response, array $args) use ($plugin) {
 
-            Session::verifyCredentials($request);
+            $plugin->verifyCredentials($request);
 
-            Session::deleteCurrentSession();
+            $plugin->deleteCurrentSession();
 
             return $response->withStatus(204);
         });
@@ -102,19 +135,21 @@ class Session
          * --------------------------
          * Add metadata to current session
          */
-        $app->add(function (Request $request, RequestHandler $handler): ResponseInterface {
+        $this->app->add(function (Request $request, RequestHandler $handler) use ($plugin): ResponseInterface {
 
             // add the session data
-            $sessionData = Session::getCurrentSession();
+            $sessionData = $plugin->getCurrentSession();
             $request = $request->withAttribute('credentials', $sessionData);
             // Shortcut to user's id
             $request = $request->withAttribute('userId', $sessionData !== NULL ? $sessionData['_id'] : NULL);
 
             // Denotes if the request is from admin
-            $request = $request->withAttribute('fromAdmin', Session::requestFromAdmin($request));
+            $request = $request->withAttribute('fromAdmin', $plugin->requestFromAdmin($request));
 
             return $handler->handle($request);
         });
+
+        return $this;
     }
 
     /**
@@ -123,11 +158,9 @@ class Session
      * --------------------------
      * get current cookie value usign cookie configuration index name
      */
-    private static function getCookieValue()
+    private function getCookieValue()
     {
-        global $config;
-
-        return isset($_COOKIE[$config['cookie']['name']]) ? $_COOKIE[$config['cookie']['name']] : null;
+        return isset($_COOKIE[$this->config['name']]) ? $_COOKIE[$this->config['name']] : null;
     }
 
     /**
@@ -140,9 +173,8 @@ class Session
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
      */
-    private static function createSession($user)
+    private function createSession($user)
     {
-        global $config, $container;
         //write session inside file
 
         //set cookie with uniq_id
@@ -156,17 +188,17 @@ class Session
         );
 
         // Store the session in Redis
-        $container->get('redis')->setex("sid-{$uniq_id}", $config['cookie']['expire'], json_encode($data));
+        $this->container->get('redis')->setex("sid-{$uniq_id}", $this->config['expire'], json_encode($data));
 
         // Set cookie with uniq id
         setcookie(
-            $config['cookie']['name'],
+            $this->config['name'],
             $uniq_id,
-            time() + $config['cookie']['expire'],
-            $config['cookie']['path'],
-            $config['cookie']['domain'],
-            $config['cookie']['secure'],
-            $config['cookie']['httponly']
+            time() + $this->config['expire'],
+            $this->config['path'],
+            $this->config['domain'],
+            $this->config['secure'],
+            $this->config['httponly']
         );
 
         return $data;
@@ -181,16 +213,15 @@ class Session
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
      */
-    private static function getCurrentSession()
+    private function getCurrentSession()
     {
-        global $container;
-        $uniq_id = Session::getCookieValue();
+        $uniq_id = $this->getCookieValue();
 
         if (!$uniq_id) {
             return null;
         }
 
-        $content = $container->get('redis')->get("sid-{$uniq_id}");
+        $content = $this->container->get('redis')->get("sid-{$uniq_id}");
 
         if (!$content) {
             return null;
@@ -208,20 +239,19 @@ class Session
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
      */
-    private static function deleteCurrentSession()
+    private function deleteCurrentSession()
     {
-        global $config, $container;
-        $uniq_id = Session::getCookieValue();
+        $uniq_id = $this->getCookieValue();
 
         if (!$uniq_id) {
             return false;
         }
 
-        $container->get('redis')->del("sid-{$uniq_id}");
+        $this->container->get('redis')->del("sid-{$uniq_id}");
 
         // Remove cookie
         setcookie(
-            $config['cookie']['name'],
+            $this->config['name'],
             null
         );
 
@@ -237,7 +267,7 @@ class Session
      * @return bool
      * @throws HttpException
      */
-    public static function verifyCredentials(Request $request)
+    public function verifyCredentials(Request $request)
     {
         $session_data = $request->getAttribute('credentials');
         if ($session_data == null) {
@@ -263,7 +293,7 @@ class Session
      * @return bool
      * @throws HttpException
      */
-    public static function verifyOwnership(Request $request, $ownerIds)
+    public function verifyOwnership(Request $request, $ownerIds)
     {
         if (!is_array($ownerIds)) {
             $ownerIds = [$ownerIds];
@@ -289,7 +319,7 @@ class Session
      * @param Request $request
      * @return boolean
      */
-    private static function requestFromAdmin(Request $request)
+    private function requestFromAdmin(Request $request)
     {
         $routeContext = RouteContext::fromRequest($request);
 

@@ -117,7 +117,8 @@ foreach ($routes as $route) {
  * SESSION PLUGIN
  * --------------------------
  */
-Session::register($app);
+$sessionPlugin = new Session($app, $capsule, $config['cookie']);
+$container->set('session', $sessionPlugin->register());
 
 /**
  * --------------------------

@@ -15,7 +15,7 @@ $_func = function (Request $request, Response $response, array $args) {
 <<? Ac !gs>>
  
     //Authentication
-    App\Plugins\Session::verifyCredentials($request);
+    $this->get('session')->verifyCredentials($request);
 <<?>>
     
     $data = $request->getParsedBody();
