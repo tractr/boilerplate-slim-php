@@ -22,9 +22,9 @@ $config['cookie']['name'] = 'sid-api';
  * --------------------------
  * EXPIRE
  * --------------------------
- * Time before cookie expire. In this case, it will take one year from now.
+ * Time before cookie expire.
  */
-$config['cookie']['expire'] = 365 * 24 * 3600;
+$config['cookie']['expire'] = 3 * 24 * 3600; // 3 Days in seconds
 
 /**
  * --------------------------

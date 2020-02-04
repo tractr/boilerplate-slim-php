@@ -27,19 +27,18 @@ function get_cookie_value()
  * CREATE SESSION
  * --------------------------
  * create new session and cache it
+ * @param \Illuminate\Database\Eloquent\Model $user
+ * @return array
+ * @throws \DI\DependencyException
+ * @throws \DI\NotFoundException
  */
-
 function create_session($user)
 {
-    global $config;
+    global $config, $container;
     //write session inside file
 
     //set cookie with uniq_id
-    $uniq_id = uniqid();
-
-    //folder and file path
-    $folder_path = dirname(__DIR__) . '/cache';
-    $file_path = $folder_path . '/' . $uniq_id . '.json';
+    $uniq_id = uniqid(true);
 
     $data = array(
         '_id' => $user->_id,
@@ -48,31 +47,19 @@ function create_session($user)
         'role' => $user->role
     );
 
-    if (!is_dir($folder_path)) {
-        mkdir($folder_path, 777);
-    }
+    // Store the session in Redis
+    $container->get('redis')->setex("sid-{$uniq_id}", $config['cookie']['expire'], json_encode($data));
 
-    if ($file = @fopen($file_path, 'c+')) {
-        $granted = true;
-    }
-
-    if ($granted || !file_exists($file_path)) {
-
-        setcookie(
-            $config['cookie']['name'],
-            $uniq_id,
-            time() + $config['cookie']['expire'],
-            $config['cookie']['path'],
-            $config['cookie']['domain'],
-            $config['cookie']['secure'],
-            $config['cookie']['httponly']
-        );
-
-        flock($file, LOCK_EX);
-        fwrite($file, json_encode($data));
-        flock($file, LOCK_UN);
-        fclose($file);
-    }
+    // Set cookie with uniq id
+    setcookie(
+        $config['cookie']['name'],
+        $uniq_id,
+        time() + $config['cookie']['expire'],
+        $config['cookie']['path'],
+        $config['cookie']['domain'],
+        $config['cookie']['secure'],
+        $config['cookie']['httponly']
+    );
 
     return $data;
 }
@@ -82,23 +69,26 @@ function create_session($user)
  * GET CURRENT SESSION
  * --------------------------
  * fetch current session cache
+ * @return array|null
+ * @throws \DI\DependencyException
+ * @throws \DI\NotFoundException
  */
-
 function get_current_session()
 {
-    $cookie_value = get_cookie_value();
+    global $container;
+    $uniq_id = get_cookie_value();
 
-    $folder_path = dirname(__DIR__) . '/cache';
-    $file_path = $folder_path . '/' . $cookie_value . '.json';
-
-    if (!file_exists($file_path)) {
+    if (!$uniq_id) {
         return null;
     }
 
-    return json_decode(
-        file_get_contents($file_path),
-        true
-    );
+    $content = $container->get('redis')->get("sid-{$uniq_id}");
+
+    if (!$content) {
+        return null;
+    }
+
+    return json_decode($content, true);
 }
 
 /**
@@ -106,21 +96,22 @@ function get_current_session()
  * DELETE CURRENT SESSION
  * --------------------------
  * delete current session
+ * @return bool
+ * @throws \DI\DependencyException
+ * @throws \DI\NotFoundException
  */
-
 function delete_current_session()
 {
-    global $config;
-    $cookie_value = get_cookie_value();
+    global $config, $container;
+    $uniq_id = get_cookie_value();
 
-    $folder_path = dirname(__DIR__) . '/cache';
-    $file_path = $folder_path . '/' . $cookie_value . '.json';
-
-    if (!file_exists($file_path)) {
+    if (!$uniq_id) {
         return false;
     }
 
-    unlink($file_path);
+    $container->get('redis')->del("sid-{$uniq_id}");
+
+    // Remove cookie
     setcookie(
         $config['cookie']['name'],
         null

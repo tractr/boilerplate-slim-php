@@ -14,9 +14,7 @@ $loader->addPsr4('App\\Library\\', __DIR__ . '/../app/library');
 /**
  * Init configuration
  */
-require __DIR__ . '/../app/config/config.php';
-require __DIR__ . '/../app/config/database.php';
-require __DIR__ . '/../app/config/session.php';
+require __DIR__ . '/../app/config/index.php';
 
 use DI\Container;
 use Monolog\Handler\StreamHandler;
@@ -76,6 +74,17 @@ $capsule = new Capsule;
 $capsule->addConnection($config['db']);
 $capsule->bootEloquent();
 $capsule->setAsGlobal();
+
+/**
+ * --------------------------
+ * REDIS
+ * --------------------------
+ * Used for not persistent data
+ */
+
+$container->set('redis', function () use ($config) {
+    return new Predis\Client($config['redis']);
+});
 
 /**
  * --------------------------

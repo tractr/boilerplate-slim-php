@@ -7,6 +7,7 @@
         "monolog/monolog": "^2.0",
         "php-di/slim-bridge": "^3.0",
         "doctrine/dbal": "^2.10",
-        "ext-json": "*"
+        "ext-json": "*",
+        "predis/predis": "^1.1"
     }
 }
