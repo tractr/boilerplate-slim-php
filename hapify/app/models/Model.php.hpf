@@ -117,7 +117,9 @@ class <<M AA>> extends BaseModel {
         // Filter by related <<f a_a>>
         if (isset($filter['<<f a_a>>'])) {
         <<? f ml >>
-            $query = $query->whereIn('<<f a_a>>', is_array($filter['<<f a_a>>']) ? $filter['<<f a_a>>'] : [$filter['<<f a_a>>']]);
+            $query = $query->whereHas('_<<f a_a>>', function(\Illuminate\Database\Eloquent\Builder $query) use ($filter) {
+                $query->whereIn('<<f.m a_a>>', is_array($filter['<<f a_a>>']) ? $filter['<<f a_a>>'] : [$filter['<<f a_a>>']], 'and');
+            });
         <<??>>
             $query = $query->where('<<f a_a>>', $filter['<<f a_a>>']);
         <<?>>

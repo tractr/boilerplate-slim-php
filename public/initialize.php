@@ -26,6 +26,7 @@ use Illuminate\Database\Capsule\Manager as Capsule;
 use App\Library\RequestBodyMiddleWare;
 use App\Library\CORSMiddleWare;
 use App\Library\JSONResponseMiddleWare;
+use App\Library\QueryStringMiddleWare;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use App\Library\HttpException;
@@ -106,6 +107,14 @@ foreach ($routes as $route) {
  * --------------------------
  */
 require __DIR__ . '/../app/plugins/session.php';
+
+/**
+ * --------------------------
+ * QUERY STRING MIDDLEWARE
+ * --------------------------
+ * Object used to parse query string
+ */
+$app->add(new QueryStringMiddleWare());
 
 /**
  * --------------------------
