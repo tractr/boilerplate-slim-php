@@ -5,7 +5,7 @@
  * CONFIGURATION
  * --------------------------
  * This file will contain the application's configuration.
- * 
+ *
  */
 
 

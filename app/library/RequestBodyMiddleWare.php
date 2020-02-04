@@ -45,27 +45,23 @@ class RequestBodyMiddleWare implements MiddlewareInterface
         array_pop($a_blocks);
 
         // loop data blocks
-        foreach ($a_blocks as $id => $block)
-        {
+        foreach ($a_blocks as $id => $block) {
             if (empty($block))
-              continue;
+                continue;
 
             // you'll have to var_dump $block to understand this and maybe replace \n or \r with a visible char
 
             // parse uploaded files
-            if (strpos($block, 'application/octet-stream') !== FALSE)
-            {
-              // match "name", then everything after "stream" (optional) except for prepending newlines 
-              preg_match("/name=\"([^\"]*)\".*stream[\n|\r]+([^\n\r].*)?$/s", $block, $matches);
-            }
-            // parse all other fields
-            else
-            {
-              // match "name" and optional value in between newline sequences
-              preg_match('/name=\"([^\"]*)\"[\n|\r]+([^\n\r].*)?\r$/s', $block, $matches);
+            if (strpos($block, 'application/octet-stream') !== FALSE) {
+                // match "name", then everything after "stream" (optional) except for prepending newlines
+                preg_match("/name=\"([^\"]*)\".*stream[\n|\r]+([^\n\r].*)?$/s", $block, $matches);
+            } // parse all other fields
+            else {
+                // match "name" and optional value in between newline sequences
+                preg_match('/name=\"([^\"]*)\"[\n|\r]+([^\n\r].*)?\r$/s', $block, $matches);
             }
             $a_data[$matches[1]] = $matches[2];
-        }        
+        }
 
         return $a_data;
     }

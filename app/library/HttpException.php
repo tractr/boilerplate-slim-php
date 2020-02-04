@@ -1,11 +1,11 @@
 <?php
 
-
 namespace App\Library;
 
+use Exception;
 use Valitron\Validator as Validator;
 
-class HttpException extends \Exception
+class HttpException extends Exception
 {
     /**
      * List of HTTP status codes
@@ -125,7 +125,7 @@ class HttpException extends \Exception
         $errors = $validator->errors();
         $fields = [];
         foreach ($errors as $key => $list) {
-            array_push($fields, join('. ', $list).'.');
+            array_push($fields, join('. ', $list) . '.');
         }
         $message = join(' | ', $fields);
         return new static(400, $message);
@@ -134,10 +134,10 @@ class HttpException extends \Exception
     /**
      * Create an internal error from an Exception
      *
-     * @param \Exception $exception
+     * @param Exception $exception
      * @return HttpException
      */
-    public static function internal(\Exception $exception)
+    public static function internal(Exception $exception)
     {
         return new static(500, $exception->getMessage());
     }

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Library;
-
 
 class Encryption
 {
@@ -12,9 +10,10 @@ class Encryption
      * @param $password string
      * @return string
      */
-    public static function hash($password) {
+    public static function hash($password)
+    {
         global $config;
-        return md5($config['encryptionSalt'].$password);
+        return md5($config['encryptionSalt'] . $password);
     }
 
     /**
@@ -24,7 +23,8 @@ class Encryption
      * @param $encrypted string
      * @return bool
      */
-    public static function test($password, $encrypted) {
+    public static function test($password, $encrypted)
+    {
         return static::hash($password) === $encrypted;
     }
 }

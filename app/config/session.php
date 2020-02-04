@@ -5,7 +5,7 @@
  * SESSION
  * --------------------------
  * This file will contain the application's session default configuration.
- * 
+ *
  */
 
 
@@ -62,6 +62,6 @@ $config['cookie']['httponly'] = false;
  * --------------------------
  * OPTIONS
  * --------------------------
- * An associative array which may have any of the keys expires, path, domain, secure, httponly and samesite. 
+ * An associative array which may have any of the keys expires, path, domain, secure, httponly and samesite.
  */
 $config['cookie']['options'] = null;

@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 /**
  * ---------------------------
@@ -19,6 +19,8 @@ require __DIR__ . '/../app/config/database.php';
 require __DIR__ . '/../app/config/session.php';
 
 use DI\Container;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 use Slim\Factory\AppFactory;
 
 use Psr\Http\Message\ServerRequestInterface;
@@ -57,8 +59,8 @@ $app = AppFactory::create();
  */
 
 $container->set('logger', function () {
-    $logger = new \Monolog\Logger('appLogger');
-    $file_handler = new \Monolog\Handler\StreamHandler('../logs/app.log');
+    $logger = new Logger('appLogger');
+    $file_handler = new StreamHandler('../logs/app.log');
     $logger->pushHandler($file_handler);
     return $logger;
 });
@@ -95,8 +97,7 @@ foreach ($routes as $route) {
                 require_once($sub_route);
             }
         }
-    }
-    else{
+    } else {
         require_once($route);
     }
 }
@@ -173,15 +174,14 @@ $error_middleware_handler = function (ServerRequestInterface $request, Throwable
             'message' => $exception->getMessage()
         )));
         $response = $response->withStatus($exception->getCode());
-    }
-    // Slim Error
+    } // Slim Error
     elseif ($exception instanceof SlimHttpException) {
 
         $code = $exception->getCode();
         if (!HttpException::isStatusCodeValid($code)) {
             $code = 500;
         }
-        
+
         // Avoid OPTIONS to catch all
         if ($code === 405 && $exception->getMessage() === 'Method not allowed. Must be one of: OPTIONS') {
             $response->getBody()->write(json_encode(array(
@@ -190,8 +190,7 @@ $error_middleware_handler = function (ServerRequestInterface $request, Throwable
                 'message' => 'Route not found'
             )));
             $response = $response->withStatus(404);
-        }
-        else {
+        } else {
             $response->getBody()->write(json_encode(array(
                 'statusCode' => $code,
                 'error' => HttpException::getStatusTextForCode($code),
@@ -199,8 +198,7 @@ $error_middleware_handler = function (ServerRequestInterface $request, Throwable
             )));
             $response = $response->withStatus($code);
         }
-    }
-    // Other errors
+    } // Other errors
     else {
 
         $payload = array(

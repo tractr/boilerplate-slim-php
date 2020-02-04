@@ -45,8 +45,7 @@ class QueryStringMiddleWare implements MiddlewareInterface
                     $output[$name] = [];
                 }
                 $output[$name][] = $value;
-            }
-            // if name already exists
+            } // if name already exists
             elseif (isset($output[$name])) {
                 # stick multiple values into an array
                 if (is_array($output[$name])) {
@@ -54,8 +53,7 @@ class QueryStringMiddleWare implements MiddlewareInterface
                 } else {
                     $output[$name] = [$output[$name], $value];
                 }
-            }
-            // otherwise, simply stick it in a scalar
+            } // otherwise, simply stick it in a scalar
             else {
                 $output[$name] = $value;
             }

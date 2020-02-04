@@ -1,10 +1,12 @@
-<?php 
+<?php
 
 namespace App\Models;
 
+use DateTime;
 use Illuminate\Database\Eloquent\Model;
 
-class BaseModel extends Model {
+class BaseModel extends Model
+{
 
     /**
      * The primary key associated with the table.
@@ -51,7 +53,7 @@ class BaseModel extends Model {
     protected function dateToTimestamp($attribute)
     {
         return $this->attributes[$attribute] ?
-            \DateTime::createFromFormat($this->dateFormat, $this->attributes[$attribute])->getTimestamp() * 1000 :
+            DateTime::createFromFormat($this->dateFormat, $this->attributes[$attribute])->getTimestamp() * 1000 :
             NULL;
     }
 
@@ -82,7 +84,6 @@ class BaseModel extends Model {
         $n = new static();
         return date($n->dateFormat, intval($value) / 1000);
     }
-
 
 
 }
