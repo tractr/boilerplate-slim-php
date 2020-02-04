@@ -44,13 +44,14 @@ class Session
         $this->app = $app;
         $this->capsule = $capsule;
         $this->container = $this->app->getContainer();
+        $this->register();
     }
 
     /**
      * Add routes to Slim App
      * @return $this
      */
-    public function register()
+    private function register()
     {
         // Store current this
         $plugin = $this;
