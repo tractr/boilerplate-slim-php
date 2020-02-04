@@ -14,7 +14,7 @@ $_func = function (Request $request, Response $response, array $args) {
 <<? As !gs>>
  
     //Authentication
-    verify_credentials($request);
+    App\Plugins\Session::verifyCredentials($request);
 <<?>>
  
     $_get = $request->getQueryParams();

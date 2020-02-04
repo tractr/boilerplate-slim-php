@@ -13,7 +13,7 @@ $_func = function (Request $request, Response $response, array $args) {
 <<? Ad !gs>>
  
     //Authentication
-    verify_credentials($request);
+    App\Plugins\Session::verifyCredentials($request);
 <<?>>
  
     /** @var App\Models\<<M AA>> $model */
@@ -26,7 +26,7 @@ $_func = function (Request $request, Response $response, array $args) {
 <<? Ad ow>>
  
     //Ownership
-    verify_ownership($request, $model-><<@1 F os o>><<o a_a>><<@>>);
+    App\Plugins\Session::verifyOwnership($request, $model-><<@1 F os o>><<o a_a>><<@>>);
 <<?>>
   
     $model->delete();

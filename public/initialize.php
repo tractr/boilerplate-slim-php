@@ -8,6 +8,7 @@
  */
 
 $loader = require __DIR__ . '/../vendor/autoload.php';
+$loader->addPsr4('App\\Plugins\\', __DIR__ . '/../app/plugins');
 $loader->addPsr4('App\\Models\\', __DIR__ . '/../app/models');
 $loader->addPsr4('App\\Library\\', __DIR__ . '/../app/library');
 
@@ -16,21 +17,21 @@ $loader->addPsr4('App\\Library\\', __DIR__ . '/../app/library');
  */
 require __DIR__ . '/../app/config/index.php';
 
-use DI\Container;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
-use Slim\Factory\AppFactory;
-
-use Psr\Http\Message\ServerRequestInterface;
-use Illuminate\Database\Capsule\Manager as Capsule;
-use App\Library\RequestBodyMiddleWare;
 use App\Library\CORSMiddleWare;
+use App\Library\HttpException;
 use App\Library\JSONResponseMiddleWare;
 use App\Library\QueryStringMiddleWare;
+use App\Library\RequestBodyMiddleWare;
+use App\Plugins\Session;
+use DI\Container;
+use Illuminate\Database\Capsule\Manager as Capsule;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use App\Library\HttpException;
 use Slim\Exception\HttpException as SlimHttpException;
+use Slim\Factory\AppFactory;
 
 /**
  * --------------------------
@@ -116,7 +117,7 @@ foreach ($routes as $route) {
  * SESSION PLUGIN
  * --------------------------
  */
-require __DIR__ . '/../app/plugins/session.php';
+Session::register($app);
 
 /**
  * --------------------------
