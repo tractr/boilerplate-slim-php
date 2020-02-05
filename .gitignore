@@ -1,4 +1,5 @@
 vendor
+logs/*.log
 
 # Generated files. Remove these lines after generation
 app/routes/**
