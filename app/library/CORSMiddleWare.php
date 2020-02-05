@@ -7,6 +7,11 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 
+/**
+ * Class CORSMiddleWare
+ * Adds CORS header to response
+ * @package App\Library
+ */
 class CORSMiddleWare implements MiddlewareInterface
 {
     public function process(Request $request, RequestHandler $handler): Response

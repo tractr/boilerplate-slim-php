@@ -24,13 +24,4 @@ $config['displayErrorDetails'] = true;
  * --------------------------
  * Turn this on to add content-length header in responses
  */
-$config['addContentLengthHeader'] = false;
-
-
-/**
- * --------------------------
- * PASSWORD SALT
- * --------------------------
- * Used to salt password encryption
- */
-$config['encryptionSalt'] = 'lkO4qe1Xd2SQKlnwsH41zkfNVGj1FYte2GVsoAISK4VWb3Qc8M6fKfKw29xIYbn3';
+$config['addContentLengthHeader'] = true;

@@ -5,9 +5,9 @@ namespace App\Library;
 class Encryption
 {
     /**
-     * Encryption a password
+     * Encrypt a password
      *
-     * @param $password string
+     * @param string $password
      * @return string
      */
     public static function hash($password)

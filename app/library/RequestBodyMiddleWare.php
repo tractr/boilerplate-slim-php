@@ -7,6 +7,11 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 
+/**
+ * Class RequestBodyMiddleWare
+ * Parses request body: JSON, multipart/form-data & application/x-www-form-urlencoded
+ * @package App\Library
+ */
 class RequestBodyMiddleWare implements MiddlewareInterface
 {
     public function process(Request $request, RequestHandler $handler): Response

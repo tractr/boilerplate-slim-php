@@ -7,6 +7,13 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 
+/**
+ * Class QueryStringMiddleWare
+ * Deals with multiple array formats in query string:
+ *   ?stack=1&stack=2
+ *   ?stack[]=1&stack[]=2
+ * @package App\Library
+ */
 class QueryStringMiddleWare implements MiddlewareInterface
 {
     public function process(Request $request, RequestHandler $handler): Response

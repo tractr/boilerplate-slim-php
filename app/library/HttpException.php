@@ -70,7 +70,9 @@ class HttpException extends Exception
     );
 
     /**
-     * @param int[optional]    $statusCode  If NULL will use 500 as default
+     * HttpException constructor.
+     *
+     * @param int[optional]    $statusCode  If NULL, use 500 as default
      * @param string[optional] $message
      */
     public function __construct($statusCode = 500, $message = null)
@@ -89,9 +91,9 @@ class HttpException extends Exception
     }
 
     /**
-     * Return the status text.
+     * Get the status text from a code
      *
-     * @param $code integer
+     * @param integer $code
      * @return string
      */
     public static function getStatusTextForCode($code)

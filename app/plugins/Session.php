@@ -5,6 +5,9 @@ namespace App\Plugins;
 use App\Library\Encryption;
 use App\Library\HttpException;
 use DI\Container;
+use DI\DependencyException;
+use DI\NotFoundException;
+use Illuminate\Database\Eloquent\Model;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
@@ -134,7 +137,7 @@ class Session
          * --------------------------
          * SESSION MIDDLEWARE
          * --------------------------
-         * Add metadata to current session
+         * Add metadata to current request
          */
         $this->app->add(function (Request $request, RequestHandler $handler) use ($plugin): ResponseInterface {
 
@@ -144,7 +147,7 @@ class Session
             // Shortcut to user's id
             $request = $request->withAttribute('userId', $sessionData !== NULL ? $sessionData['_id'] : NULL);
 
-            // Denotes if the request is from admin
+            // Denotes if the request is admin
             $request = $request->withAttribute('fromAdmin', $plugin->requestFromAdmin($request));
 
             return $handler->handle($request);
@@ -157,7 +160,7 @@ class Session
      * --------------------------
      * GET COOKIE VALUE
      * --------------------------
-     * get current cookie value usign cookie configuration index name
+     * get current cookie value using cookie configuration index name
      */
     private function getCookieValue()
     {
@@ -169,16 +172,14 @@ class Session
      * CREATE SESSION
      * --------------------------
      * create new session and cache it
-     * @param \Illuminate\Database\Eloquent\Model $user
+     * @param Model $user
      * @return array
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     private function createSession($user)
     {
-        //write session inside file
-
-        //set cookie with uniq_id
+        // set cookie with uniq id
         $uniq_id = uniqid(true);
 
         $data = array(
@@ -211,8 +212,8 @@ class Session
      * --------------------------
      * fetch current session cache
      * @return array|null
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     private function getCurrentSession()
     {
@@ -237,8 +238,8 @@ class Session
      * --------------------------
      * delete current session
      * @return bool
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     private function deleteCurrentSession()
     {
@@ -277,7 +278,7 @@ class Session
         }
 
         if ($request->getAttribute('fromAdmin') && $session_data['role'] !== 'admin') {
-            // user doesn't have current session
+            // user doesn't enough permissions
             throw new HttpException(403, 'You are not allowed to access this resource');
         }
 
@@ -305,7 +306,7 @@ class Session
             $session_data === null ||
             ($session_data['role'] !== 'admin' && !in_array($session_data['_id'], $ownerIds))
         ) {
-            // user doesn't have current session
+            // user doesn't have current session or is not the owner
             throw new HttpException(403, 'You are not allowed to access this resource');
         }
 
@@ -316,7 +317,7 @@ class Session
      * --------------------------
      * REQUEST FROM ADMIN
      * --------------------------
-     * function that check if request if from admin
+     * function that check if request is from admin
      * @param Request $request
      * @return boolean
      */

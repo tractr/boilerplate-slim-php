@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Class Helpers
+ * Common function used by commands
+ */
 class Helpers
 {
 
