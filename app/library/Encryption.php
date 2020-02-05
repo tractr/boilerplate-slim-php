@@ -12,19 +12,18 @@ class Encryption
      */
     public static function hash($password)
     {
-        global $config;
-        return md5($config['encryptionSalt'] . $password);
+        return password_hash($password, PASSWORD_BCRYPT, ["cost" => 10]);
     }
 
     /**
      * Test a password
      *
-     * @param $password string
-     * @param $encrypted string
+     * @param string $password
+     * @param string $hash
      * @return bool
      */
-    public static function test($password, $encrypted)
+    public static function test($password, $hash)
     {
-        return static::hash($password) === $encrypted;
+        return password_verify($password, $hash);
     }
 }

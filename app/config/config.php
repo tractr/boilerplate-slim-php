@@ -22,7 +22,7 @@ $config['displayErrorDetails'] = true;
  * --------------------------
  * CONTENT LENGTH
  * --------------------------
- * Turn this on in development mode to get information about errors (without it, Slim will at least log errors so if you’re using the built in PHP webserver then you’ll see them in the console output which is helpful)
+ * Turn this on to add content-length header in responses
  */
 $config['addContentLengthHeader'] = false;
 

@@ -11,6 +11,7 @@ const HOUR = 60 * MINUTE;
 const DAY = 24 * HOUR;
 const PopulationFactor = 150;
 
+use App\Library\Encryption;
 
 $TempId = 0;
 
@@ -78,7 +79,7 @@ function generateField($field)
 
             return $name . '.' . randomString(8) . '@' . $domain;
         } else if ($field['subtype'] === 'password') {
-            return randomString();
+            return Encryption::hash(randomString());
         } else if ($field['subtype'] === 'text') {
             return generateString() . "\n" . generateString();
         } else if ($field['subtype'] === 'rich') {
