@@ -53,18 +53,27 @@ $schema->table('<<m a_a>>', function (Blueprint $table) {
     global $schemaManager;
     $tableDetails = $schemaManager->listTableDetails($table->getTable());
 
-    <<@ m.f (se+so+un+tE)/ml/pr f>>
+    <<@ m.f (se+so)/pr/tE f>>
  
     if (!$tableDetails->hasIndex('<<m a_a>>_<<f a_a>>')) {
-
-        <<? f (se+so+un)/tE>>
-        <<# Searchable, sortable and/or unique>>
-        $table-><<? f un>>unique<<??>>index<<?>>('<<f a_a>>', '<<m a_a>>_<<f a_a>>');
-        <<?? f tE>>
-        $table->foreign('<<f a_a>>', '<<m a_a>>_<<f a_a>>')->references('<<f.m.f.pr R>>')->on('<<f.m a_a>>');
-        <<?>>
-
+        $table->index('<<f a_a>>', '<<m a_a>>_<<f a_a>>');
         Helpers::output('', 'Did create index <<m a_a>>_<<f a_a>>');
+    }
+    <<@>>
+
+    <<? m.f un/pr/(tE*ml)>>
+ 
+    if (!$tableDetails->hasIndex('<<m a_a>>__uniques')) {
+        $table->unique([<<@ m.f un/pr/(tE*ml) f>>'<<f a_a>>', <<@>>], '<<m a_a>>__uniques');
+        Helpers::output('', 'Did create index <<m a_a>>__uniques');
+    }
+    <<?>>
+
+    <<@ m.f tE/ml f>>
+ 
+    if (!$tableDetails->hasIndex('<<m a_a>>_<<f a_a>>__foreign')) {
+        $table->foreign('<<f a_a>>', '<<m a_a>>_<<f a_a>>__foreign')->references('<<f.m.f.pr R>>')->on('<<f.m a_a>>');
+        Helpers::output('', 'Did create index <<m a_a>>_<<f a_a>>__foreign');
     }
     <<@>>
 
