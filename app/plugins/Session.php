@@ -83,9 +83,9 @@ class Session
                     throw new HttpException(401, 'User not found or wrong password');
                 }
 
-                //On vérifie la cohérence du mot de passe
+                // Check password
                 if (Encryption::test($data['password'], $user->password)) {
-                    //Enregistrement du cookie
+                    // Store cookie id in the cache
                     $session_data = $plugin->createSession($user);
 
                     $response->getBody()->write(json_encode($session_data));
