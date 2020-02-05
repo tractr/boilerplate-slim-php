@@ -24,4 +24,5 @@ $config['db']['username'] = 'api_user';
 $config['db']['password'] = 'api_pass';
 $config['db']['charset'] = 'utf8';
 $config['db']['collation'] = 'utf8_unicode_ci';
+$config['db']['engine'] = 'InnoDB';
 $config['db']['prefix'] = '';

@@ -61,7 +61,15 @@ docker-compose up api php
 
 Now the API is available on `http://localhost:3000`.
 
-#### 3.3 Explore data
+#### 3.3 Insert development data
+
+To insert randomized data into the database, run this command
+
+```bash
+docker-compose run --rm php php app/cmd/populate/index.php
+```
+
+#### 3.4 Explore data
 
 You can run PhpMyAdmin to browse database. Start the service by running the command bellow and go to `http://localhost:8000`
 
@@ -69,14 +77,14 @@ You can run PhpMyAdmin to browse database. Start the service by running the comm
 docker-compose up phpmyadmin
 ```
 
-#### 3.4 Use a front-end boilerplate
+#### 3.5 Use a front-end boilerplate
 
 This boilerplate can be used with those front-end boilerplates:
 
 - [Admin dashboard built with Angular](https://github.com/Tractr/boilerplate-ngx-dashboard)
 - [Components library built with Angular](https://github.com/Tractr/boilerplate-ngx-components)
 
-#### 3.5 Updates
+#### 3.6 Updates
 
 If you need to update you data models and re-generate code (using [Hapify](https://www.hapify.io/),
 you should run this command `docker-compose run --rm php php app/cmd/setup/index.php` to update the SQL structure.
@@ -110,5 +118,5 @@ This boilerplate interprets [Hapify](https://www.hapify.io/) data-models fields 
 ## Roadmap
 
 - Add a documentation of the generated API.
-- Add a population script that inserts random data in the database.
+- ~~Add a population script that inserts random data in the database.~~
 - Ability to migrate data structure when running the setup script.
