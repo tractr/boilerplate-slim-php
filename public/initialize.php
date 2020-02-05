@@ -59,7 +59,7 @@ $app = AppFactory::create();
 
 $container->set('logger', function () {
     $logger = new Logger('appLogger');
-    $file_handler = new StreamHandler('../logs/app.log');
+    $file_handler = new StreamHandler(__DIR__ . '/../logs/app.log');
     $logger->pushHandler($file_handler);
     return $logger;
 });
