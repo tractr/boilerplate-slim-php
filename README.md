@@ -109,8 +109,6 @@ This boilerplate interprets [Hapify](https://www.hapify.io/) data-models fields 
 
 ## Roadmap
 
-Next improvements on this boilerplate:
-
 - Add a documentation of the generated API.
 - Add a population script that inserts random data in the database.
 - Ability to migrate data structure when running the setup script.
