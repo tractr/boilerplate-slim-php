@@ -15,9 +15,11 @@ $schemaManager = $schema->getConnection()->getDoctrineSchemaManager();
 <<@ M m>>
  
 // Create table for model <<m a>>
+<<# Create a table for each models >>
 if (!$schema->hasTable('<<m a_a>>')) {
     $schema->create('<<m a_a>>', function (Blueprint $table) {
         $table->increments('<<m.f.pr R>>');
+    <<# Create a column for each fields excepted for primary key and many-to-many relations >>
     <<@ m.f /pr/ml f>>
         $table-><<= getColumnMethod(f)>>('<<f a_a>>'<<? f tE>>, false, true<<?>>)<<? f nu>>->nullable()<<?>>;
     <<@>>
@@ -25,10 +27,11 @@ if (!$schema->hasTable('<<m a_a>>')) {
         Helpers::output('', 'Did create table <<m a>>');
     });
 }
-
+    <<# If the model has at least one many-to-many relation, generate the following code block >>
     <<? m.f tE*ml>>
  
 // Many-to-many relationships for model <<m a>>
+        <<# For each many-to-many relation, create a relation table >>
         <<@ m.f tE*ml f>>
 if (!$schema->hasTable('<<m a_a>>__<<f a_a>>')) {
     $schema->create('<<m a_a>>__<<f a_a>>', function (Blueprint $table) {
@@ -48,11 +51,16 @@ if (!$schema->hasTable('<<m a_a>>__<<f a_a>>')) {
 // ==================================
 <<@ M m>>
  
+<<# Create a table for each models >>
 // Create indexes for model <<m a>>
 $schema->table('<<m a_a>>', function (Blueprint $table) {
     global $schemaManager;
     $tableDetails = $schemaManager->listTableDetails($table->getTable());
 
+    <<# 
+        Create basic index for fields that are searchable or sortable
+        excepted for primary key and entity relations (one-to-one or many-to-many)
+    >>
     <<@ m.f (se+so)/pr/tE f>>
  
     if (!$tableDetails->hasIndex('<<m a_a>>_<<f a_a>>')) {
@@ -61,6 +69,10 @@ $schema->table('<<m a_a>>', function (Blueprint $table) {
     }
     <<@>>
 
+    <<# 
+        If the model has at least one unique field,
+        create a single unique index that contains all unique fields
+    >>
     <<? m.f un/pr/(tE*ml)>>
  
     if (!$tableDetails->hasIndex('<<m a_a>>__uniques')) {
@@ -69,6 +81,7 @@ $schema->table('<<m a_a>>', function (Blueprint $table) {
     }
     <<?>>
 
+    <<# Create foreign key contraints for fields that are one-to-one entity relation >>
     <<@ m.f tE/ml f>>
  
     if (!$tableDetails->hasIndex('<<m a_a>>_<<f a_a>>__foreign')) {
@@ -79,9 +92,10 @@ $schema->table('<<m a_a>>', function (Blueprint $table) {
 
 });
 
+    <<# Create foreign key contraints in relation table for fields that are many-to-many entity relation >>
     <<? m.f tE*ml>>
         <<@ m.f tE*ml f>>
-// Many-to-many relationships for field <<f a>>
+// Many-to-many relationships for field <<m a>>.<<f a>>
 $schema->table('<<m a_a>>__<<f a_a>>', function (Blueprint $table) {
     global $schemaManager;
     $tableDetails = $schemaManager->listTableDetails($table->getTable());
