@@ -1,4 +1,4 @@
-# HapiJS Boilerplate
+# Slim 4 Boilerplate
 
 #### Hapify
 
@@ -87,7 +87,7 @@ Please refer to [Hapify Best Practices](https://www.hapify.io/documentation/best
 
 This boilerplate includes the following modules
 
-- user sessions
+- user sessions (sessions are stored in Redis)
 - users accesses management
 
 ## Models interpretation
@@ -95,14 +95,22 @@ This boilerplate includes the following modules
 This boilerplate interprets [Hapify](https://www.hapify.io/) data-models fields properties as described bellow:
 
 - **Primary**: Represent the MySQL Id.
-- **Unique**: Creates an unique index for MongoDB and throw a 409 in case of conflict.
-- **Label**: Creates a text index for MongoDB and allow partial match search for this field.
-- **Nullable**: Allow null to be send for POST and PATCH endpoints.
+- **Unique**: Creates an unique index and throw a 409 in case of conflict.
+- **Label**: Allow partial match search for this field.
+- **Nullable**: Allow null value to be send for POST and PATCH endpoints. Also define the column as nullable in MySQL.
 - **Multiple**: Only used for entity relation for Many-to-Many relation. If also searchable, it performs search using operator `OR`.
 - **Embedded**: Only used for entity relation. It joins related entities in search results. Related entities are always joined in a read response.
-- **Searchable**: Allows this field in query params for search and count endpoints. If the field is also a `DateTime` or a `Number`, it adds `min` and `max` query params. It also creates an index for MongoDB.
-- **Sortable**: allows this field's name as value in the query param `_sort` of the endpoint search. Also create an index for MongoDB.
-- **Hidden**: Adds projection when getting the data from MongoDB to remove this field. On create route, it deletes the fields before returning the response.
-- **Internal**: This field won't be allowed in POST and PATCH endpoints. It tries to guess a suitable value for this field. You may need to edit this default value after code generation.
+- **Searchable**: Allows this field in query params for search and count endpoints. If the field is also a `DateTime` or a `Number`, it adds `min` and `max` query params. It also creates an index in MySQL.
+- **Sortable**: Allows this field's name as value in the query param `_sort` of the endpoint search. Also create an index for MySQL.
+- **Hidden**: Hide this field from API's responses.
+- **Internal**: This field is not settable. For the POST endpoint, it guess a suitable value for this field. You may need to edit this default value after code generation.
 - **Restricted**: This field is allowed in POST and PATCH endpoints only for admins. An admin is a user with the field `role='admin'`.
 - **Ownership**: This field is used to allow the request when the access of the action is made by an `owner`. The value of the field is compared to the connected user id. For search and count endpoints, if also searchable, it forces to perform the lookup in the owner's documents.
+
+## Roadmap
+
+Next improvements on this boilerplate:
+
+- Add a documentation of the generated API.
+- Add a population script that inserts random data in the database.
+- Ability to migrate data structure when running the setup script.

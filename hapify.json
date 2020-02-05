@@ -1,8 +1,8 @@
 {
   "version": "1",
   "validatorPath": "hapify/validator.js",
-  "name": "Slim PHP 4",
-  "description": "Slim PHP Boilerplate",
+  "name": "Slim 4",
+  "description": "PHP Slim Boilerplate",
   "logo": "https://files-tractr.s3.ca-central-1.amazonaws.com/assets/slim-php.jpg",
   "project": "5e2b544257b31a00103821ce",
   "defaultFields": [
