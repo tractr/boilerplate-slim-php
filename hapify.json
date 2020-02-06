@@ -63,6 +63,11 @@
   ],
   "templates": [
     {
+      "path": "API.md",
+      "engine": "js",
+      "input": "all"
+    },
+    {
       "path": "app/cmd/setup/index.php",
       "engine": "hpf",
       "input": "all"

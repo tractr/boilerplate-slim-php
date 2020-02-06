@@ -91,6 +91,10 @@ you should run this command `docker-compose run --rm php php app/cmd/setup/index
 
 Please refer to [Hapify Best Practices](https://www.hapify.io/documentation/best-practices) to learn more about Git patches within Hapify context.
 
+## Documentation
+
+Once the API has been generated, open the file `API.md`.
+
 ## Advanced Integration
 
 This boilerplate includes the following modules
@@ -117,6 +121,6 @@ This boilerplate interprets [Hapify](https://www.hapify.io/) data-models fields 
 
 ## Roadmap
 
-- Add a documentation of the generated API.
+- ~~Add a documentation of the generated API.~~
 - ~~Add a population script that inserts random data in the database.~~
 - Ability to migrate data structure when running the setup script.

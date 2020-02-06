@@ -2,6 +2,7 @@ vendor
 logs/*.log
 
 # Generated files. Remove these lines after generation
+API.md
 app/routes/**
 app/models/*
 !app/models/BaseModel.php
