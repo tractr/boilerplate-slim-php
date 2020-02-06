@@ -130,7 +130,7 @@ class <<M AA>> extends BaseModel {
             $query = $query->whereHas('_<<f a_a>>', function(\Illuminate\Database\Eloquent\Builder $query) use ($filter) {
                 $query->whereIn('<<f.m a_a>>', is_array($filter['<<f a_a>>']) ? $filter['<<f a_a>>'] : [$filter['<<f a_a>>']], 'and');
             });
-        <<# In case of one-to-one relation >>
+        <<# In case of many-to-one relation >>
         <<??>>
             $query = $query->where('<<f a_a>>', $filter['<<f a_a>>']);
         <<?>>
@@ -213,7 +213,7 @@ class <<M AA>> extends BaseModel {
     <<# In case of many-to-many relation >>
     <<? f ml>>
         return $this->belongsToMany('App\Models\<<f.m AA>>', '<<M a_a>>__<<f a_a>>', '<<M a_a>>', '<<f.m a_a>>');
-    <<# In case of one-to-one relation >>
+    <<# In case of many-to-one relation >>
     <<??>>
         return $this->hasOne('App\Models\<<f.m AA>>', '<<f.m.f.pr R>>', '<<f a_a>>');
     <<?>>

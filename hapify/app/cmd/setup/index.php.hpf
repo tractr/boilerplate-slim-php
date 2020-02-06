@@ -59,7 +59,7 @@ $schema->table('<<m a_a>>', function (Blueprint $table) {
 
     <<# 
         Create basic index for fields that are searchable or sortable
-        except for primary key and entity relations (one-to-one or many-to-many)
+        except for primary key and entity relations (many-to-one or many-to-many)
     >>
     <<@ m.f (se+so)/pr/tE f>>
  
@@ -81,7 +81,7 @@ $schema->table('<<m a_a>>', function (Blueprint $table) {
     }
     <<?>>
 
-    <<# Create foreign key contraints for fields that are one-to-one entity relation >>
+    <<# Create foreign key contraints for fields that are many-to-one entity relation >>
     <<@ m.f tE/ml f>>
  
     if (!$tableDetails->hasIndex('<<m a_a>>_<<f a_a>>__foreign')) {
