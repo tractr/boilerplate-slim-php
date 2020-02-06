@@ -1,3 +1,6 @@
+//--------------------------------------------------
+// Export the models and fields properties as JSON
+//--------------------------------------------------
 
 const _output = models.map((m) => {
     return {
@@ -9,6 +12,7 @@ const _output = models.map((m) => {
             const out = Object.assign({}, f);
             out.name = out.names.snake;
             delete out.names;
+            // If the field has an entity reference, store the model's name
             if (out.model) {
                 out.reference = out.model.names.snake;
                 delete out.m;

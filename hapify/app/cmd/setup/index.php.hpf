@@ -19,7 +19,7 @@ $schemaManager = $schema->getConnection()->getDoctrineSchemaManager();
 if (!$schema->hasTable('<<m a_a>>')) {
     $schema->create('<<m a_a>>', function (Blueprint $table) {
         $table->increments('<<m.f.pr R>>');
-    <<# Create a column for each fields excepted for primary key and many-to-many relations >>
+    <<# Create a column for each fields except for primary key and many-to-many relations >>
     <<@ m.f /pr/ml f>>
         $table-><<= getColumnMethod(f)>>('<<f a_a>>'<<? f tE>>, false, true<<?>>)<<? f nu>>->nullable()<<?>>;
     <<@>>
@@ -59,7 +59,7 @@ $schema->table('<<m a_a>>', function (Blueprint $table) {
 
     <<# 
         Create basic index for fields that are searchable or sortable
-        excepted for primary key and entity relations (one-to-one or many-to-many)
+        except for primary key and entity relations (one-to-one or many-to-many)
     >>
     <<@ m.f (se+so)/pr/tE f>>
  

@@ -12,6 +12,7 @@ use App\Library\HttpException;
  
 $_func = function (Request $request, Response $response, array $args) {
 
+<<# If the create action is not accessible as guest, check the credentials >>
 <<? Ac !gs>>
  
     //Authentication
@@ -22,10 +23,12 @@ $_func = function (Request $request, Response $response, array $args) {
  
     //Form validation
     $validator = new Validator($data);
+<<# Require and validate all fields that are not internal and not restricted >>
 <<@ F /rs/in f>>
     $validator->rule('required', '<<f a_a>>'<<? f nu>>, true <<?>>)<<=validator(f)>>;
 <<@>>
 
+<<# If the request is coming from admin, require and validate all restricted but not internal fields >>
 <<? F rs/in>>
  
     // For admins only
@@ -40,6 +43,7 @@ $_func = function (Request $request, Response $response, array $args) {
     
         try {
 
+<<# If the request is NOT coming from admin, set default values for restricted but not internal fields >>
 <<? F rs/in>>
  
             // Init restricted fields
@@ -53,6 +57,7 @@ $_func = function (Request $request, Response $response, array $args) {
             $model = new App\Models\<<M AA>>();
             $model->fill($data);
 
+<<# Set default values for internal fields (except primary key) >>
 <<? F in/pr>>
  
             // Init internal fields
@@ -62,6 +67,7 @@ $_func = function (Request $request, Response $response, array $args) {
 <<?>>
  
             $model->save();
+<<# For each many-to-many relation field, attach the values >>
 <<@ F tE*ml f>>
             $model->_<<f a_a>>()->attach($data['<<f a_a>>']);
 <<@>>
@@ -86,6 +92,7 @@ $_func = function (Request $request, Response $response, array $args) {
  
 //Define admin route callback
 $app->post('/admin/<<M a-a>>', $_func);
+<<# If the create action is accessible at least as owner, add the public route>>
 <<? Ac [ow>>
 //Define route callback
 $app->post('/<<M a-a>>', $_func);

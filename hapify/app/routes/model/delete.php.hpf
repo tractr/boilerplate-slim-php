@@ -7,9 +7,10 @@
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use App\Library\HttpException;
-
+ 
 $_func = function (Request $request, Response $response, array $args) {
 
+<<# If the delete action is not accessible as guest, check the credentials >>
 <<? Ad !gs>>
  
     //Authentication
@@ -23,6 +24,7 @@ $_func = function (Request $request, Response $response, array $args) {
         throw new HttpException(404, '<<M A>> not found');
     }
 
+<<# If the delete action is accessible as owner, check if the credentials match the ownership field's value >>
 <<? Ad ow>>
  
     //Ownership
@@ -36,6 +38,7 @@ $_func = function (Request $request, Response $response, array $args) {
  
 //Define admin route callback
 $app->delete('/admin/<<M a-a>>/{id}', $_func);
+<<# If the delete action is accessible at least as owner, add the public route >>
 <<? Ad [ow>>
 //Define route callback
 $app->delete('/<<M a-a>>/{id}', $_func);

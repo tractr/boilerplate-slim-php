@@ -19,6 +19,7 @@ class <<M AA>> extends BaseModel {
      * @var array
      */
    	protected $fillable = array(
+<<# Define all non-internal and not multiple relations fields as settable values >>
 <<@ F /in/(tE*ml) f>>
         '<<f a_a>>',
 <<@>>
@@ -30,10 +31,13 @@ class <<M AA>> extends BaseModel {
      * @var array
      */
     protected $hidden = array(
+<<# Define all hidden fields as hidden >>
 <<@ F hd f>>
         '<<f a_a>>',
 <<@>>
     );
+
+<<# Loop over every non-internal password fields and hash them when saving >>
 <<@ F tSp/in f>>
  
     /**
@@ -47,6 +51,7 @@ class <<M AA>> extends BaseModel {
     }
 <<@>>
 
+<<# Loop over every datetime fields and convert to timestamp when getting the value >>
 <<@ F tD f>>
  
     /**
@@ -60,6 +65,7 @@ class <<M AA>> extends BaseModel {
     }
 <<@>>
 
+<<# Loop over every boolean fields and convert to boolean when setting the value >>
 <<@ F tB f>>
  
     /**
@@ -73,6 +79,7 @@ class <<M AA>> extends BaseModel {
     }
 <<@>>
 
+<<# Loop over every object fields and convert from/to JSON when setting/getting the value >>
 <<@ F tO f>>
  
     /**
@@ -111,19 +118,27 @@ class <<M AA>> extends BaseModel {
     
         $query = <<M AA>>::query();
 
+<<# Loop over every searchable fields and build the search query >>
 <<@ F se f>>
     
+    <<# If the field is an entity relation >>
     <<? f tE>>
         // Filter by related <<f a_a>>
         if (isset($filter['<<f a_a>>'])) {
+        <<# In case of many-to-many relation >>
         <<? f ml >>
             $query = $query->whereHas('_<<f a_a>>', function(\Illuminate\Database\Eloquent\Builder $query) use ($filter) {
                 $query->whereIn('<<f.m a_a>>', is_array($filter['<<f a_a>>']) ? $filter['<<f a_a>>'] : [$filter['<<f a_a>>']], 'and');
             });
+        <<# In case of one-to-one relation >>
         <<??>>
             $query = $query->where('<<f a_a>>', $filter['<<f a_a>>']);
         <<?>>
         }
+        <<# 
+            If the search action is accessible as owner and the field is the ownership field,
+            force the filter to equal the current user's id.
+        >>
         <<? As ow>>
             <<? f os>>
         else if (!$request->getAttribute('fromAdmin') && $request->getAttribute('userId') !== null) {
@@ -132,15 +147,20 @@ class <<M AA>> extends BaseModel {
             <<?>>
         <<?>>
 
+    <<# If the field is NOT an entity relation >>
     <<??>>
         // Filter <<f a>>
         if (isset($filter['<<f a_a>>'])) {
+        <<# If the field is type string and label, perform a %LIKE% search >>
         <<? f tS*lb>>
             $query = $query->where('<<f a_a>>', 'LIKE', "%{$filter['<<f a_a>>']}%");
+        <<# If the field is a boolean, convert to boolean >>
         <<?? f tB>>
             $query = $query->where('<<f a_a>>', static::toBoolean($filter['<<f a_a>>']));
+        <<# If the field is a date, convert timestamp to date >>
         <<?? f tD>>
             $query = $query->where('<<f a_a>>', static::toDate($filter['<<f a_a>>']));
+        <<# Otherwise>>
         <<??>>
             $query = $query->where('<<f a_a>>', $filter['<<f a_a>>']);
         <<?>>
@@ -148,6 +168,7 @@ class <<M AA>> extends BaseModel {
 
     <<?>>
 
+    <<# If the field is a number, add extra filters (min & max) for filtering by range >>
     <<? f tN>>
         // Set min for <<f a>> if defined
         if (isset($filter['<<f a_a>>__min'])) {
@@ -159,6 +180,7 @@ class <<M AA>> extends BaseModel {
         }
     <<?>>
 
+    <<# If the field is a date, add extra filters (min & max) and convert timestamp to date >>
     <<? f tD>>
         // Set min for <<f a>> if defined
         if (isset($filter['<<f a_a>>__min'])) {
@@ -175,6 +197,7 @@ class <<M AA>> extends BaseModel {
         return $query;
     }
 
+<<# Foreach entity relation field, add a method to get the populated relationship >>
 <<@ F tE f>>
  
     /**
@@ -187,8 +210,10 @@ class <<M AA>> extends BaseModel {
      */
     public function _<<f a_a>>()
     {
+    <<# In case of many-to-many relation >>
     <<? f ml>>
         return $this->belongsToMany('App\Models\<<f.m AA>>', '<<M a_a>>__<<f a_a>>', '<<M a_a>>', '<<f.m a_a>>');
+    <<# In case of one-to-one relation >>
     <<??>>
         return $this->hasOne('App\Models\<<f.m AA>>', '<<f.m.f.pr R>>', '<<f a_a>>');
     <<?>>

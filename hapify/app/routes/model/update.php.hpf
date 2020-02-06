@@ -1,5 +1,5 @@
 <?php 
-
+ 
 /**
  * Update <<M AA>>.
  */
@@ -11,6 +11,7 @@ use App\Library\HttpException;
  
 $_func = function (Request $request, Response $response, array $args) {
 
+<<# If the update action is not accessible as guest, check the credentials >>
 <<? Au !gs>>
  
     //Authentication
@@ -24,6 +25,7 @@ $_func = function (Request $request, Response $response, array $args) {
         throw new HttpException(404, '<<M A>> not found');
     }
 
+<<# If the update action is accessible as owner, check if the credentials match the ownership field's value >>
 <<? Au ow>>
  
     //Ownership
@@ -34,10 +36,16 @@ $_func = function (Request $request, Response $response, array $args) {
     
     //Form validation
     $validator = new Validator($data);
+<<# Define validator for all fields that are not internal and not restricted >>
 <<@ F /rs/in f>>
     $validator->rule('optional', '<<f a_a>>'<<? f nu>>, true <<?>>)<<=validator(f)>>;
 <<@>>
 
+<<# 
+    If the request is coming from admin,
+    define validator for all restricted but not internal fields.
+    Otherwise exclude the field.
+>>
 <<? F rs/in>>
  
     // For admins only
@@ -58,6 +66,7 @@ $_func = function (Request $request, Response $response, array $args) {
  
             $model->fill($data);
             $model->save();
+<<# For each many-to-many relation field, re-attach the values >>
 <<@ F tE*ml f>>
  
             $model->_<<f a_a>>()->detach();
@@ -81,6 +90,7 @@ $_func = function (Request $request, Response $response, array $args) {
  
 //Define admin route callback
 $app->patch('/admin/<<M a-a>>/{id}', $_func);
+<<# If the update action is accessible at least as owner, add the public route >>
 <<? Au [ow>>
 //Define route callback
 $app->patch('/<<M a-a>>/{id}', $_func);

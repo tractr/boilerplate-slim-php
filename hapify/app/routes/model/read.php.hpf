@@ -10,6 +10,7 @@ use App\Library\HttpException;
  
 $_func = function (Request $request, Response $response, array $args) {
 
+<<# If the read action is not accessible as guest, check the credentials >>
 <<? Ar !gs>>
  
     //Authentication
@@ -23,6 +24,7 @@ $_func = function (Request $request, Response $response, array $args) {
         throw new HttpException(404, '<<M A>> not found');
     }
 
+<<# If the read action is accessible as owner, check if the credentials match the ownership field's value >>
 <<? Ar ow>>
  
     //Ownership
@@ -33,6 +35,7 @@ $_func = function (Request $request, Response $response, array $args) {
     $payload = json_decode(json_encode($model), true);
  
     // Populate relationship
+<<# Populate entity relations for non-hidden fields >>
 <<@ F tE/hd f>>
     $payload['<<f a_a>>'] = $model->_<<f a_a>>;
 <<@>>
@@ -43,6 +46,7 @@ $_func = function (Request $request, Response $response, array $args) {
  
 //Define admin route callback
 $app->get('/admin/<<M a-a>>/{id}', $_func);
+<<# If the read action is accessible at least as owner, add the public route >>
 <<? Ar [ow>>
 //Define route callback
 $app->get('/<<M a-a>>/{id}', $_func);
