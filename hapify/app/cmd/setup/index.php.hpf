@@ -23,9 +23,8 @@ if (!$schema->hasTable('<<m a_a>>')) {
     <<@ m.f /pr/ml f>>
         $table-><<= getColumnMethod(f)>>('<<f a_a>>'<<? f tE>>, false, true<<?>>)<<? f nu>>->nullable()<<?>>;
     <<@>>
-    
-        Helpers::output('', 'Did create table <<m a>>');
     });
+    Helpers::output('', 'Did create table <<m a>>');
 }
     <<# If the model has at least one many-to-many relation, generate the following code block >>
     <<? m.f tE*ml>>
@@ -38,9 +37,8 @@ if (!$schema->hasTable('<<m a_a>>__<<f a_a>>')) {
         $table->increments('<<m.f.pr R>>');
         $table->integer('<<m a_a>>', false, true);
         $table->integer('<<f.m a_a>>', false, true);
-    
-        Helpers::output('', 'Did create relationship table <<m a>> to <<f a>>');
     });
+    Helpers::output('', 'Did create relationship table <<m a>> to <<f a>>');
 }
         <<@>>
     <<?>>
@@ -59,7 +57,7 @@ $schema->table('<<m a_a>>', function (Blueprint $table) {
 
     <<# 
         Create basic index for fields that are searchable or sortable
-        except for primary key and entity relations (many-to-one or many-to-many)
+        except for primary key and entity relations (one-to-one or many-to-many)
     >>
     <<@ m.f (se+so)/pr/tE f>>
  
@@ -81,7 +79,7 @@ $schema->table('<<m a_a>>', function (Blueprint $table) {
     }
     <<?>>
 
-    <<# Create foreign key contraints for fields that are many-to-one entity relation >>
+    <<# Create foreign key contraints for fields that are one-to-one entity relation >>
     <<@ m.f tE/ml f>>
  
     if (!$tableDetails->hasIndex('<<m a_a>>_<<f a_a>>__foreign')) {
@@ -100,12 +98,12 @@ $schema->table('<<m a_a>>__<<f a_a>>', function (Blueprint $table) {
     global $schemaManager;
     $tableDetails = $schemaManager->listTableDetails($table->getTable());
  
-    if (!$tableDetails->hasIndex('<<m a_a>>')) {
-        $table->foreign('<<m a_a>>', '<<m a_a>>')->references('<<m.f.pr R>>')->on('<<m a_a>>')->onDelete('cascade');
+    if (!$tableDetails->hasIndex('<<m a_a>>__<<f a_a>>.<<m a_a>>')) {
+        $table->foreign('<<m a_a>>', '<<m a_a>>__<<f a_a>>.<<m a_a>>')->references('<<m.f.pr R>>')->on('<<m a_a>>')->onDelete('cascade');
         Helpers::output('', 'Did create relationship index for <<m a_a>>__<<f a_a>>.<<m a>>');
     }
-    if (!$tableDetails->hasIndex('<<f.m a_a>>')) {
-        $table->foreign('<<f.m a_a>>', '<<f.m a_a>>')->references('<<f.m.f.pr R>>')->on('<<f.m a_a>>')->onDelete('cascade');
+    if (!$tableDetails->hasIndex('<<m a_a>>__<<f a_a>>.<<f.m a_a>>')) {
+        $table->foreign('<<f.m a_a>>', '<<m a_a>>__<<f a_a>>.<<f.m a_a>>')->references('<<f.m.f.pr R>>')->on('<<f.m a_a>>')->onDelete('cascade');
         Helpers::output('', 'Did create relationship index for <<m a_a>>__<<f a_a>>.<<f.m a>>');
     }
  
