@@ -47,23 +47,63 @@ class BaseModel extends Model
     const UPDATED_AT = 'updated_at';
 
     /**
-     * @param $attribute string
+     * @param string|DateTime $value
      * @return int|null
      */
-    protected function dateToTimestamp($attribute)
+    protected function dateToTimestamp($value)
     {
-        return $this->attributes[$attribute] ?
-            DateTime::createFromFormat($this->dateFormat, $this->attributes[$attribute])->getTimestamp() * 1000 :
-            NULL;
+        if ($value instanceof DateTime) {
+            return $value->getTimestamp() * 1000;
+        }
+        if (is_string($value)) {
+            return DateTime::createFromFormat($this->dateFormat, $value)->getTimestamp() * 1000;
+        }
+        if (empty($value)) {
+            return NULL;
+        }
+        return $value;
     }
 
     /**
-     * @param $attribute string
-     * @return boolean|null
+     * @param integer $value
+     * @return string|null
      */
-    protected function intToBoolean($attribute)
+    protected function timestampToDate($value)
     {
-        return is_integer($this->attributes[$attribute]) ? boolval($this->attributes[$attribute]) : NULL;
+        if (is_integer($value)) {
+            return date($this->dateFormat, intval($value) / 1000);
+        }
+        if (empty($value)) {
+            return NULL;
+        }
+        return $value;
+    }
+
+    /**
+     * @param integer $value
+     * @return boolean
+     */
+    protected function intToBoolean($value)
+    {
+        return is_integer($value) ? boolval($value) : $value;
+    }
+
+    /**
+     * @param string $value
+     * @return mixed
+     */
+    protected function jsonToObject($value)
+    {
+        return is_string($value) ? json_decode($value) : $value;
+    }
+
+    /**
+     * @param string $value
+     * @return mixed
+     */
+    protected function objectToJson($value)
+    {
+        return !is_string($value) && $value !== NULL ? json_encode($value) : $value;
     }
 
     /**

@@ -51,7 +51,7 @@ class <<M AA>> extends BaseModel {
     }
 <<@>>
 
-<<# Loop over every datetime fields and convert to timestamp when getting the value >>
+<<# Loop over every datetime fields and convert fromt/to timestamp when setting/getting the value >>
 <<@ F tD f>>
  
     /**
@@ -61,7 +61,17 @@ class <<M AA>> extends BaseModel {
      */
     public function get<<f AA>>Attribute()
     {
-        return $this->dateToTimestamp('<<f a_a>>');
+        return $this->dateToTimestamp($this->attributes['<<f a_a>>']);
+    }
+ 
+    /**
+     * Set the field <<f a>>.
+     *
+     * @param  string  $value
+     */
+    public function set<<f AA>>Attribute($value)
+    {
+        $this->attributes['<<f a_a>>'] = $this->timestampToDate($value);
     }
 <<@>>
 
@@ -71,11 +81,11 @@ class <<M AA>> extends BaseModel {
     /**
      * Get the field <<f a>>.
      *
-     * @return integer
+     * @return boolean
      */
     public function get<<f AA>>Attribute()
     {
-        return $this->intToBoolean('<<f a_a>>');
+        return $this->intToBoolean($this->attributes['<<f a_a>>']);
     }
 <<@>>
 
@@ -89,7 +99,7 @@ class <<M AA>> extends BaseModel {
      */
     public function get<<f AA>>Attribute()
     {
-        return json_decode($this->attributes['<<f a_a>>']);
+        return $this->jsonToObject($this->attributes['<<f a_a>>']);
     }
  
     /**
@@ -99,7 +109,7 @@ class <<M AA>> extends BaseModel {
      */
     public function set<<f AA>>Attribute($value)
     {
-        $this->attributes['<<f a_a>>'] = json_encode($value);
+        $this->attributes['<<f a_a>>'] = $this->objectToJson($value);
     }
 <<@>>
  
@@ -130,7 +140,7 @@ class <<M AA>> extends BaseModel {
             $query = $query->whereHas('_<<f a_a>>', function(\Illuminate\Database\Eloquent\Builder $query) use ($filter) {
                 $query->whereIn('<<f.m a_a>>', is_array($filter['<<f a_a>>']) ? $filter['<<f a_a>>'] : [$filter['<<f a_a>>']], 'and');
             });
-        <<# In case of many-to-one relation >>
+        <<# In case of one-to-one relation >>
         <<??>>
             $query = $query->where('<<f a_a>>', $filter['<<f a_a>>']);
         <<?>>
@@ -213,7 +223,7 @@ class <<M AA>> extends BaseModel {
     <<# In case of many-to-many relation >>
     <<? f ml>>
         return $this->belongsToMany('App\Models\<<f.m AA>>', '<<M a_a>>__<<f a_a>>', '<<M a_a>>', '<<f.m a_a>>');
-    <<# In case of many-to-one relation >>
+    <<# In case of one-to-one relation >>
     <<??>>
         return $this->hasOne('App\Models\<<f.m AA>>', '<<f.m.f.pr R>>', '<<f a_a>>');
     <<?>>
