@@ -34,6 +34,13 @@ Run installation scripts to create SQL structure and insert an admin:
 docker-compose run --rm composer
 ```
 
+**Start database**
+```bash
+docker-compose up -d mysql
+```
+
+Wait about 30 seconds to allow MySQL to start properly before running the next line.
+
 **Setup database**
 ```bash
 docker-compose run --rm php php app/cmd/setup/index.php
@@ -44,9 +51,11 @@ docker-compose run --rm php php app/cmd/setup/index.php
 docker-compose run --rm php php app/cmd/insert-admin/index.php
 ```
 
+You may need to change admin fields in file `app/cmd/insert-admin/admin.php`, depending on your user structure.
+
 **Or run all in one command**
 ```bash
-docker-compose run --rm composer && docker-compose run --rm php bash -c "php app/cmd/setup/index.php && php app/cmd/insert-admin/index.php"
+docker-compose run --rm composer && docker-compose run --rm php bash -c "sleep 30 && php app/cmd/setup/index.php && php app/cmd/insert-admin/index.php"
 ```
 
 The login and password of the admin user is defined in file `app/cmd/insert-admin/admin.php` (`admin@example.com` / `admin`).
