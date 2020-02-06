@@ -1,7 +1,7 @@
 <?php 
  
 /**
- * Read <<M a-a>>.
+ * Search <<M a>>.
  */
  
 use Psr\Http\Message\ResponseInterface as Response;

@@ -1,7 +1,7 @@
 <?php 
  
 /**
- * Count <<M a-a>>.
+ * Count <<M a>>.
  */
  
 use Psr\Http\Message\ResponseInterface as Response;

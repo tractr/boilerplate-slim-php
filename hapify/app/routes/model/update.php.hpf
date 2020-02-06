@@ -1,7 +1,7 @@
 <?php 
  
 /**
- * Update <<M AA>>.
+ * Update <<M a>>.
  */
  
 use Psr\Http\Message\ResponseInterface as Response;
