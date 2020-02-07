@@ -19,6 +19,8 @@ This boilerplate provides an API built with Slim 4, MySQL and Docker.
 
 Then you need to generate code from your Hapify project using `hpf generate`.
 
+If you want to see an example of a generated boilerplate, you can download [this one](https://hpf-files-production-u67438.s3.amazonaws.com/examples/slim_php_tractr.zip).
+
 ⚠️ **Important**: For development purpose, generated files are ignored in the `.gitignore`. You should edit this file and remove the last lines before committing.
 
 ### 3. Run the API
