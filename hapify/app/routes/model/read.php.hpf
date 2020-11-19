@@ -1,7 +1,7 @@
 <?php
  
 /**
- * Read <<M a>>.
+ * Read <<Model lower>>.
  */
  
 use Psr\Http\Message\ResponseInterface as Response;
@@ -11,43 +11,43 @@ use App\Library\HttpException;
 $_func = function (Request $request, Response $response, array $args) {
 
 <<# If the read action is not accessible as guest, check the credentials >>
-<<? Ar !gs>>
+<<if ReadAccess not guest>>
  
     //Authentication
     $this->get('session')->verifyCredentials($request);
-<<?>>
+<<endif>>
  
-    /** @var App\Models\<<M AA>> $model */
-    $model = App\Models\<<M AA>>::find($args['id']);
+    /** @var App\Models\<<Model pascal>> $model */
+    $model = App\Models\<<Model pascal>>::find($args['id']);
     if ($model == null) {
         // Entity was not found
-        throw new HttpException(404, '<<M A>> not found');
+        throw new HttpException(404, '<<Model capital>> not found');
     }
 
 <<# If the read action is accessible as owner, check if the credentials match the ownership field's value >>
-<<? Ar ow>>
+<<if ReadAccess owner>>
  
     //Ownership
-    $this->get('session')->verifyOwnership($request, $model-><<@1 F os o>><<o a_a>><<@>>);
-<<?>>
+    $this->get('session')->verifyOwnership($request, $model-><<for1 Fields ownership o>><<o snake>><<endfor>>);
+<<endif>>
  
     // Clone data
     $payload = json_decode(json_encode($model), true);
  
     // Populate relationship
 <<# Populate entity relations for non-hidden fields >>
-<<@ F tE/hd f>>
-    $payload['<<f a_a>>'] = $model->_<<f a_a>>;
-<<@>>
+<<for Fields entity and not hidden f>>
+    $payload['<<f snake>>'] = $model->_<<f snake>>;
+<<endfor>>
  
     $response->getBody()->write(json_encode($payload));
     return $response->withStatus(201);
 };
  
 //Define admin route callback
-$app->get('/admin/<<M a-a>>/{id}', $_func);
+$app->get('/admin/<<Model kebab>>/{id}', $_func);
 <<# If the read action is accessible at least as owner, add the public route >>
-<<? Ar [ow>>
+<<if ReadAccess gteOwner>>
 //Define route callback
-$app->get('/<<M a-a>>/{id}', $_func);
-<<?>>
+$app->get('/<<Model kebab>>/{id}', $_func);
+<<endif>>

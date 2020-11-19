@@ -1,7 +1,7 @@
 <?php 
  
 /**
- * Delete <<M a>>.
+ * Delete <<Model lower>>.
  */
  
 use Psr\Http\Message\ResponseInterface as Response;
@@ -11,25 +11,25 @@ use App\Library\HttpException;
 $_func = function (Request $request, Response $response, array $args) {
 
 <<# If the delete action is not accessible as guest, check the credentials >>
-<<? Ad !gs>>
+<<if RemoveAccess not guest>>
  
     //Authentication
     $this->get('session')->verifyCredentials($request);
-<<?>>
+<<endif>>
  
-    /** @var App\Models\<<M AA>> $model */
-    $model = App\Models\<<M AA>>::find($args['id']);
+    /** @var App\Models\<<Model pascal>> $model */
+    $model = App\Models\<<Model pascal>>::find($args['id']);
     if ($model == null) {
         // Entity was not found
-        throw new HttpException(404, '<<M A>> not found');
+        throw new HttpException(404, '<<Model capital>> not found');
     }
 
 <<# If the delete action is accessible as owner, check if the credentials match the ownership field's value >>
-<<? Ad ow>>
+<<if RemoveAccess owner>>
  
     //Ownership
-    $this->get('session')->verifyOwnership($request, $model-><<@1 F os o>><<o a_a>><<@>>);
-<<?>>
+    $this->get('session')->verifyOwnership($request, $model-><<for1 Fields ownership o>><<o snake>><<endfor>>);
+<<endif>>
   
     $model->delete();
  
@@ -37,9 +37,9 @@ $_func = function (Request $request, Response $response, array $args) {
 };
  
 //Define admin route callback
-$app->delete('/admin/<<M a-a>>/{id}', $_func);
+$app->delete('/admin/<<Model kebab>>/{id}', $_func);
 <<# If the delete action is accessible at least as owner, add the public route >>
-<<? Ad [ow>>
+<<if RemoveAccess gteOwner>>
 //Define route callback
-$app->delete('/<<M a-a>>/{id}', $_func);
-<<?>>
+$app->delete('/<<Model kebab>>/{id}', $_func);
+<<endif>>

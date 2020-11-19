@@ -4,14 +4,14 @@ namespace App\Models;
  
 use Psr\Http\Message\ServerRequestInterface as Request;
  
-class <<M AA>> extends BaseModel {
+class <<Model pascal>> extends BaseModel {
  
 	/**
      * The table associated with the model.
      *
      * @var string
      */
-   	protected $table = '<<M a_a>>';
+   	protected $table = '<<Model snake>>';
  
    	/**
      * The attributes that are mass assignable.
@@ -20,9 +20,9 @@ class <<M AA>> extends BaseModel {
      */
    	protected $fillable = array(
 <<# Define all non-internal and not multiple relations fields as settable values >>
-<<@ F /in/(tE*ml) f>>
-        '<<f a_a>>',
-<<@>>
+<<for Fields not internal and not (entity and multiple) f>>
+        '<<f snake>>',
+<<endfor>>
    	);
  
    	/**
@@ -32,86 +32,86 @@ class <<M AA>> extends BaseModel {
      */
     protected $hidden = array(
 <<# Define all hidden fields as hidden >>
-<<@ F hd f>>
-        '<<f a_a>>',
-<<@>>
+<<for Fields hidden f>>
+        '<<f snake>>',
+<<endfor>>
     );
 
 <<# Loop over every non-internal password fields and hash them when saving >>
-<<@ F tSp/in f>>
+<<for Fields password and not internal f>>
  
     /**
-     * Set the field <<f a>>.
+     * Set the field <<f lower>>.
      *
      * @param  string  $value
      */
-    public function set<<f AA>>Attribute($value)
+    public function set<<f pascal>>Attribute($value)
     {
-        $this->attributes['<<f a_a>>'] = \App\Library\Encryption::hash($value);
+        $this->attributes['<<f snake>>'] = \App\Library\Encryption::hash($value);
     }
-<<@>>
+<<endfor>>
 
 <<# Loop over every datetime fields and convert fromt/to timestamp when setting/getting the value >>
-<<@ F tD f>>
+<<for Fields datetime f>>
  
     /**
-     * Get the field <<f a>>.
+     * Get the field <<f lower>>.
      *
      * @return integer
      */
-    public function get<<f AA>>Attribute()
+    public function get<<f pascal>>Attribute()
     {
-        return $this->dateToTimestamp($this->attributes['<<f a_a>>']);
+        return $this->dateToTimestamp($this->attributes['<<f snake>>']);
     }
  
     /**
-     * Set the field <<f a>>.
+     * Set the field <<f lower>>.
      *
      * @param  string  $value
      */
-    public function set<<f AA>>Attribute($value)
+    public function set<<f pascal>>Attribute($value)
     {
-        $this->attributes['<<f a_a>>'] = $this->timestampToDate($value);
+        $this->attributes['<<f snake>>'] = $this->timestampToDate($value);
     }
-<<@>>
+<<endfor>>
 
 <<# Loop over every boolean fields and convert to boolean when setting the value >>
-<<@ F tB f>>
+<<for Fields boolean f>>
  
     /**
-     * Get the field <<f a>>.
+     * Get the field <<f lower>>.
      *
      * @return boolean
      */
-    public function get<<f AA>>Attribute()
+    public function get<<f pascal>>Attribute()
     {
-        return $this->intToBoolean($this->attributes['<<f a_a>>']);
+        return $this->intToBoolean($this->attributes['<<f snake>>']);
     }
-<<@>>
+<<endfor>>
 
 <<# Loop over every object fields and convert from/to JSON when setting/getting the value >>
-<<@ F tO f>>
+<<for Fields object f>>
  
     /**
-     * Get the field <<f a>>.
+     * Get the field <<f lower>>.
      *
      * @return mixed
      */
-    public function get<<f AA>>Attribute()
+    public function get<<f pascal>>Attribute()
     {
-        return $this->jsonToObject($this->attributes['<<f a_a>>']);
+        return $this->jsonToObject($this->attributes['<<f snake>>']);
     }
  
     /**
-     * Set the field <<f a>>.
+     * Set the field <<f lower>>.
      *
      * @param  mixed  $value
      */
-    public function set<<f AA>>Attribute($value)
+    public function set<<f pascal>>Attribute($value)
     {
-        $this->attributes['<<f a_a>>'] = $this->objectToJson($value);
+        $this->attributes['<<f snake>>'] = $this->objectToJson($value);
     }
-<<@>>
+<<endfor>>
  
     /**
      * Get search cursor
@@ -126,107 +126,107 @@ class <<M AA>> extends BaseModel {
         unset($filter['_order']);
         unset($filter['_sort']);
     
-        $query = <<M AA>>::query();
+        $query = <<Model pascal>>::query();
 
 <<# Loop over every searchable fields and build the search query >>
-<<@ F se f>>
+<<for Fields searchable f>>
     
     <<# If the field is an entity relation >>
-    <<? f tE>>
-        // Filter by related <<f a_a>>
-        if (isset($filter['<<f a_a>>'])) {
+    <<if f entity>>
+        // Filter by related <<f snake>>
+        if (isset($filter['<<f snake>>'])) {
         <<# In case of many-to-many relation >>
-        <<? f ml >>
-            $query = $query->whereHas('_<<f a_a>>', function(\Illuminate\Database\Eloquent\Builder $query) use ($filter) {
-                $query->whereIn('<<f.m a_a>>', is_array($filter['<<f a_a>>']) ? $filter['<<f a_a>>'] : [$filter['<<f a_a>>']], 'and');
+        <<if f multiple >>
+            $query = $query->whereHas('_<<f snake>>', function(\Illuminate\Database\Eloquent\Builder $query) use ($filter) {
+                $query->whereIn('<<f.m snake>>', is_array($filter['<<f snake>>']) ? $filter['<<f snake>>'] : [$filter['<<f snake>>']], 'and');
             });
         <<# In case of one-to-one relation >>
-        <<??>>
-            $query = $query->where('<<f a_a>>', $filter['<<f a_a>>']);
-        <<?>>
+        <<else>>
+            $query = $query->where('<<f snake>>', $filter['<<f snake>>']);
+        <<endif>>
         }
         <<# 
             If the search action is accessible as owner and the field is the ownership field,
             force the filter to equal the current user's id.
         >>
-        <<? As ow>>
-            <<? f os>>
+        <<if SearchAccess owner>>
+            <<if f ownership>>
         else if (!$request->getAttribute('fromAdmin') && $request->getAttribute('userId') !== null) {
-            $query = $query->where('<<f a_a>>', '=', $request->getAttribute('userId'));
+            $query = $query->where('<<f snake>>', '=', $request->getAttribute('userId'));
         }
-            <<?>>
-        <<?>>
+            <<endif>>
+        <<endif>>
 
     <<# If the field is NOT an entity relation >>
-    <<??>>
-        // Filter <<f a>>
-        if (isset($filter['<<f a_a>>'])) {
+    <<else>>
+        // Filter <<f lower>>
+        if (isset($filter['<<f snake>>'])) {
         <<# If the field is type string and label, perform a %LIKE% search >>
-        <<? f tS*lb>>
-            $query = $query->where('<<f a_a>>', 'LIKE', "%{$filter['<<f a_a>>']}%");
+        <<if f string and label>>
+            $query = $query->where('<<f snake>>', 'LIKE', "%{$filter['<<f snake>>']}%");
         <<# If the field is a boolean, convert to boolean >>
-        <<?? f tB>>
-            $query = $query->where('<<f a_a>>', static::toBoolean($filter['<<f a_a>>']));
+        <<elseif f boolean>>
+            $query = $query->where('<<f snake>>', static::toBoolean($filter['<<f snake>>']));
         <<# If the field is a date, convert timestamp to date >>
-        <<?? f tD>>
-            $query = $query->where('<<f a_a>>', static::toDate($filter['<<f a_a>>']));
+        <<elseif f datetime>>
+            $query = $query->where('<<f snake>>', static::toDate($filter['<<f snake>>']));
         <<# Otherwise>>
-        <<??>>
-            $query = $query->where('<<f a_a>>', $filter['<<f a_a>>']);
-        <<?>>
+        <<else>>
+            $query = $query->where('<<f snake>>', $filter['<<f snake>>']);
+        <<endif>>
         }
 
-    <<?>>
+    <<endif>>
 
     <<# If the field is a number, add extra filters (min & max) for filtering by range >>
-    <<? f tN>>
-        // Set min for <<f a>> if defined
-        if (isset($filter['<<f a_a>>__min'])) {
-            $query = $query->where('<<f a_a>>', '>=', $filter['<<f a_a>>__min']);
+    <<if f number>>
+        // Set min for <<f lower>> if defined
+        if (isset($filter['<<f snake>>__min'])) {
+            $query = $query->where('<<f snake>>', '>=', $filter['<<f snake>>__min']);
         }
-        // Set max for <<f a>> if defined
-        if (isset($filter['<<f a_a>>__max'])) {
-            $query = $query->where('<<f a_a>>', '<=', $filter['<<f a_a>>__max']);
+        // Set max for <<f lower>> if defined
+        if (isset($filter['<<f snake>>__max'])) {
+            $query = $query->where('<<f snake>>', '<=', $filter['<<f snake>>__max']);
         }
-    <<?>>
+    <<endif>>
 
     <<# If the field is a date, add extra filters (min & max) and convert timestamp to date >>
-    <<? f tD>>
-        // Set min for <<f a>> if defined
-        if (isset($filter['<<f a_a>>__min'])) {
-            $query = $query->where('<<f a_a>>', '>=', static::toDate($filter['<<f a_a>>__min']));
+    <<if f datetime>>
+        // Set min for <<f lower>> if defined
+        if (isset($filter['<<f snake>>__min'])) {
+            $query = $query->where('<<f snake>>', '>=', static::toDate($filter['<<f snake>>__min']));
         }
-        // Set max for <<f a>> if defined
-        if (isset($filter['<<f a_a>>__max'])) {
-            $query = $query->where('<<f a_a>>', '<=', static::toDate($filter['<<f a_a>>__max']));
+        // Set max for <<f lower>> if defined
+        if (isset($filter['<<f snake>>__max'])) {
+            $query = $query->where('<<f snake>>', '<=', static::toDate($filter['<<f snake>>__max']));
         }
-    <<?>>
+    <<endif>>
 
-<<@>>
+<<endfor>>
     
         return $query;
     }
 
 <<# Foreach entity relation field, add a method to get the populated relationship >>
-<<@ F tE f>>
+<<for Fields entity f>>
  
     /**
-     * Return relationship for <<f a>>
-    <<? f ml>>
+     * Return relationship for <<f lower>>
+    <<if f multiple>>
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-    <<??>>
+    <<else>>
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
-    <<?>>
+    <<endif>>
      */
-    public function _<<f a_a>>()
+    public function _<<f snake>>()
     {
     <<# In case of many-to-many relation >>
-    <<? f ml>>
-        return $this->belongsToMany('App\Models\<<f.m AA>>', '<<M a_a>>__<<f a_a>>', '<<M a_a>>', '<<f.m a_a>>');
+    <<if f multiple>>
+        return $this->belongsToMany('App\Models\<<f.m pascal>>', '<<Model snake>>__<<f snake>>', '<<Model snake>>', '<<f.m snake>>');
     <<# In case of one-to-one relation >>
-    <<??>>
-        return $this->hasOne('App\Models\<<f.m AA>>', '<<f.m.f.pr R>>', '<<f a_a>>');
-    <<?>>
+    <<else>>
+        return $this->hasOne('App\Models\<<f.m pascal>>', '<<f.m.f.primary raw>>', '<<f snake>>');
+    <<endif>>
     }
-<<@>>
+<<endfor>>
 }

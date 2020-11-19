@@ -12,46 +12,46 @@ $schemaManager = $schema->getConnection()->getDoctrineSchemaManager();
 // ==================================
 // Create tables & columns
 // ==================================
-<<@ M m>>
+<<for Models m>>
  
-// Create table for model <<m a>>
+// Create table for model <<m lower>>
 <<# Create a table for each models >>
-if (!$schema->hasTable('<<m a_a>>')) {
-    $schema->create('<<m a_a>>', function (Blueprint $table) {
-        $table->increments('<<m.f.pr R>>');
+if (!$schema->hasTable('<<m snake>>')) {
+    $schema->create('<<m snake>>', function (Blueprint $table) {
+        $table->increments('<<m.f.primary raw>>');
     <<# Create a column for each fields except for primary key and many-to-many relations >>
-    <<@ m.f /pr/ml f>>
-        $table-><<= getColumnMethod(f)>>('<<f a_a>>'<<? f tE>>, false, true<<?>>)<<? f nu>>->nullable()<<?>>;
-    <<@>>
+    <<for m.f not primary and not multiple f>>
+        $table-><<= getColumnMethod(f)>>('<<f snake>>'<<if f entity>>, false, true<<endif>>)<<if f nullable>>->nullable()<<endif>>;
+    <<endfor>>
     });
-    Helpers::output('', 'Did create table <<m a>>');
+    Helpers::output('', 'Did create table <<m lower>>');
 }
     <<# If the model has at least one many-to-many relation, generate the following code block >>
-    <<? m.f tE*ml>>
+    <<if m.f entity and multiple>>
  
-// Many-to-many relationships for model <<m a>>
+// Many-to-many relationships for model <<m lower>>
         <<# For each many-to-many relation, create a relation table >>
-        <<@ m.f tE*ml f>>
-if (!$schema->hasTable('<<m a_a>>__<<f a_a>>')) {
-    $schema->create('<<m a_a>>__<<f a_a>>', function (Blueprint $table) {
-        $table->increments('<<m.f.pr R>>');
-        $table->integer('<<m a_a>>', false, true);
-        $table->integer('<<f.m a_a>>', false, true);
+        <<for m.f entity and multiple f>>
+if (!$schema->hasTable('<<m snake>>__<<f snake>>')) {
+    $schema->create('<<m snake>>__<<f snake>>', function (Blueprint $table) {
+        $table->increments('<<m.f.primary raw>>');
+        $table->integer('<<m snake>>', false, true);
+        $table->integer('<<f.m snake>>', false, true);
     });
-    Helpers::output('', 'Did create relationship table <<m a>> to <<f a>>');
+    Helpers::output('', 'Did create relationship table <<m lower>> to <<f lower>>');
 }
-        <<@>>
-    <<?>>
-<<@>>
+        <<endfor>>
+    <<endif>>
+<<endfor>>
 
 // ==================================
 // Create indexes
 // ==================================
-<<@ M m>>
+<<for Models m>>
  
 <<# Create a table for each models >>
-// Create indexes for model <<m a>>
-$schema->table('<<m a_a>>', function (Blueprint $table) {
+// Create indexes for model <<m lower>>
+$schema->table('<<m snake>>', function (Blueprint $table) {
     global $schemaManager;
     $tableDetails = $schemaManager->listTableDetails($table->getTable());
 
@@ -59,59 +59,59 @@ $schema->table('<<m a_a>>', function (Blueprint $table) {
         Create basic index for fields that are searchable or sortable
         except for primary key and entity relations (one-to-one or many-to-many)
     >>
-    <<@ m.f (se+so)/pr/tE f>>
+    <<for m.f (searchable or sortable) and not primary and not entity f>>
  
-    if (!$tableDetails->hasIndex('<<m a_a>>_<<f a_a>>')) {
-        $table->index('<<f a_a>>', '<<m a_a>>_<<f a_a>>');
-        Helpers::output('', 'Did create index <<m a_a>>_<<f a_a>>');
+    if (!$tableDetails->hasIndex('<<m snake>>_<<f snake>>')) {
+        $table->index('<<f snake>>', '<<m snake>>_<<f snake>>');
+        Helpers::output('', 'Did create index <<m snake>>_<<f snake>>');
     }
-    <<@>>
+    <<endfor>>
 
     <<# 
         If the model has at least one unique field,
         create a single unique index that contains all unique fields
     >>
-    <<? m.f un/pr/(tE*ml)>>
+    <<if m.f unique and not primary and not (entity and multiple)>>
  
-    if (!$tableDetails->hasIndex('<<m a_a>>__uniques')) {
-        $table->unique([<<@ m.f un/pr/(tE*ml) f>>'<<f a_a>>', <<@>>], '<<m a_a>>__uniques');
-        Helpers::output('', 'Did create index <<m a_a>>__uniques');
+    if (!$tableDetails->hasIndex('<<m snake>>__uniques')) {
+        $table->unique([<<for m.f unique and not primary and not (entity and multiple) f>>'<<f snake>>', <<endfor>>], '<<m snake>>__uniques');
+        Helpers::output('', 'Did create index <<m snake>>__uniques');
     }
-    <<?>>
+    <<endif>>
 
     <<# Create foreign key contraints for fields that are one-to-one entity relation >>
-    <<@ m.f tE/ml f>>
+    <<for m.f entity and not multiple f>>
  
-    if (!$tableDetails->hasIndex('<<m a_a>>_<<f a_a>>__foreign')) {
-        $table->foreign('<<f a_a>>', '<<m a_a>>_<<f a_a>>__foreign')->references('<<f.m.f.pr R>>')->on('<<f.m a_a>>');
-        Helpers::output('', 'Did create index <<m a_a>>_<<f a_a>>__foreign');
+    if (!$tableDetails->hasIndex('<<m snake>>_<<f snake>>__foreign')) {
+        $table->foreign('<<f snake>>', '<<m snake>>_<<f snake>>__foreign')->references('<<f.m.f.primary raw>>')->on('<<f.m snake>>');
+        Helpers::output('', 'Did create index <<m snake>>_<<f snake>>__foreign');
     }
-    <<@>>
+    <<endfor>>
 
 });
 
     <<# Create foreign key contraints in relation table for fields that are many-to-many entity relation >>
-    <<? m.f tE*ml>>
-        <<@ m.f tE*ml f>>
-// Many-to-many relationships for field <<m a>>.<<f a>>
-$schema->table('<<m a_a>>__<<f a_a>>', function (Blueprint $table) {
+    <<if m.f entity and multiple>>
+        <<for m.f entity and multiple f>>
+// Many-to-many relationships for field <<m lower>>.<<f lower>>
+$schema->table('<<m snake>>__<<f snake>>', function (Blueprint $table) {
     global $schemaManager;
     $tableDetails = $schemaManager->listTableDetails($table->getTable());
  
-    if (!$tableDetails->hasIndex('<<m a_a>>__<<f a_a>>.<<m a_a>>')) {
-        $table->foreign('<<m a_a>>', '<<m a_a>>__<<f a_a>>.<<m a_a>>')->references('<<m.f.pr R>>')->on('<<m a_a>>')->onDelete('cascade');
-        Helpers::output('', 'Did create relationship index for <<m a_a>>__<<f a_a>>.<<m a>>');
+    if (!$tableDetails->hasIndex('<<m snake>>__<<f snake>>.<<m snake>>')) {
+        $table->foreign('<<m snake>>', '<<m snake>>__<<f snake>>.<<m snake>>')->references('<<m.f.primary raw>>')->on('<<m snake>>')->onDelete('cascade');
+        Helpers::output('', 'Did create relationship index for <<m snake>>__<<f snake>>.<<m lower>>');
     }
-    if (!$tableDetails->hasIndex('<<m a_a>>__<<f a_a>>.<<f.m a_a>>')) {
-        $table->foreign('<<f.m a_a>>', '<<m a_a>>__<<f a_a>>.<<f.m a_a>>')->references('<<f.m.f.pr R>>')->on('<<f.m a_a>>')->onDelete('cascade');
-        Helpers::output('', 'Did create relationship index for <<m a_a>>__<<f a_a>>.<<f.m a>>');
+    if (!$tableDetails->hasIndex('<<m snake>>__<<f snake>>.<<f.m snake>>')) {
+        $table->foreign('<<f.m snake>>', '<<m snake>>__<<f snake>>.<<f.m snake>>')->references('<<f.m.f.primary raw>>')->on('<<f.m snake>>')->onDelete('cascade');
+        Helpers::output('', 'Did create relationship index for <<m snake>>__<<f snake>>.<<f.m lower>>');
     }
  
 });
-        <<@>>
-    <<?>>
+        <<endfor>>
+    <<endif>>
 
-<<@>>
+<<endfor>>
 
 <<< 
 function getColumnMethod(f) {

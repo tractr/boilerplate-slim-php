@@ -1,7 +1,7 @@
 <?php 
  
 /**
- * Search <<M a>>.
+ * Search <<Model lower>>.
  */
  
 use Psr\Http\Message\ResponseInterface as Response;
@@ -12,11 +12,11 @@ use App\Library\HttpException;
 $_func = function (Request $request, Response $response, array $args) {
 
 <<# If the search action is not accessible as guest, check the credentials>>
-<<? As !gs>>
+<<if SearchAccess not guest>>
  
     //Authentication
     $this->get('session')->verifyCredentials($request);
-<<?>>
+<<endif>>
  
     $_get = $request->getQueryParams();
  
@@ -37,20 +37,20 @@ $_func = function (Request $request, Response $response, array $args) {
  
     // forbidden keys
 <<# Remove all non-seachable keys >>
-<<@ F /se f>>
-    unset($_get['<<f a_a>>']);
-<<@>>
+<<for Fields not searchable f>>
+    unset($_get['<<f snake>>']);
+<<endfor>>
  
     if ($validator->validate()) {
  
         $page = intval($_get['_page']);
         $limit = intval($_get['_limit']);
         $order = 'desc';
-        $sort =  '<<P R>>';
+        $sort =  '<<PrimaryField raw>>';
         $skip = $page * $limit;
  
         <<# Allow the sort key to equal sortable or primary fields only >>
-        if (isset($_get['_sort']) && in_array($_get['sort'], array(<<@ F so+pr f>>'<<f a_a>>', <<@>>))) {
+        if (isset($_get['_sort']) && in_array($_get['sort'], array(<<for Fields sortable or primary f>>'<<f snake>>', <<endfor>>))) {
             $sort = $_get['_sort'];
         }
  
@@ -63,9 +63,9 @@ $_func = function (Request $request, Response $response, array $args) {
             throw new HttpException(400, 'Missing sort and/or order parameters');
         }
  
-        $query = App\Models\<<M AA>>::getCursor($_get, $request);
+        $query = App\Models\<<Model pascal>>::getCursor($_get, $request);
         $total = $query->count();
-        /** @var App\Models\<<M AA>>[] $models */
+        /** @var App\Models\<<Model pascal>>[] $models */
         $models = $query->orderBy($sort, $order)
                        ->skip($skip)
                        ->take($limit)
@@ -78,13 +78,13 @@ $_func = function (Request $request, Response $response, array $args) {
             // Clone data
             $clone = json_decode(json_encode($model), true);
 <<# For all embedded entity relation fields (if any), set the populated value >>
-<<? F tE*em>>
+<<if Fields entity and embedded>>
             // Populate relationships
-    <<@ F tE*em f>>
-            $clone['<<f a_a>>'] = $model->_<<f a_a>>;
-    <<@>>
+    <<for Fields entity and embedded f>>
+            $clone['<<f snake>>'] = $model->_<<f snake>>;
+    <<endfor>>
  
-<<?>>
+<<endif>>
             array_push($result, $clone);
         }
  
@@ -103,9 +103,9 @@ $_func = function (Request $request, Response $response, array $args) {
 };
  
 //Define admin route callback
-$app->get('/admin/<<M a-a>>', $_func);
+$app->get('/admin/<<Model kebab>>', $_func);
 <<# If the search action is accessible at least as owner, add the public route >>
-<<? As [ow>>
+<<if SearchAccess gteOwner>>
 //Define route callback
-$app->get('/<<M a-a>>', $_func);
-<<?>>
+$app->get('/<<Model kebab>>', $_func);
+<<endif>>

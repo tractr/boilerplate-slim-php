@@ -1,7 +1,7 @@
 <?php 
  
 /**
- * Count <<M a>>.
+ * Count <<Model lower>>.
  */
  
 use Psr\Http\Message\ResponseInterface as Response;
@@ -12,11 +12,11 @@ use App\Library\HttpException;
 $_func = function (Request $request, Response $response, array $args) {
 
 <<# If the count action is not accessible as guest, check the credentials >>
-<<? An !gs>>
+<<if CountAccess not guest>>
  
     //Authentication
     $this->get('session')->verifyCredentials($request);
-<<?>>
+<<endif>>
  
     $_get = $request->getQueryParams();
  
@@ -24,13 +24,13 @@ $_func = function (Request $request, Response $response, array $args) {
  
     // forbidden keys
 <<# Remove all non-seachable keys >>
-<<@ F /se f>>
-    unset($_get['<<f a_a>>']);
-<<@>>
+<<for Fields not searchable f>>
+    unset($_get['<<f snake>>']);
+<<endfor>>
     
     if ($validator->validate()) {
  
-        $query = App\Models\<<M AA>>::getCursor($_get, $request);
+        $query = App\Models\<<Model pascal>>::getCursor($_get, $request);
  
         $total = $query->count();
         $data = array(
@@ -48,9 +48,9 @@ $_func = function (Request $request, Response $response, array $args) {
 };
  
 //Define admin route callback
-$app->get('/admin/<<M a-a>>/count', $_func);
+$app->get('/admin/<<Model kebab>>/count', $_func);
 <<# If the count action is accessible at least as owner, add the public route >>
-<<? An [ow>>
+<<if CountAccess gteOwner>>
 //Define route callback
-$app->get('/<<M a-a>>/count', $_func);
-<<?>>
+$app->get('/<<Model kebab>>/count', $_func);
+<<endif>>
