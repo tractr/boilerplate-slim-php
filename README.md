@@ -100,7 +100,7 @@ This boilerplate can be used with those front-end boilerplates:
 If you need to update you data models and re-generate code (using [Hapify](https://www.hapify.io/),
 you should run this command `docker-compose run --rm php php app/cmd/setup/index.php` to update the SQL structure.
 
-Please refer to [Hapify Best Practices](https://www.hapify.io/documentation/best-practices) to learn more about Git patches within Hapify context.
+Please refer to [Hapify Best Practices](https://docs.hapify.io/en/latest/best-practices/) to learn more about Git patches within Hapify context.
 
 ## Documentation
 
